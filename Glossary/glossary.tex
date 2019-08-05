@@ -1,0 +1,77 @@
+\chapter{Glossary}
+\textbf{Metabarcoding} is a technique of plant and animal identification based on DNA-based identification and rapid DNA sequencing. Metabarcode data sets are more comprehensive, many times quicker to produce, and are less reliant on taxonomic expertise than traditional methods (e.g. those based structural features of organisms); they also enable many opportunities for research.
+Refers to identification of species assemblages from community DNA using barcode Genes. PCR is carried out with non-specific primers, followed by high-throughput sequencing and bioinformatics processing. Can identify hundreds of species in each sample, and 100+ different samples can be processed in parallel to reduce sequencing cost.
+
+\textbf{Species assemblage }(biology), refers to all of the various species that exist in a particular habitat
+
+\textbf{Georeferencing} means to associate something with locations in physical space.
+
+\textbf{Environmental DNA} (eDNA) is nuclear or mitochondrial DNA that is released from an organism into the environment. Sources of eDNA include secreted faeces, mucous, gametes, shed skin, hair and carcasses. Recent research has shown that the DNA of a range of aquatic organisms can be detected in water samples at very low concentrations using qPCR (quantitative Polymerase Chain Reaction) methods.
+
+\textbf{Organismal DNA}
+Refers to DNA sampled directly from the organism through whole organism collection (e.g. invertebrates), swabbing, blood sampling, clipping etc. Usually high concentration and non-degraded. The location of the organism at the time of sampling is definitively known. Overall there are fewer uncertainties than for eDNA.
+
+\textbf{PCR / amplification}
+Polymerase chain reaction. A process by which millions of copies of a particular DNA segment are produced through a series of heating and cooling steps. Known as an ‘amplification’ process. One of the most common processes in molecular biology and a precursor to most sequencing-based analyses. Two DNA primers are used to select the region of DNA that needs to be amplified (start and end point), and DNA polymerase, an enzyme, is used to multiply the region between the two primers.
+
+
+\textbf{Barcode Genes} Refers to genes that can be used for species identifications. Different regions of DNA mutate at different speeds. Fast-changing regions are useful for population studies and paternity testing, while the most stable regions can be used for assessing deep evolutionary relationships between groups of organisms. Certain regions change at just the right rate to be stable within a species but different between species. These are known as barcode genes. The official barcode gene for animals is Cytochrome Oxidase 1 (COI or cox-1). Other genes used as animal barcodes include 12S, 16S, 18S and Cytochrome-b (cytb). For plants, the most commonly used genes are MatK, rbcL, trnL and ITS.
+
+ 
+
+\textbf{Reference Databases}
+Refers to libraries of DNA sequences (usually from barcode genes) that have been generated from species of known identity. Sequences from unidentified organisms – obtained either by Sanger sequencing or high-throughput sequencing – are compared against a reference database to make species identifications. Databases can be curated (e.g. the Barcode of Life Database – BOLD – www.boldsystems.org) or uncurated (e.g. Genbank – www.ncbi.nlm.nih.gov). In curated databases, identifications are scrutinised and verified; in uncurated databases they are not. GenBank is therefore far more extensive than BOLD, but contains many errors.
+
+
+\textbf{Operational Taxonomic Units }
+Nowadays, however, the term "OTU" is generally used in a different context and refers to clusters of (uncultivated or unknown) organisms, grouped by DNA sequence similarity of a specific taxonomic marker gene.[2] In other words, OTUs are pragmatic proxies for microbial "species" at different taxonomic levels, in the absence of traditional systems of biological classification as are available for macroscopic organisms. For several years, OTUs have been the most commonly used units of microbial diversity, especially when analysing small subunit 16S or 18S rRNA marker gene sequence datasets. \url{https://en.wikipedia.org/wiki/Operational_taxonomic_unit}
+\url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1609233/}
+
+
+
+\textbf{Foraminifera}  are members of a phylum or class of amoeboid protists characterized by streaming granular ectoplasm for catching food and other uses; and commonly an external shell (called a "test") of diverse forms and materials. Tests of chitin (found in some simple genera, and Textularia in particular) are believed to be the most primitive type. Most foraminifera are marine, the majority of which live on or within the seafloor sediment (i.e., are benthic), while a smaller variety float in the water column at various depths (i.e., are planktonic). Fewer are known from freshwater or brackish conditions, and some very few (nonaquatic) soil species have been identified through molecular analysis of small subunit ribosomal DNA.
+
+\textbf{DNA sequencing }is the process of determining the nucleic acid sequence – the order of nucleotides in DNA. It includes any method or technology that is used to determine the order of the four bases: adenine, guanine, cytosine, and thymine.
+
+\textbf{Rarefaction} is a technique used to asses the richness of species from a specific sample. It involves re-sampling n (1 up to the total number of) individuals from a sample, and calculates the average number of species found in n draws. 
+
+\textbf{Rarefying} is a normalisation procedures when different samples have different library sizes (total sequences per sample). The procedure is as follows
+
+\begin{itemize}
+    \item Select a minimum library size, $N_{L,min}$ . This has also been called the rarefaction level [17], though we will not use the term here.
+    \item Discard libraries (microbiome samples) that have fewer reads than  $N_{L,min}$.
+    \item Subsample the remaining libraries without replacement such that they all have size  $N_{L,min}$.
+\end{itemize}
+
+Often  $N_{L,min}$ is chosen to be equal to the size of the smallest library that is not considered defective, and the process of identifying defective samples comes with a risk of subjectivity and bias. \cite{inadmissible_rareying}
+
+\textbf{Alpha and Beta Diversity metrics}
+\url{https://www.drive5.com/usearch/manual/diversity_metrics_recommended.html}
+Alpha diversity is the species diversity in a single ecosystem or sample. The simplest measure is richness, the number of species (or OTUs) observed in the sample. Other metrics consider the abundances (frequencies) of the OTUs, for example to give lower weight to lower-abundance OTUs.  
+Beta Diversity measures the differentiation of species diversity between samples or habitats. 
+
+\textbf{Bray–Curtis dissimilarity statistic}:
+In ecology and biology, the Bray–Curtis dissimilarity, named after J. Roger Bray and John T. Curtis,[1] is a statistic used to quantify the compositional dissimilarity between two different sites, based on counts at each site. \url{https://en.wikipedia.org/wiki/Bray%E2%80%93Curtis_dissimilarity}
+
+The \textbf{Shannon index} is an information statistic (alpha diversity) that measures diversity of species in a sample. It assumes that all species are represented in the sample and are also randomly sampled. It's equation is given by
+$$-\sum_{i=1}^s p_i \ln(p_i),$$
+where $i$ is the index of one of the $s$ species in the sample, and $p_i$ is given by $\frac{n_i}{N}$ where $n_i$ is the number of individuals $i$ in the sample of $N$ individuals.
+
+The \textbf{Simpson Index} is a dominance statistic (alpha diversity) that gives more weight to more common species found in the sample. It can be thought as measuring the `effective' number of species and is given by
+$$\frac{1}{\sum_{i=1}^s p_i^2}$$the value of $p_i$ is defined in  the same way as in the Shannon index.
+The  \textbf{Jaccard Index} (beta diversity) measures how similar, in terms of species present, two samples are. It ranges from 0 to 1, with the latter indicating that the two samples share the same species. The index does not take into consideration the abundance of species. It is given by
+$$\frac{|X \cap Y|}{|X\cup Y|},$$
+where $X$ and $Y$ are two samples, whose intersection is the number of species shared between them and their union is the the total number of species across them.
+
+
+\textbf{Bioindicators} are living organisms such as plants, planktons, animals, and microbes, which are utilized to screen the health of the natural ecosystem in the environment. They are used for assessing environmental health and biogeographic changes taking place in the environment
+
+
+
+
+
+
+
+
+
+%, ICE (incidence-based coverage estimator) and rarefied richness
