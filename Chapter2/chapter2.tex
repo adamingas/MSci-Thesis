@@ -101,12 +101,17 @@ where $\Sigma_m$ is the matrix of the $m$ largest singular values, and $U_m$ the
 
 The centred $n \times p$ data matrix $B$ has maximum rank $r$ equal to the minimum of the numbers $n$ and $p$. This means that there are at most $r$ linearly independent row (or columns) vectors, and consequently, at most $r$ singular values in the $n \times p$ matrix $\Sigma$. Comparing the two decompositions of the Covariance and Gram matrix, we note that the matrices $\Sigma^T \Sigma$ and $\Sigma \Sigma^T$ have the same number of non-zero elements in their diagonals, even if they are of dimension $p \times p$ and $n \times n$ respectively. Thus, we can conclude that the Covariance and Gram matrices have the same eigenvalues.
 
-An important assumption of PCA that plays an important role in our data, is that it is a linear method. This means that the basis that the data are projected onto is a linear combination of the basis of the data. Thus, the projection is essentially a rotation and stretching of the basis set. 
+An important assumption of PCA that plays a role in our data, is that it is a linear method. This means that the basis that the data are projected onto is a linear combination of their features. Thus, the projection is essentially a rotation and stretching of the basis set. 
 
-This linear assumption of PCA makes it unsuitable for use in Ecological data sets. The species composition varies non linearly across samples, and the relationship between species is also not linear. The presence of a species in a sample is usually much more important that the actual number of reads of that species. Thus, when the data are projected onto the eigenvectors of the covariance matrix, they are distorted into a horseshoe shape (i.e. like an arch) \cite{Gauch 1982}.
+This linear assumption of PCA makes it unsuitable for use in Ecological data sets. The species composition varies non linearly across samples, and the relationship between species is also not linear. The presence of a species in a sample is usually much more important that the actual number of reads of that species. Thus, when the data are projected onto the eigenvectors of the covariance matrix (Figure \ref{fig:pcaotu12}), they are distorted into a horseshoe shape (i.e. like an arch) \cite{Gauch 1982}.
 
 %FIGURE OF PCA
-
+\begin{figure}
+\centering
+\includegraphics[width = 0.7\textwidth]{"pcaotu12"}
+\caption{First 2 dimensions of PCA performed on the full OTU table. The 2 axes account for 47.8\% of the variance.}
+\label{fig:pcaotu12}
+\end{figure}
 
 %%PCOA
 \subsection{PCoA}
@@ -115,6 +120,7 @@ A more general method of ordination, of which PCA is a special case, is called P
 Lets define by $D_{ij}$ the $n \times n$ distance matrix between the samples (rows) in $X$ (where $D_{ij}$ indicates the distance between the sample $i$ with sample $j$). It is evident from the construction of the matrix that it is symmetric, since the distance between sample $i$ and $j$ is the same the distance between $j$ and $i$. When using a euclidean measure the diagonals of the matrix are zero. The euclidean metric is given by
 \begin{align}
 D_{ij} = {||\bf{x}_i-\bf{x}_j||^2},
+\label{eq:euclideanmetric}
 \end{align}
 where $\bf{x}_i$ is a row vector of the data matrix $X$ containing the abundance reading for the sample $i$, and $||\cdot||^2$ is the L2 norm.
 
@@ -187,19 +193,44 @@ Therefore, diagonalising the $K$ matrix when using a euclidean distance metric (
 
 %Other distance metrics
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-A Euclidean distance metric, however, is not the very useful when it comes to ecological abundance data. This is because it suffers from the same drawbacks that PCA does (see earlier discussion in section \ref{ssec:PCA}). The framework of PCoA was developed so as to enable the use of other measures which are more suitable to ecological data, where the presence of a species in a sample is more important than the number of reads of that species. Such a measure is the bray-curtis dissimilarity statistic, which quantifies how dissimilar two samples are based on species common to both of them. The measure $B_{ij}$ is defined as
+A Euclidean distance metric, however, is not very useful when it comes to ecological abundance data. This is because it suffers from the same drawbacks that PCA does (see earlier discussion in section \ref{ssec:PCA}). The framework of PCoA was developed so as to enable the use of other measures which are more suitable to ecological data, where the presence of a species in a sample is more important than the number of reads of that species. Such a measure is the bray-curtis dissimilarity statistic, which quantifies how dissimilar two samples are based on species common to both of them. The measure $B_{ij}$ is defined as
 %~~~~~~~~~~~~~~~~Bray Curtis
 \begin{equation}
-    B_{ij} = 1 - \frac{2C_{ij}}{S_i + S_j},
+    B_{ij} = \frac{\sum_{k =1}^{p} |X_{ik} - X_{jk}|}{\sum_{k =1}^{p} X_{ik} + X_{jk}},
 \end{equation}
-where $C_{ij}$ is the number of species in common between samples $i$ and $j$, whereas $S_i$ and $S_j$ are the total number of species encountered in each individual sample. The statistic ranges from 0, where the samples have the same species composition, to 1 where the samples do not have any species in common.
+where $X_{ik}$ is the data matrix which denotes the number of reads of speciment $k$ in sample $i$. The statistic ranges from 0, where the samples have the same species composition, to 1 where the samples do not have any species in common, and is semimetric\footnote{Semimetric measures do not satisfy the triangle inequality.}.
+
+If we use this statistic to calculate the distance matrix $D_{ij}$ and then carry out PCoA, the arch effect is removed from the 2 dimensional ordination plot and can better separate the different river samples. As it can be seen in Figure \ref{fig:pcoaotu12}, the method can separate well samples from the upper Marañón part of the river (yellow points on the upper right corner of the plot). Samples from the other parts are grouped together on the opposite side from the upper Marañón part. Black and white river samples are not very well separated, and occupy the same space (except on the upper right corner where no black water samples are found). Even when the ordination method produces a better spread of results than when using PCA, the variance explained by the first 2 axes is only 19.8\%.
 
 
+%% PCoA bray curtis.
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{pcoaotu12}
+\caption{First 2 dimensions of PCoA performed on the full OTU table using the Bray Curtis statistic as the distance metric. The 2 axes account for 19.8\% of the variance.}
+\label{fig:pcoaotu12}
+\end{figure}
 
-
+To illustrate the effect of measures on the PCoA algorithm, we produced 2 dimensional ordination plots for the Euclidean and the Jaccard metrics. The Euclidean metric has the form given in equation \eqref{eq:euclideanmetric} and the ordination plot (see Figure \ref{fig:pcoaeuc}) has the same form as the one obtained using PCA. The only difference is the scale (the covariance matrix is divided by the number of samples) and the reflection of the points on the x-axis. The Jaccard metric is given by
+\begin{equation}
+Jac_{ij} =\frac{2C_{ij}}{1-C_{ij}},
+\end{equation} 
+where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordination plot produced using this index is shown in Figure \ref{fig:pcoajac}.
 
 %%RESULTS of PCoA with different metrics
-
+\begin{figure}[h]
+\centering
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width = \textwidth]{pcoa12eucotu}
+\caption{PCoA using the Euclidean Metric. The result is the same as with PCA; only the scales have different values and the points are flipped over the X-axis.}
+\end{subfigure}
+\label{fig:pcoaeuc}
+\begin{subfigure}{ 0.4\textwidth}
+\includegraphics[width = \textwidth]{pcoa12jacotu}
+\caption{PCoA using the Jaccard metric. The result is similar with the one obtained using Bray-Curtis. Both measures are rank-order similar.}
+\label{fig:pcoajac}
+\end{subfigure}
+\end{figure}
 %Motivate NMDS
 %EG actual distances are not that important so NMDS might be more usefull which maximisies correlation
 %% NMDS
