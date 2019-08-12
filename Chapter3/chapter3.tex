@@ -2,7 +2,7 @@
 %*******************************************************************************
 %****************************** Third Chapter **********************************
 %*******************************************************************************
-\chapter{Testing and Training sets}
+\chapter{Results}
 
 % **************************** Define Graphics Path **************************
 \ifpdf
@@ -10,87 +10,3 @@
 \else
     \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
 \fi
-\section{Motivation}
-Together with the OTU table, our data also include the location of the samples in the rivers (in Easting and Northing coordinates) and in which part of the river they belong to. Because of this location attribute, our samples cannot be said to be independent. Thus, the way we choose to split our data into training and testing sets will surely affect the accuracy of the classifier. For example, testing on a set that is composed of samples maximally distant from the ones in the training set will produce different results than testing on a set with samples in close proximity to the ones in the training set.
-
-
-To avoid choosing a split method, several ones have been employed that represent different splitting conditions. The classifiers have then been tested on all of them so as to evaluate how well they can perform under various circumstances.
-
-
-
-
-
-\section{Maximising Similarity}
-\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is similar geographically to the train set.
-\textit{Method}: Testing and validation sets are made up of samples coming from every part of the river. Care is taken to ensure that no geographical area is over represented. 
-
-To do this Stratified Sampling is used, but instead of keeping the class balance constant in the train validation and test sets we keep the distribution of the samples in the different parts of the rivers constant.
-
-\begin{table}
-\caption{Results from maximising similarity using Logistic Regression}
-\centering
-\label{table:similarity}
-\begin{tabular}{l c  c}
-\hline 
-Features used & Mean Score & Variance of Score \\ 
- 
-\hline
-OTU & 98.2\% & 0.04\%   \\
-OTU CSS & 96.2\% & 0.13\%   \\
-OTU Min CSS & 96.7\% & 0.11\%   \\
-PCoA Bray-Curtis CSS &96.2\% & 0.13\%   \\
-
-\hline 
-\end{tabular}
-\end{table}
-
-
-\subsection{Maximising Dissimilarity}
-
-\begin{table}[h]
-\caption{Results from maximising dissimilarity using Logistic Regression}
-\centering
-\label{table:dissimilarity}
-\begin{tabular}{l c  c}
-\hline 
-Features used & Mean Score & Variance of Score \\ 
- 
-\hline
-OTU & 80.7\% & 1.96\%   \\
-OTU CSS & 85.7\% & 1.13\%   \\
-OTU Min CSS & 84.7\% & 1.4\%   \\
-PCoA Bray-Curtis CSS &88.5\% & 1.27\%   \\
-
-\hline 
-\end{tabular}
-\end{table} 
-\subsection{Random Splits}
-\dots and some more \dots
-
-
-
-
-\begin{table}
-\caption{Even better looking table using booktabs}
-\centering
-\label{table:good_table}
-\begin{tabular}{l c c c c}
-\toprule
-\multirow{2}{*}{Dental measurement} & \multicolumn{2}{c}{Species I} & \multicolumn{2}{c}{Species II} \\ 
-\cmidrule{2-5}
-  & mean & SD  & mean & SD  \\ 
-\midrule
-I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
-
-I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
-
-I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
-
-I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
-
-CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
-
-CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
-\bottomrule
-\end{tabular}
-\end{table}

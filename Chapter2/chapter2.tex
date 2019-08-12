@@ -3,7 +3,7 @@
 %****************************** Second Chapter *********************************
 %*******************************************************************************
 
-\chapter{Methods}
+\chapter{Methods, Models and Hypothesis testing}
 
 \ifpdf
     \graphicspath{{Chapter2/Figs/Raster/}{Chapter2/Figs/PDF/}{Chapter2/Figs/}}
@@ -244,6 +244,125 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 % \caption[Minion]{This is just a long figure caption for the minion in Despicable Me from Pixar}
 % \label{fig:minion}
 % \end{figure}
+\subsection{NMDS}
+\section{Normalisation}
+Our data set has a wide range of total reads per sample. This imbalanced could potentially 
+\section{PERMANOVA}
+\section{Machine Learning}
+\subsection{Logistic Regression}
+\subsection{Random Forests}
+\section{Hypothesis Testing}
+
+Together with the OTU table, our data also include the location of the samples in the rivers (in Easting and Northing coordinates) and in which part of the river they belong to. Because of this location attribute, our samples cannot be said to be independent. Thus, the way we choose to split our data into training and testing sets will surely affect the accuracy of the classifier. For example, testing on a set that is composed of samples maximally distant from the ones in the training set (see Figure \ref{fig:groupsamp}) will produce different results than testing on a set with all samples in close proximity to the ones in the training set (see Figure \ref{fig:stratsampl}).
+
+%% Stratified an group folds for tain test split plot
+\begin{figure}[h]
+\centering
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width = \textwidth]{stratsamp.png}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width = \textwidth]{stratsamp2.png}
+\end{subfigure}
+\caption{Test set samples are geographically among Train set samples. This represents a maximally similar split which is created by ensuring constant distribution of samples in each part of the river in both the Train and Test set.}
+\label{fig:stratsampl}
+\end{figure}
+
+%Group sample plot
+\begin{figure}[h]
+\centering
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width = \textwidth]{groupsamp.png}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\includegraphics[width = \textwidth]{groupsamp2.png}
+\end{subfigure}
+\caption{Test set samples are geographically distinct from Train set samples. This represents a maximally dissimilar split which is created by choosing a different part of the river as the Testing set.}
+\label{fig:groupsamp}
+\end{figure}
+
+
+To avoid choosing a split method, several ones have been employed that represented different splitting conditions. The classifiers have then been tested on all of them so as to evaluate how well they can perform under various circumstances.
+
+%Validation sets
+In addition to splitting the data into training and test sets, the train set was further split into validation sets so as to tune the hyperparameters of the models. The splitting into validation sets followed the same principle/method as the train-test split. So if, for example, the Train and Test sets were split using the maximally similar approach, the validation sets produced from the Train set were chosen so as to be maximally similar to the remaining set.
+
+
+
+\subsection{Maximising Similarity}
+\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is similar geographically to the train set.
+\textit{Method}: Testing and validation sets are made up of samples coming from every part of the river. Care is taken to ensure that no geographical area is over represented. 
+
+To do this Stratified Sampling is used, but instead of keeping the class balance constant in the train validation and test sets we keep the distribution of the samples in the different parts of the rivers constant.
+
+\begin{table}
+\caption{Results from maximising similarity using Logistic Regression}
+\centering
+\label{table:similarity}
+\begin{tabular}{l c  c}
+\hline 
+Features used & Mean Score & Variance of Score \\ 
+ 
+\hline
+OTU & 98.2\% & 0.04\%   \\
+OTU CSS & 96.2\% & 0.13\%   \\
+OTU Min CSS & 96.7\% & 0.11\%   \\
+PCoA Bray-Curtis CSS &96.2\% & 0.13\%   \\
+
+\hline 
+\end{tabular}
+\end{table}
+
+
+\subsection{Maximising Dissimilarity}
+
+\begin{table}[h]
+\caption{Results from maximising dissimilarity using Logistic Regression}
+\centering
+\label{table:dissimilarity}
+\begin{tabular}{l c  c}
+\hline 
+Features used & Mean Score & Variance of Score \\ 
+ 
+\hline
+OTU & 80.7\% & 1.96\%   \\
+OTU CSS & 85.7\% & 1.13\%   \\
+OTU Min CSS & 84.7\% & 1.4\%   \\
+PCoA Bray-Curtis CSS &88.5\% & 1.27\%   \\
+
+\hline 
+\end{tabular}
+\end{table} 
+\subsection{Random Splits}
+\dots and some more \dots
+
+
+
+
+\begin{table}
+\caption{Even better looking table using booktabs}
+\centering
+\label{table:good_table}
+\begin{tabular}{l c c c c}
+\toprule
+\multirow{2}{*}{Dental measurement} & \multicolumn{2}{c}{Species I} & \multicolumn{2}{c}{Species II} \\ 
+\cmidrule{2-5}
+  & mean & SD  & mean & SD  \\ 
+\midrule
+I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
+
+I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
+
+I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
+
+I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
+
+CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
+
+CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
+\bottomrule
+\end{tabular}
+\end{table}
 
 
 
