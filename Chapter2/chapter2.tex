@@ -246,7 +246,10 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 % \end{figure}
 \subsection{NMDS}
 \section{Normalisation}
-Our data set has a wide range of total reads per sample. This imbalanced could potentially 
+Our data set has a wide range of total reads per sample. Furthermore, the counts of  This imbalanced could potentially influence 
+%%Normalization, which is the process where systematic variability is identified and removed, is therefore a vital part of the data analysis. 
+%https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5910605/
+% A substantial part of this variability is systematic and affects multiple genes and/or samples in a similar way. One example of systematic variability is the differences in sequence depth, where each sample is represented by a varying number of reads [13]. Systematic variability also comes from other technical sources, such as inconsistencies in the DNA extraction and sample handling, varying quality between sequencing runs, errors in the read mapping, and incompleteness of the reference databases
 \section{PERMANOVA}
 \section{Machine Learning}
 \subsection{Logistic Regression}
@@ -255,6 +258,7 @@ Our data set has a wide range of total reads per sample. This imbalanced could p
 
 Together with the OTU table, our data also include the location of the samples in the rivers (in Easting and Northing coordinates) and in which part of the river they belong to. Because of this location attribute, our samples cannot be said to be independent. Thus, the way we choose to split our data into training and testing sets will surely affect the accuracy of the classifier. For example, testing on a set that is composed of samples maximally distant from the ones in the training set (see Figure \ref{fig:groupsamp}) will produce different results than testing on a set with all samples in close proximity to the ones in the training set (see Figure \ref{fig:stratsampl}).
 
+To avoid choosing a split method, several ones have been employed that represented different splitting conditions. The classifiers have then been tested on all of them so as to evaluate how well they can perform under various circumstances.
 %% Stratified an group folds for tain test split plot
 \begin{figure}[h]
 \centering
@@ -282,87 +286,68 @@ Together with the OTU table, our data also include the location of the samples i
 \end{figure}
 
 
-To avoid choosing a split method, several ones have been employed that represented different splitting conditions. The classifiers have then been tested on all of them so as to evaluate how well they can perform under various circumstances.
+
 
 %Validation sets
-In addition to splitting the data into training and test sets, the train set was further split into validation sets so as to tune the hyperparameters of the models. The splitting into validation sets followed the same principle/method as the train-test split. So if, for example, the Train and Test sets were split using the maximally similar approach, the validation sets produced from the Train set were chosen so as to be maximally similar to the remaining set.
+In addition to splitting the data into training and test sets, the train set was further split into validation sets so as to tune the hyperparameters of the models. The splitting into validation sets followed the same principle/method as the train-test split. So if, for example, the train and test sets were split using the maximally similar approach, the validation sets produced from the train set were chosen so as to be maximally similar to the remaining set.
 
 
+The steps of testing a classifier using a specific split method are as follows:
+\begin{enumerate}
+\item The data set is split into train and test sets based on the splitting method of choice. 
+\item The train set is split into $K$-folds using the same method for the train-test split.
+\item A set of hyperparameters and potential values are chosen for the cross-validation procedure. For example, in Logistic Regression a set of numbers ranging from 0.001 to 20 is chosen for the sparsity parameter and the set $\{True,False\}$ is chosen for the intercept parameter    
+\item The classifier is trained on the $K-1$ folds and tested on the remaining validation set for all possible combinations of hyperparameters (e.g. the Logistic Regressor is trained with hyperparameters $\{0.001,True\},\{0.001,False\},\{1.001,True\},\{1.001,False\}$ etc...).
+\item Step 4 is repeated for all the $K$-folds (by training on the $K-1$ and testing on the one left out). The average score across the validation sets is found for each hyperparameter combination and the classifier is retrained on the train set using the best hyperparameters set.
+\item The retrained model is tested on the test set and the prediction score is calculated.
+\item Steps  1 through 6 are repeated a number of times for different train-test splits using the same split principles. Th scores for each repetition are stored.
+\item The best classifier for the particular  
+\end{enumerate}
+
+This procedure can be repeated for different features (data sets), so as to evaluate how feature selection and transformations can alter the results. The best classifier for the particular features and splitting method is the one which has the highest mean score across all train-test splits.
 
 \subsection{Maximising Similarity}
-\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is similar geographically to the train set.
-\textit{Method}: Testing and validation sets are made up of samples coming from every part of the river. Care is taken to ensure that no geographical area is over represented. 
+\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is similar geographically to the train set.\\
+\textit{Method}: Testing and validation sets are made up of samples coming from every part of the river. Care is taken to ensure that no geographical area is over represented. This is done using Stratified sampling (using the method StratifieKfold) where the strata (or groups) are the areas of the rivers the samples belong to. Stratified sampling ensures that the distribution of test or validation samples in each area is approximately the same as for train samples.
 
-To do this Stratified Sampling is used, but instead of keeping the class balance constant in the train validation and test sets we keep the distribution of the samples in the different parts of the rivers constant.
 
-\begin{table}
-\caption{Results from maximising similarity using Logistic Regression}
-\centering
-\label{table:similarity}
-\begin{tabular}{l c  c}
-\hline 
-Features used & Mean Score & Variance of Score \\ 
- 
-\hline
-OTU & 98.2\% & 0.04\%   \\
-OTU CSS & 96.2\% & 0.13\%   \\
-OTU Min CSS & 96.7\% & 0.11\%   \\
-PCoA Bray-Curtis CSS &96.2\% & 0.13\%   \\
-
-\hline 
-\end{tabular}
-\end{table}
 
 
 \subsection{Maximising Dissimilarity}
+\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is dissimilar (or far away) geographically to the train set.\\
+\textit{Method}: Testing and Validation sets are made up of all the samples which belong to a particular area of the river. For example, the test set might be constituted by all the samples in the Upper Marañón area, and the validation sets by all the remaining areas (Huallaga, Min Maranon, Lower Maranon, Ucayali, Tapiche, Napo). The method used to produce these splits is called GroupKfold.
 
-\begin{table}[h]
-\caption{Results from maximising dissimilarity using Logistic Regression}
-\centering
-\label{table:dissimilarity}
-\begin{tabular}{l c  c}
-\hline 
-Features used & Mean Score & Variance of Score \\ 
- 
-\hline
-OTU & 80.7\% & 1.96\%   \\
-OTU CSS & 85.7\% & 1.13\%   \\
-OTU Min CSS & 84.7\% & 1.4\%   \\
-PCoA Bray-Curtis CSS &88.5\% & 1.27\%   \\
-
-\hline 
-\end{tabular}
-\end{table} 
 \subsection{Random Splits}
-\dots and some more \dots
+\textit{Aim}: Evaluate the performance of the classifiers on train and test sets obtained by random splitting
+\textit{Method}: Test and Validation sets are obtained by randomly splitting the data. Care is taken to ensure that the balance of white and black water samples is the same across splits. This is done using Stratified sampling with the colour of the river as the strata.
 
 
 
 
-\begin{table}
-\caption{Even better looking table using booktabs}
-\centering
-\label{table:good_table}
-\begin{tabular}{l c c c c}
-\toprule
-\multirow{2}{*}{Dental measurement} & \multicolumn{2}{c}{Species I} & \multicolumn{2}{c}{Species II} \\ 
-\cmidrule{2-5}
-  & mean & SD  & mean & SD  \\ 
-\midrule
-I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
-
-I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
-
-I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
-
-I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
-
-CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
-
-CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
-\bottomrule
-\end{tabular}
-\end{table}
+%\begin{table}
+%\caption{Even better looking table using booktabs}
+%\centering
+%\label{table:good_table}
+%\begin{tabular}{l c c c c}
+%\toprule
+%\multirow{2}{*}{Dental measurement} & \multicolumn{2}{c}{Species I} & \multicolumn{2}{c}{Species II} \\ 
+%\cmidrule{2-5}
+%  & mean & SD  & mean & SD  \\ 
+%\midrule
+%I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
+%
+%I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
+%
+%I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
+%
+%I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
+%
+%CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
+%
+%CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
+%\bottomrule
+%\end{tabular}
+%\end{table}
 
 
 

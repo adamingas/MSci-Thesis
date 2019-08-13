@@ -10,3 +10,39 @@
 \else
     \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
 \fi
+\begin{table}
+\caption{Results from maximising similarity using Logistic Regression}
+\centering
+\label{table:similarity}
+\begin{tabular}{l c  c}
+\hline 
+Features used & Mean Score & Variance of Score \\ 
+ 
+\hline
+OTU & 98.2\% & 0.04\%   \\
+OTU CSS & 96.2\% & 0.13\%   \\
+OTU Min CSS & 96.7\% & 0.11\%   \\
+PCoA Bray-Curtis CSS &96.2\% & 0.13\%   \\
+
+\hline 
+\end{tabular}
+\end{table}
+
+
+\begin{table}[h]
+\caption{Results from maximising dissimilarity using Logistic Regression}
+\centering
+\label{table:dissimilarity}
+\begin{tabular}{l c  c}
+\hline 
+Features used & Mean Score & Variance of Score \\ 
+ 
+\hline
+OTU & 80.7\% & 1.96\%   \\
+OTU CSS & 85.7\% & 1.13\%   \\
+OTU Min CSS & 84.7\% & 1.4\%   \\
+PCoA Bray-Curtis CSS &88.5\% & 1.27\%   \\
+
+\hline 
+\end{tabular}
+\end{table} 
