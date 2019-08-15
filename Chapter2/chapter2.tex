@@ -246,10 +246,18 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 % \end{figure}
 \subsection{NMDS}
 \section{Normalisation}
-Our data set has a wide range of total reads per sample. Furthermore, the counts of  This imbalanced could potentially influence 
+Count data from amplicon sequencing display a very high degree of variability in total read counts per sample \cite{inadmissible_rareying}. A histogram, Figure \ref{fig:counthistogram}, of the samples' total count reads for our data exemplifies this variability. The sums range from 17 to 219113, with a median and mean of 63672 and 77152 respectively. This much variation between samples makes it hard to identify which OTUs' difference in abundance between samples is significant and also might negatively impact the performance of the classifiers. 
+ The increased variation comes from a systematic variability affecting multiple samples and OTUs in a similar manner. Sources of such variability can be the inconsistencies in DNA extraction and handling of samples,  a varying quality of sequencing runs \cite{}, and other PCR-specific amplification biases (like primer mismatch)
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width = 0.7\textwidth]{histogramofcountdata}
+\caption{Histogram of the sum of OTU counts of each sample. The cyan colour represents white water samples and the red colour black water samples.}
+\label{fig:counthistogram}
+\end{figure}
 %%Normalization, which is the process where systematic variability is identified and removed, is therefore a vital part of the data analysis. 
 %https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5910605/
-% A substantial part of this variability is systematic and affects multiple genes and/or samples in a similar way. One example of systematic variability is the differences in sequence depth, where each sample is represented by a varying number of reads [13]. Systematic variability also comes from other technical sources, such as inconsistencies in the DNA extraction and sample handling, varying quality between sequencing runs, errors in the read mapping, and incompleteness of the reference databases
+% A substantial part of this variability is systematic and affects multiple genes and/or samples in a similar way. One example of systematic variability is the differences in sequence depth, where each sample is represented by a varying number of reads [13]. Systematic variability also comes from other technical sources, such as inconsistencies in the DNA extraction and sample handling, varying quality between sequencing runs, errors in the read mapping, and incompleteness of the reference databasescd 
 \section{PERMANOVA}
 \section{Machine Learning}
 \subsection{Logistic Regression}
