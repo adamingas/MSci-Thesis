@@ -1930,6 +1930,12 @@
     <bcf:citekey order="5">hermans_bacteria_2016</bcf:citekey>
     <bcf:citekey order="6">Gauch 1982</bcf:citekey>
     <bcf:citekey order="7">inadmissible_rareying</bcf:citekey>
+    <bcf:citekey order="8">pereira_comparison_2018</bcf:citekey>
+    <bcf:citekey order="9">abundance_nodate</bcf:citekey>
+    <bcf:citekey order="9">krehenwinkel_estimating_2017</bcf:citekey>
+    <bcf:citekey order="10">UNBIAS: An attempt to correct abundance bias in 16S sequencing</bcf:citekey>
+    <bcf:citekey order="10">with limited success</bcf:citekey>
+    <bcf:citekey order="11">css_diff_abund</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

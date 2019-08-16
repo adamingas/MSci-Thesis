@@ -22,13 +22,34 @@ Features used & Mean Score & Variance of Score \\
 OTU & 98.2\% & 0.04\%   \\
 OTU CSS & 96.2\% & 0.13\%   \\
 OTU Min CSS & 96.7\% & 0.11\%   \\
+PCoA Bray-Curtis &96.4\% & 0.13\%   \\
 PCoA Bray-Curtis CSS &96.2\% & 0.13\%   \\
 
 \hline 
 \end{tabular}
 \end{table}
+% RFR similarirtty
+\begin{table}
+	\caption{Results from maximising similarity using Random Forests Classifier}
+	\centering
+	\label{table:similarity}
+	\begin{tabular}{l c  c}
+		\hline 
+		Features used & Mean Score & Variance of Score \\ 
+		
+		\hline
+		OTU & 91.0\% & 0.09\%   \\
+		OTU CSS & 94.5\% & 0.07\%   \\
+		OTU Min CSS & 94.3\% & 0.08\%   \\
+		PCoA Bray-Curtis &87.2\% & 0.19\%   \\
+		PCoA Bray-Curtis CSS &87.2\% & 0.19\%   \\
+		
+		\hline 
+	\end{tabular}
+\end{table}
 
 
+% Logistic Dissimilarity
 \begin{table}[h]
 \caption{Results from maximising dissimilarity using Logistic Regression}
 \centering
@@ -41,8 +62,30 @@ Features used & Mean Score & Variance of Score \\
 OTU & 80.7\% & 1.96\%   \\
 OTU CSS & 85.7\% & 1.13\%   \\
 OTU Min CSS & 84.7\% & 1.4\%   \\
+PCoA Bray-Curtis &88.0\% & 1.00\%   \\
 PCoA Bray-Curtis CSS &88.5\% & 1.27\%   \\
 
 \hline 
 \end{tabular}
+\end{table} 
+
+
+% RFR dissimilarity table
+\begin{table}[h]
+	\caption{Results from maximising dissimilarity using Random Forest Classifier}
+	\centering
+	\label{table:dissimilarity}
+	\begin{tabular}{l c  c}
+		\hline 
+		Features used & Mean Score & Variance of Score \\ 
+		
+		\hline
+		OTU & 88.0\% & 2.42\%   \\
+		OTU CSS & 88.0\% & 2.42\%   \\
+		OTU Min CSS & 88.5\% & 2.66\%   \\
+		PCoA Bray-Curtis &88.0\% & 2.42\%   \\
+		PCoA Bray-Curtis CSS &88.5\% & 2.42\%   \\
+		
+		\hline 
+	\end{tabular}
 \end{table} 

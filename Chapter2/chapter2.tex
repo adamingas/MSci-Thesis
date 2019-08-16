@@ -247,8 +247,23 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 \subsection{NMDS}
 \section{Normalisation}
 Count data from amplicon sequencing display a very high degree of variability in total read counts per sample \cite{inadmissible_rareying}. A histogram, Figure \ref{fig:counthistogram}, of the samples' total count reads for our data exemplifies this variability. The sums range from 17 to 219113, with a median and mean of 63672 and 77152 respectively. This much variation between samples makes it hard to identify which OTUs' difference in abundance between samples is significant and also might negatively impact the performance of the classifiers. 
- The increased variation comes from a systematic variability affecting multiple samples and OTUs in a similar manner. Sources of such variability can be the inconsistencies in DNA extraction and handling of samples,  a varying quality of sequencing runs \cite{}, and other PCR-specific amplification biases (like primer mismatch)
+ 
+ The increased variation comes from a systematic variability affecting multiple samples and OTUs in a similar manner. Sources of such variability can be the inconsistencies in DNA extraction and handling of samples,  a varying quality of sequencing runs \cite{pereira_comparison_2018}, and other PCR-specific amplification biases (like primer mismatch, GC-content etc.) \cite{abundance_nodate,krehenwinkel_estimating_2017}.
+ 
+ Furthermore, these biases can cause the distribution of read counts obtained from high-throughput amplicon sequencing to diverge significantly from the actual distribution of species abundances in the same samples. The Pearson correlation between read and species frequencies is close to zero\cite{UNBIAS: An attempt to correct abundance bias in 16S sequencing, with limited success}.
+ 
+ The removal of this Systematic Variability is called \textit{Normalisation} and it's original aim in the bioinformatics literature is to increase the statistical power and false positive rates of differential abundance analysis \footnote{Differential abundance analysis aims at finding OTUs (or genes in the case of metagenomic studies) whose variation between groups of samples (e.g. black and white water river samples) is statistically significant.}. We will be testing if normalisation methods have any effect on the classifiers' scores.
+ 
+ A normalisation method that produced promising results in differential analysis on datasets similar to ours is Cumulative sum scaling (CSS). This method is an extension to the quantile normalisation approach which divided read counts by the $Q$th percentile of each sample’s non-zero count distribution. CSS determines that percentile using a data-driven approach\cite{css_diff_abund}.
+ 
+ To illustrate how normalisation methods work we define $X_{i,j}$ as the read counts of sample  $i =1,...,n$ and OTU $j=1,...,p$. The normalisation factor of the total sum scaling (TSS) method is found by summing the read counts in a sample $i$:
+ \begin{equation}
+ 	N_i = \sum_{j=1}^{p} X_{ij}.
+ \end{equation}
+Then the counts in row $i$ of the read matrix $X$ are divided by the factor $N_i$. TSS is the most commonly used method of normalisation but it has been shown to introduce biases in differential analysis estimates.
 
+
+ 
 \begin{figure}[htb]
 \centering
 \includegraphics[width = 0.7\textwidth]{histogramofcountdata}
