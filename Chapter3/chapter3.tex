@@ -13,15 +13,17 @@
 \begin{table}
 \caption{Results from maximising similarity using Logistic Regression}
 \centering
-\label{table:similarity}
+\label{table:lrsimilarity}
 \begin{tabular}{l c  c}
 \hline 
 Features used & Mean Score & Variance of Score \\ 
  
 \hline
 OTU & 98.2\% & 0.04\%   \\
+OTU LOW &98.2\% &0.04\%\\
 OTU CSS & 96.2\% & 0.13\%   \\
 OTU Min CSS & 96.7\% & 0.11\%   \\
+OTU CSS LOG & 98.3\% & 0.04\% \\
 PCoA Bray-Curtis &96.4\% & 0.13\%   \\
 PCoA Bray-Curtis CSS &96.2\% & 0.13\%   \\
 
@@ -32,15 +34,17 @@ PCoA Bray-Curtis CSS &96.2\% & 0.13\%   \\
 \begin{table}
 	\caption{Results from maximising similarity using Random Forests Classifier}
 	\centering
-	\label{table:similarity}
+	\label{table:rfrsimilarity}
 	\begin{tabular}{l c  c}
 		\hline 
 		Features used & Mean Score & Variance of Score \\ 
 		
 		\hline
-		OTU & 91.0\% & 0.09\%   \\
+		OTU & 90.5\% & 0.14\%   \\
+		OTU LOW& 90.4\% &0.11\% \\
 		OTU CSS & 94.5\% & 0.07\%   \\
 		OTU Min CSS & 94.3\% & 0.08\%   \\
+		OTU CSS LOG & 95.1\% & 0.11\% \\
 		PCoA Bray-Curtis &87.2\% & 0.19\%   \\
 		PCoA Bray-Curtis CSS &87.2\% & 0.19\%   \\
 		
@@ -53,15 +57,17 @@ PCoA Bray-Curtis CSS &96.2\% & 0.13\%   \\
 \begin{table}[h]
 \caption{Results from maximising dissimilarity using Logistic Regression}
 \centering
-\label{table:dissimilarity}
+\label{table:lrdissimilarity}
 \begin{tabular}{l c  c}
 \hline 
 Features used & Mean Score & Variance of Score \\ 
  
 \hline
 OTU & 80.7\% & 1.96\%   \\
+OTU LOW &82.0\%&1.9\%\\
 OTU CSS & 85.7\% & 1.13\%   \\
 OTU Min CSS & 84.7\% & 1.4\%   \\
+OTU CSS LOG& 91.3\% &1.2\%\\
 PCoA Bray-Curtis &88.0\% & 1.00\%   \\
 PCoA Bray-Curtis CSS &88.5\% & 1.27\%   \\
 
@@ -74,15 +80,17 @@ PCoA Bray-Curtis CSS &88.5\% & 1.27\%   \\
 \begin{table}[h]
 	\caption{Results from maximising dissimilarity using Random Forest Classifier}
 	\centering
-	\label{table:dissimilarity}
+	\label{table:rfrdissimilarity}
 	\begin{tabular}{l c  c}
 		\hline 
 		Features used & Mean Score & Variance of Score \\ 
 		
 		\hline
 		OTU & 88.0\% & 2.42\%   \\
+		OTU LOW &88.7\%&2.55\%\\
 		OTU CSS & 88.0\% & 2.42\%   \\
 		OTU Min CSS & 88.5\% & 2.66\%   \\
+		OTU CSS LOG & 89.2\%&	2.30\%\\
 		PCoA Bray-Curtis &88.0\% & 2.42\%   \\
 		PCoA Bray-Curtis CSS &88.5\% & 2.42\%   \\
 		

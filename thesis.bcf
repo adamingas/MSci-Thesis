@@ -1926,16 +1926,23 @@
     <bcf:citekey order="1">inadmissible_rareying</bcf:citekey>
     <bcf:citekey order="2">BORJA2009231</bcf:citekey>
     <bcf:citekey order="3">goodwin_traditional_env_monitoring</bcf:citekey>
-    <bcf:citekey order="4">hermans_bacteria_2016</bcf:citekey>
-    <bcf:citekey order="5">hermans_bacteria_2016</bcf:citekey>
-    <bcf:citekey order="6">Gauch 1982</bcf:citekey>
-    <bcf:citekey order="7">inadmissible_rareying</bcf:citekey>
-    <bcf:citekey order="8">pereira_comparison_2018</bcf:citekey>
-    <bcf:citekey order="9">abundance_nodate</bcf:citekey>
-    <bcf:citekey order="9">krehenwinkel_estimating_2017</bcf:citekey>
-    <bcf:citekey order="10">UNBIAS: An attempt to correct abundance bias in 16S sequencing</bcf:citekey>
-    <bcf:citekey order="10">with limited success</bcf:citekey>
-    <bcf:citekey order="11">css_diff_abund</bcf:citekey>
+    <bcf:citekey order="4">AQUATIC_INSECTS_BIOMONITORING</bcf:citekey>
+    <bcf:citekey order="5">emscher</bcf:citekey>
+    <bcf:citekey order="6">eia_eu</bcf:citekey>
+    <bcf:citekey order="7">us_epa_our_2013</bcf:citekey>
+    <bcf:citekey order="8">hermans_bacteria_2016</bcf:citekey>
+    <bcf:citekey order="9">hermans_bacteria_2016</bcf:citekey>
+    <bcf:citekey order="10">hermans_bacteria_2016</bcf:citekey>
+    <bcf:citekey order="11">Gauch 1982</bcf:citekey>
+    <bcf:citekey order="12">inadmissible_rareying</bcf:citekey>
+    <bcf:citekey order="13">pereira_comparison_2018</bcf:citekey>
+    <bcf:citekey order="14">abundance_nodate</bcf:citekey>
+    <bcf:citekey order="14">krehenwinkel_estimating_2017</bcf:citekey>
+    <bcf:citekey order="15">edgar_unbias:_2017</bcf:citekey>
+    <bcf:citekey order="16">css_diff_abund</bcf:citekey>
+    <bcf:citekey order="17">bullard_evaluation_2010</bcf:citekey>
+    <bcf:citekey order="18">css_diff_abund</bcf:citekey>
+    <bcf:citekey order="19">weiss_correlation_2016</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
