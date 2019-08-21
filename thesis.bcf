@@ -1940,17 +1940,24 @@
     <bcf:citekey order="15">cranston_biomonitoring_1990</bcf:citekey>
     <bcf:citekey order="16">woodward_biomonitoring_21st</bcf:citekey>
     <bcf:citekey order="17">ruse_classification_2010</bcf:citekey>
-    <bcf:citekey order="18">hermans_bacteria_2016</bcf:citekey>
-    <bcf:citekey order="19">Gauch 1982</bcf:citekey>
-    <bcf:citekey order="20">inadmissible_rareying</bcf:citekey>
-    <bcf:citekey order="21">pereira_comparison_2018</bcf:citekey>
-    <bcf:citekey order="22">abundance_nodate</bcf:citekey>
-    <bcf:citekey order="22">krehenwinkel_estimating_2017</bcf:citekey>
-    <bcf:citekey order="23">edgar_unbias:_2017</bcf:citekey>
-    <bcf:citekey order="24">css_diff_abund</bcf:citekey>
-    <bcf:citekey order="25">bullard_evaluation_2010</bcf:citekey>
-    <bcf:citekey order="26">css_diff_abund</bcf:citekey>
-    <bcf:citekey order="27">weiss_correlation_2016</bcf:citekey>
+    <bcf:citekey order="18">hebert_paul_d._n._biological_2003</bcf:citekey>
+    <bcf:citekey order="19">savolainen_vincent_towards_2005</bcf:citekey>
+    <bcf:citekey order="20">sequencing_costs</bcf:citekey>
+    <bcf:citekey order="21">baird_biomonitoring_2012</bcf:citekey>
+    <bcf:citekey order="22">taberlet_towards_2012</bcf:citekey>
+    <bcf:citekey order="23">taberlet_towards_2012</bcf:citekey>
+    <bcf:citekey order="24">hebert_paul_d._n._biological_2003</bcf:citekey>
+    <bcf:citekey order="25">hermans_bacteria_2016</bcf:citekey>
+    <bcf:citekey order="26">Gauch 1982</bcf:citekey>
+    <bcf:citekey order="27">inadmissible_rareying</bcf:citekey>
+    <bcf:citekey order="28">pereira_comparison_2018</bcf:citekey>
+    <bcf:citekey order="29">abundance_nodate</bcf:citekey>
+    <bcf:citekey order="29">krehenwinkel_estimating_2017</bcf:citekey>
+    <bcf:citekey order="30">edgar_unbias:_2017</bcf:citekey>
+    <bcf:citekey order="31">css_diff_abund</bcf:citekey>
+    <bcf:citekey order="32">bullard_evaluation_2010</bcf:citekey>
+    <bcf:citekey order="33">css_diff_abund</bcf:citekey>
+    <bcf:citekey order="34">weiss_correlation_2016</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
