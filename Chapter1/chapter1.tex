@@ -16,7 +16,9 @@
 %\section{What is loren ipsum? Title with math \texorpdfstring{$\sigma$}{[sigma]}} %Section - 1.1 
 \section{Motivation}
 
-Increased human populations during the industrialisation of the 19th century were accompanied by increasing amounts of unmanaged waste that resulted in public health problems. The first attempts at remedying the issues where applied mostly to running waters, and had a bacteriological focus \cite{AQUATIC_INSECTS_BIOMONITORING}. As time passed, managing freshwater systems became more important and evolved into a more complex procedure that took into account entire aquatic communities (like macro-invertebrates and fish) rather than specific species.
+
+
+Increased human populations during the industrialisation of the 19th century were accompanied by increasing amounts of unmanaged waste that resulted in public health problems. The first attempts at remedying the issues where applied mostly to running waters, and had a bacteriological focus \cite{AQUATIC_INSECTS_BIOMONITORING}. As time passed, managing freshwater systems became more important and evolved into a more complex procedure that took into account entire aquatic communities (like macro-invertebrates and fish) rather than specific species. Animals inhabiting the system studied were used as indicators of sources of pollution that could have no been identified by a chemical analysis, Thus, the link between environmental management and biological monitoring came as response to the needs of human populations.
 
 
 
@@ -47,14 +49,17 @@ However, DNA sequence-based analysis has enabled ecologists to answer questions 
 
 The emergence of Next-generation sequencing (NGS) platforms produced significant improvements in DNA sequencing technologies. The new platforms can deliver billions of sequence reads per single run, which is orders of magnitude better than traditional Sanger sequencing. As a result there has been a significant drop of sequencing costs per megabases that has been going over the last decades. In particular, the cost of sequencing 1 megabase has gone from \$$10^4$ in 2001, to \$$10^2 - 10^3$ in 2007 and finally to less than \$$10^{-1}$ in 2019 \cite{sequencing_costs}. This, coupled with advancements in DNA- and RNA-based techniques in taxonomic identification \cite{baird_biomonitoring_2012} have made possible the application of metagenetics, the study of genetic material sourced directly from the environment, in ecological studies. 
 
-Normal barcoding standards were designed with the purpose of identifying isolated specimens from intact DNA using Sanger sequencing, so are inapplicable to empirical ecological studies where the samples contain DNA from a mixture of related species  \cite{taberlet_towards_2012}. To solve this problem DNA metabarcoding was developed and made possible by NGS techologies. It is a method for high-throughput multi species identification using degraded DNA found in the environment (eDNA) \cite{taberlet_towards_2012}. The method relies on Barcoding genes which have a rate of mutation such that they are stable within a species but different when compared to others. Examples are the 16S rRNA and the Cytochrome Oxidase 1 \cite{hebert_paul_d._n._biological_2003} genes. 
+Normal barcoding standards were designed with the purpose of identifying isolated specimens from intact DNA using Sanger sequencing, so are inapplicable to empirical ecological studies where the samples contain DNA from a mixture of related species  \cite{taberlet_towards_2012}. To solve this problem DNA metabarcoding was developed and made possible by NGS techologies. It is a method for high-throughput multi species identification using degraded DNA found in the environment (eDNA) \cite{taberlet_towards_2012}. The method relies on Barcoding genes which have a rate of mutation such that they are stable within a species but different when compared to others, and which are used for the purpose of species identification. Examples are the 16S rRNA and the Cytochrome Oxidase 1 \cite{hebert_paul_d._n._biological_2003} genes. 
 
-After the DNA is extracted from an environmental sample, it's barcode region needs to be amplified (multiplied millions of times) before it can be sequenced. This involves selecting the right primers \footnote{Short molecules which provide the starting point for DNA amplification (in other words specify the region to be multiplied)} for the targeted taxonomic groups and using PCR for the amplification. 
-%Refers to identification of species assemblages from community DNA using barcode Genes. PCR is carried out with non-specific primers, followed by high-throughput sequencing and bioinformatics processing. Can identify hundreds of species in each sample, and 100+ different samples can be processed in parallel to reduce sequencing cost. 'Read more about metabarcoding by clicking here'
+After the DNA is extracted from an environmental sample, it's barcode region needs to be amplified (multiplied millions of times) before it can be sequenced. This involves selecting the right primers \footnote{Short molecules which provide the starting point for DNA amplification (in other words specify the region to be multiplied)} for the targeted taxonomic groups and using PCR for the amplification. The amplified DNA is then sequenced on a high-throughput sequencing platform and the sequences are processed and classified into Operational Taxonomic Units (OTUs). 
+%Nowadays, however, the term "OTU" is generally used in a different context and refers to clusters of (uncultivated or unknown) organisms, grouped by DNA sequence similarity of a specific taxonomic marker gene.[2] In other words, OTUs are pragmatic proxies for microbial "species" at different taxonomic levels, in the absence of traditional systems of biological classification as are available for macroscopic organisms. For several years, OTUs have been the most commonly used units of microbial diversity, especially when analysing small subunit 16S or 18S rRNA marker gene sequence datasets. \url{https://en.wikipedia.org/wiki/Operational_taxonomic_unit}
+%\url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1609233/}
 
-This development allowed scientists to overcome the bottleneck of morpho-taxonomic identification of species. 
+OTUs are an intentionally vague term used to cluster sequences produced from  metabarcoding. Reads with a predetermined percentage of similarity(usually $97\%$) between them are classified into the same OTU. Thus they are acting as a proxy to traditional `species'. The most abundant sequence of each OTU is assigned a taxonomy using reference databases. Most of the times, even when cross referencing the OTUs with a taxonomic library, a species-level identification is not available. Errors in sequencing reads and the arbitrary cut-off similarity percentile might create these OTUs without a corresponding species. However, this might not necessarily be a downside of the metabarcoding approach. OTUs can still act as informative indicators if they respond to environmental gradients and have characteristic signatures. 
+These developments allowed scientists to overcome the bottleneck of morpho-taxonomic identification of species. 
 
-The way 
+
+An advantage of NGS platforms is that they can sequence DNA from multiple environmental samples, each made of potentially hundreds of species. The sequences clustered into an OTU, per sample, are counted and registered in an sample-OTU table. This can mean, for example, that in the first sample collected from the environment, 30 sequences belonging to OTU1 were read, 0 belonging to OTU2, 20435 in OTU3 and so on until all OTUs are considered. OTUs can be completely taxonomically identified (up to the species level), partly (up to a higher level) or not at all. 
 %Metagenomics, the study of genetic material directly sourced from the environment, has the ability to revolutionise biomonitoring and bring a new era of massive ecological data generation.
 
 
@@ -66,25 +71,77 @@ The way
 % Segway to next generation sequencing 
 %Dna sequencing technology has undergone impressive improvements over the last year, with the advent of next generation sequencing. High-throughput sequencing is orders of magnitude cheaper and faster than traditional sanger sequencing. This leap of in sequencing capacity can revolutionise a variety of scientific disciplines \textbf{cite shendure 2008}. One such application of NGS is the health evaluation of habitats. \textbf{cite taberlet 2012}
 
-\section{Metabarcoding}
-Bacteria can be used as bioindicators to determine health of environment. This can be done because bacterial communities respond to changes in soil more than differences in the climate or geography.  bacterial taxonomic groups respond differently to various soil atributes (pH, carbon-to-nitrogen rations, Olsen P\footnote{Measure of plant available phosphorous} etc). Thus, the relative abundance of specific taxa reflect the impact of specific anthropogenic activities on the environment, even when comparing soil samples across large geographical areas.\cite{hermans_bacteria_2016}
-
-benthic bacterial communities react in a
-similar way to the same environmental stressors as benthic macrofauna
-communities.(Stoeck 2018)
-How we can identify bioindicators 
+%\section{Metabarcoding}
+%Bacteria can be used as bioindicators to determine health of environment. This can be done because bacterial communities respond to changes in soil more than differences in the climate or geography.  bacterial taxonomic groups respond differently to various soil atributes (pH, carbon-to-nitrogen rations, Olsen P\footnote{Measure of plant available phosphorous} etc). Thus, the relative abundance of specific taxa reflect the impact of specific anthropogenic activities on the environment, even when comparing soil samples across large geographical areas.\cite{hermans_bacteria_2016}
+%
+%benthic bacterial communities react in a
+%similar way to the same environmental stressors as benthic macrofauna
+%communities.(Stoeck 2018)
+%How we can identify bioindicators 
 
 
 %6229 have to reach 6729
 
 \section{Data}
+Our data were sampled from the Northern Peruvian rivers in collaboration with WWF Peru. They comprise of a sample-OTU table constructed from water samples collected along the rivers' length, and metadata provided by WWF Peru. The metadata include information on the location, water colour, area of the river, trip number, date of sampling, and details of the sample for some of them.
 \subsection{Geography}
 %Explain topography of river
+The Northern Peruvian rivers of interest are made up of the Marañon River on the west, which is joined by its tributary, the Huallaga River. Together they join with the Ucayali River to form the Amazon River, which runs across South America to the Atlantic Ocean. In addition to these rivers, the tributaries of Napo and Tapiche were sampled. 
+
+The Peruvian rivers' confluence has the largest annual water discharge rate into the Amazon, making it the mainstream  source. Maranon river flows the Andes Jungle and mountains, though Pongo de Manseriche, a gorge (narrow steep valley of hills or mountains with a river flowing through it) northwest of Peru. The Pongo is series of torrents, interspersed with rocks, and at points reaches a width of no more than 25m. It acts like a natural barrier between the Upper Part of the Maranon river and the rest of the area, making it the fauna upstream potentially different from downstream. For the purposes of the project, the Maranon River has been split into three areas: Upper, Mid and Lower. 
 %Maranon upper is behind a natural barrier that makes it distinct from the other rivers etc
-\subsection{Sampling}
+%he Amazon River begins in the Andes Mountains at the west of the basin with its main tributary the Marañón River in Peru.
+%Pongo de Manseriche is a gorge in northwest Peru. The Marañón River runs through this gorge (and water gap) before it reaches the Amazon Basin.
+
+From the river samples collected, some came from white and others from black waters. White water rivers appear so because of suspended  sediment. They have a higher concentration of minerals (especially sodium, potassium, magnesium, calcium) than Black rivers and have neutral pH, compared to the acidic of Black waters.The dark colour on the other hand comes from tannins leaching from decaying vegetation. These differences have important implications for the rivers' fauna, since some species cannot live in  environments with low concentrations of particular minerals. Thus it is expected that different animal communities will be found in these different environments. 
+
+A graph of the samples collected along the rivers can be seen in Figure \ref{fig:graphmap}. The different colours represent the rivers, and the shapes the water colour. There is a clear imbalance in the numbers of black and white water samples and also in their spatial distribution. From the 164 samples collected, 143 are white and 21 black. All of the black water samples are found in the Eastern part of the river, and along Ucayali, Tapiche, Napo and Maranon lower. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{mapofrivers}
+	\caption{A graph of the Easting and Northing coordinates of the samples collected. Colours represent the rivers, and shapes the water colour (triangle for White and circle for Black). The points are also coloured white and black in the middle to aid in viewing. White noise with a standard deviation of $5 \cdot 10^3$ was added to the coordinates so as to separate the points close together.}
+	\label{fig:graphmap}
+\end{figure}
+\subsection{Sampling and Preprocessing}
 %how data are sampled
-\subsection{Preparation}
+The water samples were collected from the sides of a boat using kits provided by NatureMetrics. A volume of water, between 0.5-2L is filtered through a membrane which is then send to the laboratory for DNA extraction. From each site in the river, 4 samples were collected (with some sites having a bit more). Information about the sites and samples was also recorded in the Metadata (like ID, location, water colour, trip number and date of collection). 
+
+At the laboratory, DNA trapped inside the membranes is extracted and then PCR amplified. The DNA fragments produced are then sequenced using high-throughput sequencing technology that can handle multiple samples at once. The raw reads from the sequencing are processed (filtered and assembled) and then clustered into OTUs with a similarity cut-off point of 99\%. The representative sequences, or the most abundant individual sequences per OTU, were used for taxonomic assignment. After removing not identified we were left with 675.
+
+Five taxonomic Classes were kept for our analysis: Actinopterygii (fish), Amphibia, Aves (birds), Mammalia, and Reptilia. The most instances of OTUs found belonged to the Actinopterygii class, and within that, Siluriformes and Characiformes are the most abundant Orders. Class and Order distributions of OTUs can be seen in Figure \ref{fig:distr}. The sample-OTU table produced was very sparse (meaning that a significant number of entries were 0), as is the case for most studies using metabarcoding techniques. 
 %PCR
 %Next Generation sequencing
 %Biases that come with sampling
 %Removal of unidentified species
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{classdistrpie}
+		\caption{Distribution of OTUs into Classes. Most abundant one is Actinopterygii.}
+		\label{fig:classpie}
+	\end{subfigure}
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{orderdistrpie}
+		\caption{Distribution of OTUs into Orders. Most abundant ones are Siluriformes and Characiformes}
+		\label{fig:orderpie}
+	\end{subfigure}
+\label{fig:distr}
+\end{figure}
+
+The sampling methods employed to produce our data come with some inherent biases. First of all, species give out different amounts, sizes and kinds of material behind that can be used to identify them. Furthermore, environmental DNA extracted from the samples can be PCR amplified at different rates for species. This can happen because of primer mismatch with the organisms barcode DNA region. The results can be OTU reads that do not correlate well with the actual abundance of organisms in the environment and also not informative comparisons between OTUs' reads \cite{abundance_nodate}. 
+
+Finally, the OTU table sparsity causes the reads to be concentrated on some samples only, with others having a much lower total read count (sum over the reads of all OTUs in a sample). There are 7 samples (all from white water parts of the river) with under 10000 reads, of which 3 have less than 50. On the other hand, the sample with the largest total counts has 219113 reads. 
+
+
+
+\section{Literature Review}
+%What has been done by others with data like ours
+The advent of metagenetics has opened up the gateway for data driven research in multiple fields. From cataloguing micorbial genes in the human gut {\bf dos Santos}, to ecological assessment of freshwater \textbf{apotheloz} and river systems \textbf{Chariton} using eDNA metabarcoding. Ecological monitoring has traditionally been done using the morpho-taxonomic identification of species in the environment studied. This involves identifying an organism up to a certain level and then using their presence in the site to come to conclusions about the health of the system.
+
+
+Biotic indices are used to encapsulate information about the abundance of species identified in a site, and also indicate the degree to which a site is healthy. They are highly specialised in what type of pollution they can quantify and which species they consider as important \textbf{Washington}. To calculate the value of a biotic index, the species found in a site are assigned a weight (or tolerance value) provided by the index and defined from empirical and experimental data \textbf{Borja 2000}. Weights signify how susceptible an organism is to the pollution studied \textbf{Carter}. Then an analytic formula uses the species weights to calculate the index's value which indicates the environmental quality of the system (usually in categories ranging from `very poor' to `very good').
+
+As mentioned previously, the morpho-taxonomic identification of species is time consuming, expensive and limited in scope. Instead, a metabarcoding approach can generate an OTU table with assigned taxonomy from reference databases in significantly less time. The OTU reads can then be used to calculate biotic indices and evaluate the system's environmental health  \textbf{Lejzerowicz} \textbf{Apotheloz}. 
+% Ecological assessments of such surveys have generally been restricted to measuring taxon relative abundances, analyzing within- and between-sample diversity (α and β diversity, respectively), exploring β-diversity patterns using unsupervised learning techniques such as clustering and principal coordinates analysis (PCoA), and performing classical hypothesis testing. These approaches may be limited in their ability to classify unlabeled data or to extract salient features from highly complex and/or sparse data sets. knights et al 2011
+%machine learning to characerise biotic index of rivers
