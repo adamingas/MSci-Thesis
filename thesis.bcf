@@ -1948,16 +1948,18 @@
     <bcf:citekey order="23">taberlet_towards_2012</bcf:citekey>
     <bcf:citekey order="24">hebert_paul_d._n._biological_2003</bcf:citekey>
     <bcf:citekey order="25">abundance_nodate</bcf:citekey>
-    <bcf:citekey order="26">Gauch 1982</bcf:citekey>
-    <bcf:citekey order="27">inadmissible_rareying</bcf:citekey>
-    <bcf:citekey order="28">pereira_comparison_2018</bcf:citekey>
-    <bcf:citekey order="29">abundance_nodate</bcf:citekey>
-    <bcf:citekey order="29">krehenwinkel_estimating_2017</bcf:citekey>
-    <bcf:citekey order="30">edgar_unbias:_2017</bcf:citekey>
-    <bcf:citekey order="31">css_diff_abund</bcf:citekey>
-    <bcf:citekey order="32">bullard_evaluation_2010</bcf:citekey>
+    <bcf:citekey order="26">css_diff_abund</bcf:citekey>
+    <bcf:citekey order="27">css_diff_abund</bcf:citekey>
+    <bcf:citekey order="28">Gauch 1982</bcf:citekey>
+    <bcf:citekey order="29">inadmissible_rareying</bcf:citekey>
+    <bcf:citekey order="30">pereira_comparison_2018</bcf:citekey>
+    <bcf:citekey order="31">abundance_nodate</bcf:citekey>
+    <bcf:citekey order="31">krehenwinkel_estimating_2017</bcf:citekey>
+    <bcf:citekey order="32">edgar_unbias:_2017</bcf:citekey>
     <bcf:citekey order="33">css_diff_abund</bcf:citekey>
-    <bcf:citekey order="34">weiss_correlation_2016</bcf:citekey>
+    <bcf:citekey order="34">bullard_evaluation_2010</bcf:citekey>
+    <bcf:citekey order="35">css_diff_abund</bcf:citekey>
+    <bcf:citekey order="36">weiss_correlation_2016</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

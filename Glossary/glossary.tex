@@ -45,23 +45,7 @@ Nowadays, however, the term "OTU" is generally used in a different context and r
 
 Often  $N_{L,min}$ is chosen to be equal to the size of the smallest library that is not considered defective, and the process of identifying defective samples comes with a risk of subjectivity and bias. \cite{inadmissible_rareying}
 
-\textbf{Alpha and Beta Diversity metrics}
-\url{https://www.drive5.com/usearch/manual/diversity_metrics_recommended.html}
-Alpha diversity is the species diversity in a single ecosystem or sample. The simplest measure is richness, the number of species (or OTUs) observed in the sample. Other metrics consider the abundances (frequencies) of the OTUs, for example to give lower weight to lower-abundance OTUs.  
-Beta Diversity measures the differentiation of species diversity between samples or habitats. 
 
-\textbf{Bray–Curtis dissimilarity statistic}:
-In ecology and biology, the Bray–Curtis dissimilarity, named after J. Roger Bray and John T. Curtis,[1] is a statistic used to quantify the compositional dissimilarity between two different sites, based on counts at each site. \url{https://en.wikipedia.org/wiki/Bray%E2%80%93Curtis_dissimilarity}
-
-The \textbf{Shannon index} is an information statistic (alpha diversity) that measures diversity of species in a sample. It assumes that all species are represented in the sample and are also randomly sampled. It's equation is given by
-$$-\sum_{i=1}^s p_i \ln(p_i),$$
-where $i$ is the index of one of the $s$ species in the sample, and $p_i$ is given by $\frac{n_i}{N}$ where $n_i$ is the number of individuals $i$ in the sample of $N$ individuals.
-
-The \textbf{Simpson Index} is a dominance statistic (alpha diversity) that gives more weight to more common species found in the sample. It can be thought as measuring the `effective' number of species and is given by
-$$\frac{1}{\sum_{i=1}^s p_i^2}$$the value of $p_i$ is defined in  the same way as in the Shannon index.
-The  \textbf{Jaccard Index} (beta diversity) measures how similar, in terms of species present, two samples are. It ranges from 0 to 1, with the latter indicating that the two samples share the same species. The index does not take into consideration the abundance of species. It is given by
-$$\frac{|X \cap Y|}{|X\cup Y|},$$
-where $X$ and $Y$ are two samples, whose intersection is the number of species shared between them and their union is the the total number of species across them.
 
 
 \textbf{Bioindicators} are living organisms such as plants, planktons, animals, and microbes, which are utilized to screen the health of the natural ecosystem in the environment. They are used for assessing environmental health and biogeographic changes taking place in the environment

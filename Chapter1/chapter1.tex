@@ -41,7 +41,7 @@ The resolution of identification (or `taxonomic penetration') stops, more often 
 %The health of the environment in a particular area is closely related to finding out their relative abundance might be necessary to evaluate the quality of their habitat. The traditional method of identifying species is morpho-taxonomic, which requires expert knowledge, is time consuming and thus expensive. 
 
 
-\subsection{Genomics: A new hope?}
+\section{Genomics: A new hope?}
 The morpho-taxonomic identification of species has been the limiting step in biomonitoring efforts because of the short-supply of taxonomists and prohibitive costs in separating and identifying species. The invention in 1977 of Sanger-based DNA sequencing\footnote{Sequencing is the process by which the order of the Nucleotides (or four bases) in a sample of DNA are found.} which revolutionised all branches of the biological sciences, could not be used for environmental bulk samples because they contained potentially thousands of species, and separating them so as to sequence them was prohibitively difficult. 
 
 However, DNA sequence-based analysis has enabled ecologists to answer questions they would not have been able to without such data. In particular with the advent of DNA barcoding in 2004 \cite{hebert_paul_d._n._biological_2003}, which is technique of identifying species based on short DNA sequences, international efforts have been made to build a taxonomic reference library (Barcode of Life Initiative), and identify unknown speciments to the species-level by comparing their sequence to known ones already catalogued in a reference database \cite{savolainen_vincent_towards_2005}. 
@@ -144,12 +144,59 @@ Biotic indices are used to encapsulate information about the abundance of specie
 
 As mentioned previously, the morpho-taxonomic identification of species is time consuming, expensive and limited in scope. Instead, a metabarcoding approach can generate an OTU table with assigned taxonomy from reference databases in significantly less time. The OTU reads can then be used to calculate biotic indices and evaluate the system's environmental health  \textbf{Lejzerowicz}. Due to a lack of phylogenetic resolution and limited reference libraries, most metabarcoding data are not used in the calculation of indices. However, taxonomy-free approaches can be used to calculate proxies of biotic indices that have similar evaluation performance \textbf{Apotheloz}. 
 
-One such approach to calculating biotic indices is through the use of supervised machine learning (SML). The first time that it was employed to for biomonitoring surveys was in 2015 by Smith et al \textbf{Smith} (using microbial eDNA) and in 2017 by Cordier et al \textbf{Cordier 2017} (using eukaryotes eDNA). Cordier et al trained two SML models (Random Forests and Self Organising Map) to infer several Biotic Indices used often for marine studies. The features where OTUs reads obtained from foroamfinera eDNA sampled from the benthic zone (sediment on the bottom of the river) and processed in a similar way to the one outlined in the previous section. A notable difference is that unassigned OTUs (without taxonomy) were kept and used as features. Furthermore, the authors constructed new feature data sets using standard ecological techniques such as rarefying and alpha diversity metrics. Target values (biotic indices) were calculated using morpho-taxonomic data and associated weights. 
+One such approach to calculating biotic indices is through the use of supervised machine learning (SML). The first time that it was employed for biomonitoring surveys was in 2015 by Smith et al \textbf{Smith} (using microbial eDNA) and in 2017 by Cordier et al \textbf{Cordier 2017} (using eukaryotes eDNA). Cordier et al trained two SML models (Random Forests and Self Organising Map) to infer several Biotic Indices used often for marine studies. The features where OTUs reads obtained from foroamfinera eDNA sampled from the benthic zone (sediment on the bottom of the river) and processed in a similar way to the one outlined in the previous section. A notable difference is that unassigned OTUs (without taxonomy) were kept and used as features. Furthermore, the authors constructed new feature data sets using standard ecological techniques such as rarefying and alpha diversity metrics. Target values (biotic indices) were calculated using morpho-taxonomic data and associated weights. 
+
+The SML models performed better in predicting the Biotic index of a site than a reference model that used the taxon assignments of OTUs and a correlation approach for assigning them weights. Also notable is that the SML models had a very high degree of agreement with the morpho-taxonomic evaluation of habitat quality. Furthermore, discarding low abundance OTUs (low total read counts across samples) did not affect the models' performance. The researchers followed up their paper with a more comprehensive one in 2018 \textbf{cordier 2018}, which tested their SML methods on OTUs derived from 5 different ribosomal bacterial and eukaryotic markers\footnote{These markers are specifically designed to amplify regions of the genome that would be used in the identification of species. Multiple exist because of the different regions in the DNA needing to be amplified for the identification of specific groups of organisms (like eukaryotes and bacteria).}. They found that there was no significant difference in the models' performance when using different markers, and that for all of them, SML outperformed all taxonomy-based eDNA biomonitoring methods. 
 
 
 
- 
-\textit{Predicting the Ecological Quality Status of Marine Environments from eDNA Metabarcoding Data Using Supervised Machine Learning (2017)}
-The authors collected sediments from 5 aquatic farms, 24 stations, and 48 grabs. Normally, the assessment of biodiversity involves the identification of benthic macro-invertebrates, which is a time consuming process. The authors used instead High-throughput amplicon sequencing of foraminifera environmental DNA found in the benthic zone and clustered the sequences into Operational Taxonomic Units (OTUs), some of which have not yet been assigned to a morphospecies. Two supervised machine learning models (Random Forrest and Self-Organising Map) were trained to predict the quality of the environment (infer values of Biotic indices), and a correlation screening approach was used to infer the ecological weights associated with each OTU based on morpho-taxonomic inventories. The OTUs were used as inputs in two ways; either their diversity metrics were used, or their composition (number of reads). The machine learning models performed better than the correlation screening one, when compared to BI calculated using morpho-taxonomic inventories.
+Usually, analysis of metabarcoding (OTU reads per sample) or metagenetic (genes per sample) studies does not involve machine learning approaches. Researchers analyse alpha (within) and beta (between) diversity metrics of samples (see Figure \ref{fig:otu}), explore the patterns in beta diversity using ordination techniques, and perform various classical hypothesis tests. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{otutable}
+	\caption{An illustration of Alpha and Beta diversity metrics as calculated from OTU tables}
+	\label{fig:otu}
+\end{figure}
+
+Alpha diversity metrics are a measure of the diversity a sample displays within itself (with respect to the OTUs' reads). An example can be OTU richness which measures the number of OTUs present in the sample (without taking into account the reads) or Shannon index which converts the reads into probabilities (by dividing them with the sample's total reads) and calculates the sample's entropy. The formula is given by:
+$$-\sum_{i=1}^s p_i \ln(p_i),$$
+were $s$ are the number of species present in the sample, and $p_i$ is the read count of the $i$th OTU divided by the total read count of all OTUs in the sample. 
+
+Beta diversity measures how different samples are in terms of their species composition. They usually take the form of (dis)similarity measures, and some of the more common ones used are Bray-Curtis, Chao and Jaccard (to be explained later). The output of these measures is a symmetric matrix whose elements quantify how (dis)similar the samples are. Ordination methods can then be applied to this matrix that explore its structure graphically. Environmental variables, like pH, concentrations of minerals, or pollutants, can be fitted on top of these plots and help researchers uncover patterns in OTU composition that explain the variables' variation.
+
+If there is a discernible pattern in the ordination plots of the data that separates them along a gradient or grouping of a variable, then differential  abundance analysis can be used to investigate it further. For example, if samples are separated into two groups that also happen to coincide with a categorical variable of the data, a model can be fit to test which OTUs are differentially abundant across the grouping that causes the separation. Parametric models include Zero-Inflated Gaussian mixture model,   Zero-inflated Log-Normal mixture model \cite{css_diff_abund}, and other generalised linear models (like overdispersed Poisson model) \textbf{robinson}. The choice of distributions to model read counts is highly dependent upon the problem and also very debatable \cite{css_diff_abund} \textbf{McMurdie} \textbf{White}; if their assumptions about the data are not met they can yield a high level of false negatives/positives. 
+
+Non-parametric tests exist that test if groupings of samples (that divides them into two or more groups) result in populations that have significantly different distributions. Such tests include the Mann-Whitney test and permutational multivariate analysis of variance (PERMANOVA). To use such tools the data have to be transformed in some way first, either using alpha or beta diversity. 
+%%\textbf{Alpha and Beta Diversity metrics}
+%\url{https://www.drive5.com/usearch/manual/diversity_metrics_recommended.html}
+%Alpha diversity is the species diversity in a single ecosystem or sample. The simplest measure is richness, the number of species (or OTUs) observed in the sample. Other metrics consider the abundances (frequencies) of the OTUs, for example to give lower weight to lower-abundance OTUs.  
+%Beta Diversity measures the differentiation of species diversity between samples or habitats. 
+%
+%\textbf{Bray–Curtis dissimilarity statistic}:
+%In ecology and biology, the Bray–Curtis dissimilarity, named after J. Roger Bray and John T. Curtis,[1] is a statistic used to quantify the compositional dissimilarity between two different sites, based on counts at each site. \url{https://en.wikipedia.org/wiki/Bray%E2%80%93Curtis_dissimilarity}
+%	
+%	The \textbf{Shannon index} is an information statistic (alpha diversity) that measures diversity of species in a sample. It assumes that all species are represented in the sample and are also randomly sampled. It's equation is given by
+%	$$-\sum_{i=1}^s p_i \ln(p_i),$$
+%	where $i$ is the index of one of the $s$ species in the sample, and $p_i$ is given by $\frac{n_i}{N}$ where $n_i$ is the number of individuals $i$ in the sample of $N$ individuals.
+%	
+%	The \textbf{Simpson Index} is a dominance statistic (alpha diversity) that gives more weight to more common species found in the sample. It can be thought as measuring the `effective' number of species and is given by
+%	$$\frac{1}{\sum_{i=1}^s p_i^2}$$the value of $p_i$ is defined in  the same way as in the Shannon index.
+%	The  \textbf{Jaccard Index} (beta diversity) measures how similar, in terms of species present, two samples are. It ranges from 0 to 1, with the latter indicating that the two samples share the same species. The index does not take into consideration the abundance of species. It is given by
+%	$$\frac{|X \cap Y|}{|X\cup Y|},$$
+%	where $X$ and $Y$ are two samples, whose intersection is the number of species shared between them and their union is the the total number of species across them.
 % Ecological assessments of such surveys have generally been restricted to measuring taxon relative abundances, analyzing within- and between-sample diversity (α and β diversity, respectively), exploring β-diversity patterns using unsupervised learning techniques such as clustering and principal coordinates analysis (PCoA), and performing classical hypothesis testing. These approaches may be limited in their ability to classify unlabeled data or to extract salient features from highly complex and/or sparse data sets. knights et al 2011
+
+%Talk about alpha beta diverrsity and how ordination is used. Also how different abundance testing is done (FitZig) and cite packages used (vegan metagenomeseq DESkati)
 %machine learning to characerise biotic index of rivers
+
+\section{Aim}
+
+The aims of this project are to explore the data set obtained from eDNA metabarcoding of samples collected from Peruvian rivers, and use the OTU table to predict the water colour of samples. Ordination methods have been used with a variety of measures to identify patterns in the data. Furthermore, classical test hypothesis have been performed to evaluate if the grouping by water colour divides the samples into populations with significantly different distributions. 
+
+SML models have been trained to predict water colour of samples using a variety of features derived from OTUs. Normalisation techniques have been employed, and ordination methods have been used for dimensionality reduction. Our samples' spatial distribution was taken into account when designing train-validation-test splits; we designed different conditions under which the models'  weaknesses and strengths could be uncovered.
+
+
+
+%Add packages to all sections like ordination and machne learning
+%remove Logistic regression from machine learnig. Start that section with Bayesian framework and then say how logistic regression uses loss functions instead of priors etc.. maybe use AIC as well

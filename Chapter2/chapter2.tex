@@ -245,6 +245,15 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 % \label{fig:minion}
 % \end{figure}
 \subsection{NMDS}
+Non-metric multidimensional scaling (NMDS) is distinct from classical multidimensional scaling methods, like PCA and PCoA, in that it does not maximise linear correlation between the distances of the projected lower dimensional object and the actual distances. Furthermore, it is an random iterative approach and the number of dimensions to project the data onto must be decided from beforehand. Like PCoA, NMDS was first introduced in the psychometrics field for use in psychology.
+
+The goal of the algorithm is to find $n$ points in an $m$ dimensional spaces whose interpoint distances are somewhat related to the experimental dissimilarities of our $n$ objects. In this instance, dissimilarity is given by the distance matrix between samples $D_{ij}$ which is calculated using a dissimilarity measure. The distances are found between the points in the $m$ dimensional projection of our object $\hat{D}_{ij}$. A measure of relatedness is given by a goodness-of-fit statistic which is an integral part of the procedure; in classical MDS however no such statistic is used.
+
+This statistic is called Stress and it measures how the configuration of points in the $m$ dimensional space match the data, through a monotonic relationship between them. A solution to the iterative algorithm, the best-fitting configuration of points, is found when the stress is minimised.  
+
+
+%%The statistical question of goodness of fit is treated
+%separately, not as an integral part of the procedure. 
 \section{Data processing}
 \subsection{Normalisation}
 
