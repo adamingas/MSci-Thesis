@@ -222,14 +222,15 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 \centering
 \begin{subfigure}{0.4\textwidth}
 \includegraphics[width = \textwidth]{pcoa12eucotu}
-\caption{PCoA using the Euclidean Metric. The result is the same as with PCA; only the scales have different values and the points are flipped over the X-axis.}
-\end{subfigure}
+\caption{}
 \label{fig:pcoaeuc}
+\end{subfigure}
 \begin{subfigure}{ 0.4\textwidth}
 \includegraphics[width = \textwidth]{pcoa12jacotu}
-\caption{PCoA using the Jaccard metric. The result is similar with the one obtained using Bray-Curtis. Both measures are rank-order similar.}
+\caption{}
 \label{fig:pcoajac}
 \end{subfigure}
+\caption{PCoA using the Euclidean \ref{fig:pcoaeuc}  and Jaccard \ref{fig:pcoajac} metric. The result for the Euclidean metric is the same as with PCA; only the scales have different values and the points are flipped over the X-axis. The Jaccard metric produces a similar result with Bray-Curtis since they are rank-order similar.}
 \end{figure}
 %Motivate NMDS
 %EG actual distances are not that important so NMDS might be more usefull which maximisies correlation
@@ -246,12 +247,70 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 % \end{figure}
 \subsection{NMDS}
 Non-metric multidimensional scaling (NMDS) is distinct from classical multidimensional scaling methods, like PCA and PCoA, in that it does not maximise linear correlation between the distances of the projected lower dimensional object and the actual distances. Furthermore, it is an random iterative approach and the number of dimensions to project the data onto must be decided from beforehand. Like PCoA, NMDS was first introduced in the psychometrics field for use in psychology.
+%%PCoA and so-called 'classical' multidimensional
+%scaling (Torgerson, 1952) assume that the dissimilarity measure has a linear relationship with ecological distance. In contrast, nonmetric multidimensional scaling (NMDS, Shepard, 1962a, b; Kruskal,
+%1964a, b) assumes only rnonotonicity: a configuration is derived in which the distances between sample pairs are in rank order with their dissimilarities. 
 
-The goal of the algorithm is to find $n$ points in an $m$ dimensional spaces whose interpoint distances are somewhat related to the experimental dissimilarities of our $n$ objects. In this instance, dissimilarity is given by the distance matrix between samples $D_{ij}$ which is calculated using a dissimilarity measure. The distances are found between the points in the $m$ dimensional projection of our object $\hat{D}_{ij}$. A measure of relatedness is given by a goodness-of-fit statistic which is an integral part of the procedure; in classical MDS however no such statistic is used.
+The goal of the algorithm is to find $n$ points in an $m$ dimensional spaces whose interpoint distances are somewhat related to the experimental dissimilarities of our $n$ objects/samples. In this instance, dissimilarity is given by the distance matrix between samples $\Delta_{ij}$ which is calculated using a dissimilarity measure. In NMDS ordination we are not interested in the numerical distance between our objects but rather their ordinal relationship (the rank of dissimilarities between samples is of importance); that's why the word dissimilarity is used. In contrast, PCoA or classical MDS assume a linear relationship between the calculated dissimilarity measure and the ecological distances of the samples. What we label as distance ${D}_{ij}$ in NMDS is between the points in the $m$ dimensional projection of our object. A measure of relatedness between distance and dissimilarity is given by a goodness-of-fit statistic which is an integral part of the procedure; in classical MDS however no such statistic is used.
 
-This statistic is called Stress and it measures how the configuration of points in the $m$ dimensional space match the data, through a monotonic relationship between them. A solution to the iterative algorithm, the best-fitting configuration of points, is found when the stress is minimised.  
+This statistic is called Stress and it measures how the configuration of points in the $m$ dimensional space match the data, through a monotonic relationship between them. A solution to the iterative algorithm, the best-fitting configuration of points, is found when the stress is minimised. The best solution is achieved when there is a perfect monotone relationship between the dissimilarities and distances. 
+
+The dissimilarities we are dealing with are symmetric; $\Delta_{ij} ==\Delta_{ji}$. Therefore, only the upper triangular matrix is needed without the diagonal (because samples are perfectly similar between themselves). We want to achieve a configuration of points in an $m$ dimensional space such that the rank ordering of dissimilarities
+\begin{equation}
+	\Delta_{i_1 j_1} \leq 	\Delta_{i_2 j_2} \leq ... \leq 	\Delta_{i_M j_M},
+	\label{eq:mon}
+\end{equation}
+where $M = \frac{n(n-1)}{2}$ is the number of interactions between the samples, is matched by the rank ordering of distances $D_{ij}$.
+
+The objects are represented by points/vectors in an $m$-dimensional space ${\bf x}_i \in \mathbb{R}^m$ or by the matrix $X_{ij}$, and their distance by any metric we want. In this case we choose the Euclidean:
+\begin{equation}
+	D_{i j}=\sqrt{\sum_{s=1}^{i}\left(X_{i s}-X_{i s}\right)^{2}}.
+\end{equation}
 
 
+Another important element in our calculation are the numbers $\hat{D}_{ij}$, which are used as proxies for the dissimilarities when it comes to calculating the stress. The reason we do not use the numerical values of the dissimilarities is because we are not interested in them, only in their rank order relationship. Thus, the numbers $\hat{D}_{ij}$ are constructed as such to be monotonically related to $\Delta_{ij}$; when arranged in the order
+\begin{equation}
+	\hat{D}_{i_1 j_1},	\hat{D}_{i_2 j_2}, ...,	\hat{D}_{i_M j_M},
+\end{equation}
+each number is greater than or equal to the one before it. 
+These numbers are chosen so as to be as `nearly equal' to $D_{ij}$ as possible, while satisfying the monotonicity of $\Delta_{ij}$ \eqref{eq:mon}. 
+
+
+Now we can introduce the stress formula for a configuration of points $X_{ij}$. This is given by
+\begin{align}
+	S(X_{ij})&= \text{stress of the fixed configuration } {\bf x_1, ...,x_n}\\
+	 &=\underset{numbers \hat{D}_{ij} satisfying \eqref{eq:mon}}{ min}
+	 \sqrt{\frac{\sum_{i<j}\left(D_{ij},-\hat{D}_{i j}\right)^{2}}{\sum_{i<j} D_{i j}^{2}}},
+	 \label{eq:stress}
+\end{align}
+where the sum is taken over all $ij$ pairs such that $i<j$ is satisfied (sum over all upper triangular matrix elements), and the minimum is over the numbers $\hat{D}_{ij}$. This minimisation can also be seen as monotonic regression, if the dissimilarities $\Delta_{ij}$ are plotted against the distances $D_{ij}$ and the proxies are the points that make up the free-form line. The regression step is finding new $\hat{D}_{ij}$ numbers when the distances change. 
+
+The algorithm then aims at finding the configuration of points that minimises \eqref{eq:stress}. The minimisation over the configuration is done by a `method of gradients' (similar to gradient descent) outlined in \textbf{kruskal numerical}. That over the $\hat{D}_{ij}$ is done using a method of blocks outlined in \textbf{miles and kruskal numerical}.
+
+
+The algorithm first starts by generating a random configuration of $n$ non-identical points that span an $m$-dimensional space. This can also be done by running another ordination method and using it's configuration of points limited to the $m$ first dimensions. This set is then normalised; the centre of gravity is set to the origin, and the points are uniformly stretched or shrank such that their root-mean-square distance from the origin is equal to one. This transformation does not affect the algorithm since the euclidean metric is invariant to translations and rotations, and the denominator of stress also makes it invariant to a uniform stretch of the points. 
+
+ The interpoint distance $D_{ij}$ is then calculated and the stress for the configuration is found by minimising the dissimilarity proxies  $\hat{D}_{ij}$ in the way described earlier. Then, the gradient of the configuration is calculated and if some stopping conditions are not met, that signify the algorithm reached an appropriate minimum, the points are moved towards the direction of decreasing stress. A new configuration is thus obtained and the procedure is repeated until some minimum conditions are met; either the stress is low enough that finding another minimum would not improve the solution significantly, or several attempts from different starting configurations have been attempted and the lowest stress solution is chosen. 
+
+NMDS ordination was performed using the metaMDS function in vegan \textbf{vegan} package for R. As mentioned previously, the number of dimensions have to be predetermined before running the algorithm. There is also a maximum number of iteration to try if a non-convergent solution is found. Using a dissimilarity measure of Bray-Curtis \ref{fig:nmds} and Euclidean \ref{fig:nmdseuc}, ordination plots where plotted using the same legends as in the PCoA case. The Bray-Curtis measure can separate river colour much better than when using the Euclidean measure. 
+
+
+The stress of the 2 dimensional NMDS configuration was 15.8\% and 12.8\% for Bray-Curtis and Euclidean respectively. This is considered `fair' in the literature, and is good enough for discerning patterns in a plot. With increasing dimensions the stress falls, however, the number of iterations needed to get a convergent solution also increases considerably. After XXXX (100000) iterations a convergent solution for 20 dimensions was not found.  
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{nmdsotu12}
+		\caption{}
+		\label{fig:nmds}
+	\end{subfigure}
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{nmdsotu12euc}
+		\caption{}
+		\label{fig:nmdseuc}
+	\end{subfigure}
+\caption{NMDS ordination plots using Bray-Curtis \ref{fig:nmds} and Euclidean \ref{fig:nmdseuc} measure for dissimilarities. Bray-Curtis separates the rivers and colour much better than the Euclidean measure.}
+\end{figure} 
 %%The statistical question of goodness of fit is treated
 %separately, not as an integral part of the procedure. 
 \section{Data processing}
@@ -316,7 +375,7 @@ In particular, the quantile $\hat{l}$ for the threshold $q_i^{\hat{l}}$ is chose
 \end{figure}
 
 
-After applying the CSS normalisation, the variation of read counts per samples drops significantly (except for some samples whose total read counts increase, see Figure \ref{fig:histcss}). Applying a $log_2$ transformation to the data after normalising reduces the variation drops even more (see Figure \ref{fig:histcsslog}). Furthermore, performing PCoA and NMDS (Figure \ref{fig:pcoa12otucss} and \ref{fig:nmds12otucss} respectively) on the normalised data separates white and black water samples better than if the normalisation was not applied. However, doing the same on the $log_2$ transformed data doesn't have the same effect.
+After applying the CSS normalisation, the variation of read counts per samples drops significantly (except for some samples whose total read counts increase, see Figure \ref{fig:histcss}). Applying a $log_2$ transformation to the data after normalising reduces the variation drops even more (see Figure \ref{fig:histcsslog}). Furthermore, performing PCoA and NMDS (Figure \ref{fig:pcoa12otucss} and \ref{fig:nmds12otucss} respectively) on the normalised data separates white and black water samples better than if the normalisation was not applied. However, doing the same on the $log_2$ transformed data does not have the same effect.
 
 \begin{figure}[h]
 	\centering
@@ -358,8 +417,43 @@ For our problem at hand, recovering such correlation networks is not of interest
 
 
 \section{PERMANOVA}
-\section{Machine Learning}
+\section{Classification Models}
 \subsection{Logistic Regression}
+\subsubsection{MCMC approach}
+Binary classification involves deciding in which of two groups (classes) an object (point) should be categorised. A point is constituted of a response variable and features. The purpose of a classifier is then to correctly identify the response variable given it's features and any other relevant information. 
+
+Our data set's response variable is the water colour of the sample, defined here as $y_i \in \{ 1 (White),0 (Black)\}$ for the $i$th sample. The notation $\bf{x}_i = [x_{i1},x_{i2},...,x_{im}]$ is used to represent the $m$ dimensional row vector of features for the $i$th sample. Stacking up the feature vectors we construct the matrix $X_{ij}$, with rows denoting the samples and columns the features.
+
+Assuming we do not know the response variable of a point we would like to calculate its probability of belonging to one of the classes  given its features
+\begin{equation}
+	P(y_i = 1(\text{White})|\bf{x}_i).
+\end{equation}  
+We can use Bayes' theorem to expand this probability into
+\begin{equation}
+	P(y_i =1|\bf{x}_i) = \frac{P(\bf{x}_i|y_i)P(y_i)}{P(\bf{x}_i)},
+\end{equation}
+ where the likelihood is given by $P(x_i|y_i)$, the prior by $P(y_i)$, and the marginal likelihood by $P(y_i)$.
+ The marginal likelihood can be obtained by integrating out the class variable
+ \begin{equation}
+ 	P(\bf{x}_i) = \sum_{y_i =0}^{1} P(\bf{x}_i|y_i)P(\bf{x}_i).
+ \end{equation} 
+
+To decide in which class a point belongs to, we construct a decision boundary using the discriminant function
+\begin{equation}
+f(\bf{x}_i)=\log \frac{P(y_i=1 | \bf{x}_i)}{P(y_i = 0 | \bf{x}_i)}.
+\label{eq:discr}
+\end{equation}
+If the function is greater than $0$ that means that the probability of the point coming from White water is greater than from Black water. 
+
+
+We can adopt either a generative or a discriminative approach. The generative approach requires modelling the class conditional distributions $P(x_i|y_i = 1)$ and $P(x_i|y_i = 0)$, and using Bayes' theorem to obtain the discriminant function directly. Typical samples could also be generated by drawing data from $P(x_i|y_i)$. The discriminant approach involves modelling the discriminant function \eqref{eq:discr} directly, using a linear model for example. We will be using the discriminative approach so as to avoid modelling the complex interaction between water colour and OTU-derived features.
+
+
+A linear function (in parameters) can be used to model \eqref{eq:discr}. The features can be transformed by a non-linear function $\phi(\bf{x}_i) = [\phi_1(\bf{x_i}),\phi_2(\bf{x_i}),...,\phi_D(\bf{x_i})]$ which can span a higher or lower dimensional space. The model is given by
+\begin{equation}
+	a = \log \frac{P(y_i=1 | \bf{x}_i)}{P(y_i = 0 | \bf{x}_i)} = \phi(\bf{x})\theta
+\end{equation}
+  
 \subsection{Random Forests}
 \section{Data-Splitting}
 
