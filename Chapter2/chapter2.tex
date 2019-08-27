@@ -119,10 +119,10 @@ A more general method of ordination, of which PCA is a special case, is called P
 
 Lets define by $D_{ij}$ the $n \times n$ distance matrix between the samples (rows) in $X$ (where $D_{ij}$ indicates the distance between the sample $i$ with sample $j$). It is evident from the construction of the matrix that it is symmetric, since the distance between sample $i$ and $j$ is the same the distance between $j$ and $i$. When using a euclidean measure the diagonals of the matrix are zero. The euclidean metric is given by
 \begin{align}
-D_{ij} = {||\bf{x}_i-\bf{x}_j||^2},
+D_{ij} = {||\bf{x}_i- \mathbf{x}_j||^2},
 \label{eq:euclideanmetric}
 \end{align}
-where $\bf{x}_i$ is a row vector of the data matrix $X$ containing the abundance reading for the sample $i$, and $||\cdot||^2$ is the L2 norm.
+where $ \mathbf{x}_i$ is a row vector of the data matrix $X$ containing the abundance reading for the sample $i$, and $||\cdot||^2$ is the L2 norm.
 
 The algorithm works by double centering the distance matrix, or in other words subtracting the row and column mean, and multiplying it by $-\frac{1}{2}$
 \begin{align}
@@ -262,7 +262,7 @@ The dissimilarities we are dealing with are symmetric; $\Delta_{ij} ==\Delta_{ji
 \end{equation}
 where $M = \frac{n(n-1)}{2}$ is the number of interactions between the samples, is matched by the rank ordering of distances $D_{ij}$.
 
-The objects are represented by points/vectors in an $m$-dimensional space ${\bf x}_i \in \mathbb{R}^m$ or by the matrix $X_{ij}$, and their distance by any metric we want. In this case we choose the Euclidean:
+The objects are represented by points/vectors in an $m$-dimensional space ${ \mathbf x}_i \in \mathbb{R}^m$ or by the matrix $X_{ij}$, and their distance by any metric we want. In this case we choose the Euclidean:
 \begin{equation}
 	D_{i j}=\sqrt{\sum_{s=1}^{i}\left(X_{i s}-X_{i s}\right)^{2}}.
 \end{equation}
@@ -278,7 +278,7 @@ These numbers are chosen so as to be as `nearly equal' to $D_{ij}$ as possible, 
 
 Now we can introduce the stress formula for a configuration of points $X_{ij}$. This is given by
 \begin{align}
-	S(X_{ij})&= \text{stress of the fixed configuration } {\bf x_1, ...,x_n}\\
+	S(X_{ij})&= \text{stress of the fixed configuration } { \mathbf x_1, ...,x_n}\\
 	 &=\underset{numbers \hat{D}_{ij} satisfying \eqref{eq:mon}}{ min}
 	 \sqrt{\frac{\sum_{i<j}\left(D_{ij},-\hat{D}_{i j}\right)^{2}}{\sum_{i<j} D_{i j}^{2}}},
 	 \label{eq:stress}
@@ -422,25 +422,25 @@ For our problem at hand, recovering such correlation networks is not of interest
 \subsubsection{MCMC approach}
 Binary classification involves deciding in which of two groups (classes) an object (point) should be categorised. A point is constituted of a response variable and features. The purpose of a classifier is then to correctly identify the response variable given it's features and any other relevant information. 
 
-Our data set's response variable is the water colour of the sample, defined here as $y_i \in \{ 1 (White),0 (Black)\}$ for the $i$th sample. The notation $\bf{x}_i = [x_{i1},x_{i2},...,x_{im}]$ is used to represent the $m$ dimensional row vector of features for the $i$th sample. Stacking up the feature vectors we construct the matrix $X_{ij}$, with rows denoting the samples and columns the features.
+Our data set's response variable is the water colour of the sample, defined here as $y_i \in \{ 1 (White),0 (Black)\}$ for the $i$th sample, where $i=1,...N$. The notation $ \mathbf{x}_i = [x_{i1},x_{i2},...,x_{im}]$ is used to represent the $m$ dimensional row vector of features for the $i$th sample. Stacking up the feature vectors we construct the matrix $X_{ij}$, with rows denoting the samples and columns the features.
 
 Assuming we do not know the response variable of a point we would like to calculate its probability of belonging to one of the classes  given its features
 \begin{equation}
-	P(y_i = 1(\text{White})|\bf{x}_i).
+	P(y_i = 1(\text{White})| \mathbf{x}_i).
 \end{equation}  
 We can use Bayes' theorem to expand this probability into
 \begin{equation}
-	P(y_i =1|\bf{x}_i) = \frac{P(\bf{x}_i|y_i)P(y_i)}{P(\bf{x}_i)},
+	P(y_i =1| \mathbf{x}_i) = \frac{P( \mathbf{x}_i|y_i)P(y_i)}{P( \mathbf{x}_i)},
 \end{equation}
- where the likelihood is given by $P(x_i|y_i)$, the prior by $P(y_i)$, and the marginal likelihood by $P(y_i)$.
- The marginal likelihood can be obtained by integrating out the class variable
+ where the likelihood is given by $P(x_i|y_i)$, the prior by $P(y_i)$, and the marginal likelihood by $P(y_i)$. The prior indicates the point's probability of being in a class without taking into account its features. All the information about the point's features is encoded in the likelihood, where the probability of obtaining them is conditioned on the class. Finally, the marginal is the probability of obtaining the data, whatever the class of the point. 
+ It can thus  be obtained by integrating out the class variable
  \begin{equation}
- 	P(\bf{x}_i) = \sum_{y_i =0}^{1} P(\bf{x}_i|y_i)P(\bf{x}_i).
+ 	P( \mathbf{x}_i) = \sum_{y_i =0}^{1} P( \mathbf{x}_i|y_i)P( \mathbf{x}_i).
  \end{equation} 
 
 To decide in which class a point belongs to, we construct a decision boundary using the discriminant function
 \begin{equation}
-f(\bf{x}_i)=\log \frac{P(y_i=1 | \bf{x}_i)}{P(y_i = 0 | \bf{x}_i)}.
+f( \mathbf{x}_i)=\log \frac{P(y_i=1 |  \mathbf{x}_i)}{P(y_i = 0 |  \mathbf{x}_i)}.
 \label{eq:discr}
 \end{equation}
 If the function is greater than $0$ that means that the probability of the point coming from White water is greater than from Black water. 
@@ -449,11 +449,85 @@ If the function is greater than $0$ that means that the probability of the point
 We can adopt either a generative or a discriminative approach. The generative approach requires modelling the class conditional distributions $P(x_i|y_i = 1)$ and $P(x_i|y_i = 0)$, and using Bayes' theorem to obtain the discriminant function directly. Typical samples could also be generated by drawing data from $P(x_i|y_i)$. The discriminant approach involves modelling the discriminant function \eqref{eq:discr} directly, using a linear model for example. We will be using the discriminative approach so as to avoid modelling the complex interaction between water colour and OTU-derived features.
 
 
-A linear function (in parameters) can be used to model \eqref{eq:discr}. The features can be transformed by a non-linear function $\phi(\bf{x}_i) = [\phi_1(\bf{x_i}),\phi_2(\bf{x_i}),...,\phi_D(\bf{x_i})]$ which can span a higher or lower dimensional space. The model is given by
+A linear function (in parameters) can be used to model \eqref{eq:discr}. The features can be transformed by a non-linear function $\phi( \mathbf{x}_i) = [\phi_1( \mathbf{x_i}),\phi_2( \mathbf{x_i}),...,\phi_D( \mathbf{x_i})]$ which can span a higher or lower dimensional space. The model is given by
 \begin{equation}
-	a = \log \frac{P(y_i=1 | \bf{x}_i)}{P(y_i = 0 | \bf{x}_i)} = \phi(\bf{x})\theta
+	a = \log \frac{P(y_i=1 |  \mathbf{x}_i)}{P(y_i = 0 |  \mathbf{x}_i)} = \phi( \mathbf{x}) \bm{\theta}^T
 \end{equation}
+  where $ \bm{\theta} = [\theta_1,\theta_2,...,\theta_D]$ are the model parameters.
   
+  We can simplify this expression by making the observation that the conditional class probabilities sum up to one
+  \begin{align}
+	\frac{P(y_i=1 |  \mathbf{x}_i)}{P(y_i = 0 |  \mathbf{x}_i)} &= \exp(a)\\
+	\frac{P(y_i=1 |  \mathbf{x}_i)}{1-P(y_i=1 |  \mathbf{x}_i)} &= \exp(a)\\
+	P(y_i=1 |  \mathbf{x}_i) &= \frac{\exp(a)}{1+\exp(a)},
+  \end{align}
+  and making use of the sigmoid function. The probability of point $i$ belonging to class $y_i \in \{1,0\}$  is thus
+    \begin{align}
+  	P(C = y_i |  \mathbf{x}_i, \bm{\theta}) &= P(C=1 |  \mathbf{x}_i)^{y_i}(1-P(C=1 |  \mathbf{x}_i))^{1-y_i}\\
+	&= \left(\frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}\right)^{y_i}\left(\frac{1}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}\right)^{1-y_i} \\
+	&=\frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)^{y_i}}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}.
+  \end{align}
+
+The class distribution defines a Bernoulli likelihood with success probability $P(y_i = 1| \mathbf{x}_i, \bm{\theta})$ being modelled as a function of the features
+\begin{align}
+	P(y_i | \mathbf{x}_i  \bm{\theta}) &= \mu( \bm{\theta})^{y_i}(1 - \mu( \bm{\theta}))^{1-y_i}\\
+	\mu( \bm{\theta}) &= 	P(y_i =1 | \mathbf{x}_i  \bm{\theta}) \\
+	&= \sigma(\phi( \mathbf{x}) \bm{\theta}^T) = \frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}.
+\end{align}
+  
+  
+  The aim now is to figure out which distribution of parameters $ \bm{\theta}^T$ model a decision function best so that it classifies the most points correctly. To do that, we agglomerate all of our samples into two sets; train and test. The train set will be used to `learn' the best parameters and the test set to evaluate it's performance on unseen data. Thus the response variables $\mathbf{y}$ are grouped into $ \mathbf{y}_{train}$ and $ \mathbf{y}_{test} $, and the features $X$ into ${X}_{train}$ and $X_{test}$. The index set of samples belonging to train and test is given by $I_{train}$ and $I_{test}$ respectively.
+  
+  Because of the non-trivial interactions between our samples, we will be assuming that they are independent and identically distributed
+  \begin{align}
+   P(\mathbf{y} | X, \bm{\theta}) &=\prod_{n=1}^{N} P\left(C=y_{i} | \mathbf{x}_{n}, \bm{\theta}\right) \\ 
+   &=\prod_{n=1}^{N} \frac{\exp \left(\phi\left(\mathbf{x}_{i}\right)\bm{\theta}^{T} \right)^{y_{n}}}{1+\exp \left(\phi\left(\mathbf{x}_{i}\right) \bm{\theta}^{T} \right)} .
+   \end{align}
+	
+	We can thus construct the posterior distribution of the parameters $\bm{\theta}$ by utilising Bayes' theorem and conditioning on the train sets
+	\begin{align}
+	P\left(\bm{\theta}|X_{train},\mathbf{y}_{train},s\right) = \frac{	P\left(\mathbf{y}_{train}|\bm{\theta},X_{train}\right) P\left(\bm{\theta}|s\right)}{P\left(\mathbf{y}_{train}|X_{train},s\right)}.
+	\end{align}
+   The $s$ parameter denotes the parameters of the prior that we have to assign from before hand. 
+   The marginal likelihood is obtained by integrating out the parameters from the likelihood and the prior using the law of total probability
+   \begin{align}
+   P\left(\mathbf{y}_{train}|X_{train},s\right) = \int P\left(\mathbf{y}_{train}|\bm{\theta},X_{train}\right) P\left(\bm{\theta}|s\right) d\bm{\theta}.
+   \end{align}
+   The integral is usually intractable analytically because the parameters span a high-dimensional space.
+   
+   Once we have the posterior distribution we can use it on a new data set (test set), make predictions, and evaluate the model's performance. This is done using the law of total probability 
+   \begin{align}
+		P({C} = 1|X_{train},\mathbf{y}_{train},\mathbf{x}_{i,test},s) &= \int P(C=1|\mathbf{x}_{i,test},\bm{\theta})P(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\bm{\theta}\label{eq:classprob} \\
+		&= E(P(C=1|\mathbf{x}_{i,test},\bm{\theta})|X_{train},\mathbf{y}_{train},s),
+   \end{align}
+   where $\mathbf{x}_{i,test}=\mathbf{x}_{i \in I_{test}} $ is the features vector of any sample in the test set.  The result is the probability of the point being in group 1 (White water) given the train data sets and the parameter of the prior.
+
+   Note that the distribution over the Class is not dependent on the parameters $\bm{\theta}$ since we integrated them out.
+   
+   A Bayesian approach to train and predict such a model is to use Markov chain Monte Carlo (MCMC) methods to sample from the posterior and then approximate the predictive probability over the Class assignment \eqref{eq:classprob} using a Monte Carlo estimator. The $M$ samples obtained are denoted with $z^{(j)}$ and have the same dimension as the parameters $\bm{\theta}$. The estimate,
+   \begin{align}
+   	\int P(C=1|\mathbf{x}_{i,test},\bm{\theta}) P(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\bm{\theta} &= \frac{1}{M}\sum_{j=1}^M P(C=1|\mathbf{x}_{i,test},z^{(j)}) \\
+   	&= \frac{1}{M}\sum_{j=1}^M  \frac{\exp(\phi(\mathbf{x}_{i,test}) \cdot(z^{(j)})^T)}{1+\exp(\phi( \mathbf{x}_{i,test}) \cdot z^{(j)}T)},
+   \end{align} 
+   can be evaluated with the generated samples for each point in the test set.
+   
+   
+   The idea of MCMC is to generate samples $z^{(i)}$ while exploring the state space of interest (the space on which the posterior is defined, $\Theta$) using a markov chain mechanism. The chain is constructed such that it spends more time in more important regions. In particular, the aim is for the samples generated to mimic samples drawn from the target distribution ($P(\bm{\theta}|X_{train},\mathbf{y}_{train},s)$).
+   The reason MCMC methods are of interest in our case is that they allow drawing samples from the target distribution if it can be evaluated up to a normalising constant (but does not have to be normalised). 
+   
+   The $M$ resulting samples can be used to approximate the target density 
+   \begin{align}
+   	P_M(\bm{\theta}|X_{train},\mathbf{y}_{train},s) = \frac{1}{M}\sum_{i = 1}^M \delta(\bm{\theta} = z^{(i)}),
+   \end{align}
+   where $\delta(\bm{\theta} = z^{(i)})$ denotes the Dirac delta function centred at the vector $z^{(i)}$. Using this point-mass function, integrals $I(f)$ can be approximated with sums $I_M(f)$ that converge in the following manner
+   \begin{equation}
+   	I_M(f) = \frac{1}{M}\sum_{i = 1}^M \delta(\bm{\theta} = z^{(i)})      \underset{M \rightarrow \infty}{{\rightarrow}} \int_{\Theta} f(\theta)P_M(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\theta = I(f).
+   \end{equation}
+   If the $z_{(i)}$ samples were i.i.d, the estimator $I_M(f)$ is unbiased and by the strong law of large numbers it almost surely converges to $I(f)$. 
+   
+   However, MCMC samples are not i.i.d and thus have different convergence rates and 
+   
+   
 \subsection{Random Forests}
 \section{Data-Splitting}
 
@@ -526,23 +600,23 @@ This procedure can be repeated for different features (data sets), so as to eval
 	\end{tabularx}
 \end{table}
 
-\large{\bf Maximising Similarity} \\
+\large{ \bf Maximising Similarity} \\
 \textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is similar geographically to the train set.\\
 \textit{Method}: Testing and validation sets are made up of samples coming from every part of the river. Care is taken to ensure that no geographical area is over represented. This is done using Stratified sampling (using the method StratifieKfold) where the strata (or groups) are the areas of the rivers the samples belong to. Stratified sampling ensures that the distribution of test or validation samples in each area is approximately the same as for train samples.
 
 
 
 
-\large{ \bf Maximising Dissimilarity}\\
+\large{  \bf Maximising Dissimilarity}\\
 \textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is dissimilar (or far away) geographically to the train set.\\
 \textit{Method}: Testing and Validation sets are made up of all the samples which belong to a particular area of the river. For example, the test set might be constituted by all the samples in the Upper Marañón area, and the validation sets by all the remaining areas (Huallaga, Min Maranon, Lower Maranon, Ucayali, Tapiche, Napo). The method used to produce these splits is called GroupKfold.
 
-\large{\bf Random Splits}\\
+\large{ \bf Random Splits}\\
 \textit{Aim}: Evaluate the performance of the classifiers on train and test sets obtained by random splitting
 \textit{Method}: Test and Validation sets are obtained by randomly splitting the data. Care is taken to ensure that the balance of white and black water samples is the same across splits. This is done using Stratified sampling with the colour of the river as the strata.
 
 
-{\bf Ideal Splits}
+{ \bf Ideal Splits}
 An ideal sampling method would take into account the spatial correlation structures between the samples, besides just their location. Since the river flows eastwards from Maranon Upper down to all other streams, samples collected upstream would inevitably affect those from downstream, but the opposite might not be true. Thus, euclidean proximity of the river samples is not always a good enough indicator for detecting similarity between samples. For example, sample A collected near the opening of the Tapiche stream and sample B collected a bit further South of the opening, in the Ucayali stream, will have a smaller distance between them than with other samples collected further south in the Tapiche and Ucayaly streams. However, since the streams diverge, A and B might be more similar to samples found downstream their part of the river (Tapiche and Ucayaly respectively) than between them. 
 
 To achieve this, a directed graph of the river can be constructed, with vertices representing the samples, and edges the river path between them. Then a sampling scheme can take into account the stream direction and split the dataset in more sophisticated ways. One such way can test a classifier's ability to predict river colour if the test set is downstream from the train set, and the opposite, if the test set is upstream from the train. 
