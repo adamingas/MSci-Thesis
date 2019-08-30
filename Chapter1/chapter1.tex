@@ -192,9 +192,15 @@ Non-parametric tests exist that test if groupings of samples (that divides them 
 
 \section{Aim}
 
-The aims of this project are to explore the data set obtained from eDNA metabarcoding of samples collected from Peruvian rivers, and use the OTU table to predict the water colour of samples. Ordination methods have been used with a variety of measures to identify patterns in the data. Furthermore, classical test hypothesis have been performed to evaluate if the grouping by water colour divides the samples into populations with significantly different distributions. 
+The aims of this project are to explore the data set obtained from eDNA metabarcoding of samples collected from Peruvian rivers, and use the OTU table to predict the water colour of samples. Data processing techniques like feature selection through correlation and normalisation of the read-counts will be presented in Chapter \ref{chap:data}. These modifications to the OTU table will be used as new features for the classification of samples. Their spatial distribution along the rivers will be taken into account when designing train-validation-test splits; we designed different conditions under which the models'  weaknesses and strengths could be uncovered. These are outlined and explained in the Chapter.
 
-SML models have been trained to predict water colour of samples using a variety of features derived from OTUs. Normalisation techniques have been employed, and ordination methods have been used for dimensionality reduction. Our samples' spatial distribution was taken into account when designing train-validation-test splits; we designed different conditions under which the models'  weaknesses and strengths could be uncovered.
+Ordination methods will be used with a variety of distance measures to identify patterns in the data. These methods can also be used for dimensionality reduction, and thus more features will be created for classification. An introduction to the most popular ordination methods will be presented in Section \ref{sec:ordination}. Also, it will be proven that Principal coordinate analysis is a general case of Principal components analysis.
+
+ Permutation Analysis of variance  will be presented in section \ref{sec:permanova}. This classical ecological test hypothesis method  will be used to evaluate if the grouping by water colour divides the samples into populations with significantly different distributions. 
+
+Supervised machine learning models will be trained to predict water colour of samples using a variety of features derived from OTUs. An outline of Bayesian and maximum likelihood logistic regression, as well as of Random forests will be presented in section \ref{sec:classification}. 
+
+These models will then be tested in the ways explained previously, and their performance compared for all the features created. Furthermore, the taxonomic Orders with the most explanatory power will be identified.
 
 
 

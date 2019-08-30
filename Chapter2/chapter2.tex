@@ -13,7 +13,7 @@
 
 
 \section{Ordination}
-
+\label{sec:ordination}
 Ordination can be thought of as series of operations/transformations performed on a data matrix (samples and species table) with the purpose of representing the relationships between the species and samples as faithfully as possible. These methods are made up of two stages; the data are converted into a dissimilarity/similarity matrix of the samples or species which are subsequently transformed into a lower dimensional space where the interpoint distances are related to the distance matrix through the scaling method used.
 
 Metric scaling methods try to maximise the linear correlation between the distances in the dissimilarity matrix and in the lower dimensional space. Non-metric methods on the other hand aim at maximising rank-order correlation between those distances instead.
@@ -31,7 +31,7 @@ Ordination methods can be categorised based on how they use external environment
 Indirect gradient analysis finds the most important gradients in the sites by species data (or more descriptive dimensions), in the absence of environmental data. After the procedure is complete, environmental gradients can be fitted on the new basis and explore how the variables change with sites or species. Direct gradient analysis on the other hand explores how much environmental variables are related to the variation of species composition across sites, by taking into consideration only the variation that can be explained by the environmental variables. It can be thought of as a regression technique testing the null hypothesis that the species composition is not related to environmental gradients.
 
 %%PCA
-\subsection{PCA}
+\subsection{Principal Components Analysis}
 \label{ssec:PCA}
 Principal Component analysis (PCA) is a clustering technique that can be used as an ordination method as well. It works by finding the direction that maximises the variance in the data and setting it as the first axis. Then it finds the direction with the second highest explanation of variance that is orthogonal to the first one, and sets it as the second axis, and the direction that is uncorrelated with both the first and the second axis and explains the most variance as the third, and so on. For ordination, since all ecological community data are measured in the same units, the data do not need to be standardised to unit variance, and thus the method involves finding the eigenvectors of the covariance matrix of the data (and not the correlation matrix).
 
@@ -114,7 +114,7 @@ This linear assumption of PCA makes it unsuitable for use in Ecological data set
 \end{figure}
 
 %%PCOA
-\subsection{PCoA}
+\subsection{Principal Coordinates Analysis}
 A more general method of ordination, of which PCA is a special case, is called Principal Coordinates Analysis (PCoA), otherwise known as classical multidimensional scaling. The method aims to represent distances between samples (in the species space), but in a lower dimension, so that they can be easily interpreted. This is done by creating a distance matrix using whatever metric we wish (with the condition that it returns a scalar given two vectors of arbitrary dimensions) and projecting it to a lower dimensional space by maximising the correlations between the distances in the distance matrix and the distances in the lower dimensional representation. Thus, the method assumes that the distances used are meaningful and thus try to reserve them.
 
 Lets define by $D_{ij}$ the $n \times n$ distance matrix between the samples (rows) in $X$ (where $D_{ij}$ indicates the distance between the sample $i$ with sample $j$). It is evident from the construction of the matrix that it is symmetric, since the distance between sample $i$ and $j$ is the same the distance between $j$ and $i$. When using a euclidean measure the diagonals of the matrix are zero. The euclidean metric is given by
@@ -245,7 +245,7 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 % \caption[Minion]{This is just a long figure caption for the minion in Despicable Me from Pixar}
 % \label{fig:minion}
 % \end{figure}
-\subsection{NMDS}
+\subsection{Non-metric multidimensional scaling}
 Non-metric multidimensional scaling (NMDS) is distinct from classical multidimensional scaling methods, like PCA and PCoA, in that it does not maximise linear correlation between the distances of the projected lower dimensional object and the actual distances. Furthermore, it is an random iterative approach and the number of dimensions to project the data onto must be decided from beforehand. Like PCoA, NMDS was first introduced in the psychometrics field for use in psychology.
 %%PCoA and so-called 'classical' multidimensional
 %scaling (Torgerson, 1952) assume that the dissimilarity measure has a linear relationship with ecological distance. In contrast, nonmetric multidimensional scaling (NMDS, Shepard, 1962a, b; Kruskal,
@@ -313,113 +313,61 @@ The stress of the 2 dimensional NMDS configuration was 15.8\% and 12.8\% for Bra
 \end{figure} 
 %%The statistical question of goodness of fit is treated
 %separately, not as an integral part of the procedure. 
-\section{Data processing}
-\subsection{Normalisation}
 
-Count data from amplicon sequencing display a very high degree of variability in total read counts per sample \cite{inadmissible_rareying}. A histogram, Figure \ref{fig:counthistogram}, of the samples' total count reads for our data exemplifies this variability. The sums range from 17 to 219113, with a median and mean of 63672 and 77152 respectively. This much variation between samples makes it hard to identify which OTUs' difference in abundance between samples is significant and also might negatively impact the performance of the classifiers. 
- 
- The increased variation comes from a systematic variability affecting multiple samples and OTUs in a similar manner. Sources of such variability can be the inconsistencies in DNA extraction and handling of samples,  a varying quality of sequencing runs \cite{pereira_comparison_2018}, and other PCR-specific amplification biases (like primer mismatch, GC-content etc.) \cite{abundance_nodate,krehenwinkel_estimating_2017}.
- 
- Furthermore, these biases can cause the distribution of read counts obtained from high-throughput amplicon sequencing to diverge significantly from the actual distribution of species abundances in the same samples. The Pearson correlation between read and species frequencies is close to zero \cite{edgar_unbias:_2017}.
- 
- The removal of this Systematic Variability is called \textit{Normalisation} and it's original aim in the bioinformatics literature is to increase the statistical power and false positive rates of differential abundance analysis \footnote{Differential abundance analysis aims at finding OTUs (or genes in the case of metagenomic studies) whose variation between groups of samples (e.g. black and white water river samples) is statistically significant.}. We will be testing if normalisation methods have any effect on the classifiers' scores.
- 
- A normalisation method that produced promising results in differential analysis on datasets similar to ours is Cumulative sum scaling (CSS). This method is an extension to the quantile normalisation approach which divided read counts by the $Q$th percentile of each sample’s non-zero count distribution. CSS determines that percentile using a data-driven approach\cite{css_diff_abund}.
- 
- To illustrate how normalisation methods work we define $X_{i,j}$ as the read counts of sample  $i =1,...,n$ and OTU $j=1,...,p$. The normalisation factor of the total sum scaling (TSS) method is found by summing the read counts in a sample $i$:
- \begin{equation}
- 	N_i = \sum_{j=1}^{p} X_{ij}.
- \end{equation}
-Then the counts in row $i$ of the read matrix $X$ are divided by the factor $N_i$. TSS is the most commonly used method of normalisation but it has been shown to introduce biases in differential analysis estimates \cite{bullard_evaluation_2010}.
 
-Quantile scaling computes the normalisation factor by taking into account how OTU total counts (for all samples) vary, and choosing a percentile that produces desirable properties (such as robustness from highly abundant OTUs).
-The scaling factor is defined as:
-\begin{align}
-	N_i &= \underset{ j \in G}{ Q\text{th quantile}} \  X_{ij}\\
-	G  &= \left\{ j : \sum_{i = 1}^{n} X_{ij} > 0\right\}.
-\end{align}
+\section{Permutational multivariate analysis of variance
+}
+\label{sec:permanova}
 
- 
-\begin{figure}[htb]
-\centering
-\includegraphics[width = 0.7\textwidth]{histogramofcountdata}
-\caption{Histogram of the sum of OTU counts of each sample. The cyan colour represents white water samples and the red colour black water samples.}
-\label{fig:counthistogram}
-\end{figure}
+Permutational multivariate analysis of variance is a hypothesis testing technique that involves permuting the data set such that normality assumptions are avoided. Its use in ecology is to test if the distribution and OTU abundance of two (or more) groups of samples is statistically significant. Distance measures are used to define the relationships between the samples.
 
-CSS normalisation involves the calculation of a data-driven quantile 
-We define the $l$th quantile of sample $i$ as $q_i^l$, which means that $l$ OTUs have a read count lower than $q_i^l$. Also we define the sum of counts per samples $i$ up to the $l$th quantile as
+Particularly, the null hypothesis is: The centroids and dispersion of the groups, defined by a distance measure, are equivalent for all groups.
+A rejection of the null means that either the centroid or the dispresion is different between groups.
+
+In the case of a one-way test, testing for the effect of a single grouping variable (our case), with $a$ groups and $n$ samples, we construct the distance matrix $D_{ij}$ using any measure relevant to our data. The matrix is constructed in the same way as in section \ref{sec:ordination} and it quantifies the dissimilarity between observations $i$ and $j$. The index of samples in each group $k$ is given by $I_{k}$. We are interested in testing if the grouping of samples by water colour produces significantly different distributions is OTU abundance.
+
+Some statistics first need to be calculated, so that the test-statistic can be constructed. The total sum of squares is 
 \begin{equation}
-	s_{i}^{l}=\sum_{j|X_{ij} \leq q_{i}^{l}} X_{ij}.
-\end{equation} 
-With this notation, the total sum normalising factor is given by $N_i = s_i^p$ (where $p$ is the total number of OTUs). CSS chooses a value $\hat{l} \leq p$ using a data driven approach to calculate the scaling factor ($N_i = s_i^{\hat{l}}$) for each sample and get normalised counts.
-In particular, the quantile $\hat{l}$ for the threshold $q_i^{\hat{l}}$ is chosen  to be the smallest value where the median absolute deviation of sample-specific quantiles $q_i^l$ from a reference point (the median quantile $q_i^l$ across all samples) shows high instability. \cite{css_diff_abund}.
-% web
+	SS_T = \frac{1}{n}\sum_{i<j} D_{ij}^2,
+\end{equation}
+where the sum is taken over the lower triangular distance matrix, excluding the diagonal. The group $k$ sums of squares is given by
+\begin{align}
+	SS_{w,k} &=\frac{1}{n_k} \sum_{i<j} \epsilon_{ij} D_{ij}^2 \\
+	\epsilon_{ij} &=
+	 \begin{cases}
+	1, & \text{if}\ i,j \in I_{k} \\
+	0, & \text{otherwise}
+	\end{cases},
+\end{align}
+where the sum is taken over the samples belonging to the particular group. This amounts to summing up all the entries in the squared distance matrix that belong to group $k$. Summing up the group sums gives us the within groups sum-of-squares
+\begin{equation}
+	SS_w = SS_{w,white} + SS_{w,black}.
+\end{equation}
 
-% CSS + LOG histograms 
-\begin{figure}[h]
-	\centering
-	\begin{subfigure}{0.4\textwidth}
-		\centering
-		\includegraphics[width = \textwidth]{histogramofcountdatacss}
-		\caption{}
-		\label{fig:histcss}
-	\end{subfigure}
-	\begin{subfigure}{0.4\textwidth}
-	\centering
-	\includegraphics[width = \textwidth]{histogramofcountdatacsslog}
-	\caption{}
-	\label{fig:histcsslog}
-	\end{subfigure}
-	\caption{Histogram of the read counts per sample after \ref{fig:histcss} CSS normalisation and with \ref{fig:histcsslog} a $log_2$ transformation. The cyan colour represents white water samples and the red colour black water samples. }
-\end{figure}
+With this we can define the among-group sum-of-squares $SS_A = SS_T - SS_w$ which can be used to construct a pseudo F-ratio
+\begin{equation}
+F=	\frac{SS_A/(a-1)}{SS_w (n-a)}, 
+\end{equation}
+where $(a-1)$ are the degrees of freedom associated with the grouping factor and $(N-a)$ are the residual degrees of freedom \textbf{Anderson}.
 
+The distribution of this $F$-ratio under the null hypothesis is unknown, and we do not want to assume any. That is why use permutation of the samples to generate a distribution of $F$. If the groupings have no discernible effect on the samples, then it is equally likely that the group labels were associated with any of the samples. So, under a true null hypothesis, we can shuffle the labels onto the samples, calculate $F$-ratios (denoted by $F_p$) and construct an empirical (discrete) distribution $\{F_p\}$.
 
-After applying the CSS normalisation, the variation of read counts per samples drops significantly (except for some samples whose total read counts increase, see Figure \ref{fig:histcss}). Applying a $log_2$ transformation to the data after normalising reduces the variation drops even more (see Figure \ref{fig:histcsslog}). Furthermore, performing PCoA and NMDS (Figure \ref{fig:pcoa12otucss} and \ref{fig:nmds12otucss} respectively) on the normalised data separates white and black water samples better than if the normalisation was not applied. However, doing the same on the $log_2$ transformed data does not have the same effect.
-
-\begin{figure}[h]
-	\centering
-	\begin{subfigure}{0.4\textwidth}
-		\centering
-		\includegraphics[width = \textwidth]{nmds12otucss}
-		\caption{}
-		\label{fig:nmds12otucss}
-	\end{subfigure}
-	\begin{subfigure}{0.4\textwidth}
-		\centering
-		\includegraphics[width = \textwidth]{pcoa12otucss}
-		\caption{}
-		\label{fig:pcoa12otucss}
-	\end{subfigure}
-	\caption{Ordination plots for the CSS normalised data. \ref{fig:nmds12otucss} shows an NMDS plot of the data and \ref{fig:pcoa12otucss} a PCoA using Bray-Curtis measure. Both methods separate white and black water samples better than their respective ordination methods applied to non-normalised data.}
-\end{figure}
-
-We will be checking if this normalisation method and transformation produces any significant improvements (over the unnormalised dataset) in the classifiers ability to determine the river colour. 
-
-%%Normalization, which is the process where systematic variability is identified and removed, is therefore a vital part of the data analysis. 
-%https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5910605/
-% A substantial part of this variability is systematic and affects multiple genes and/or samples in a similar way. One example of systematic variability is the differences in sequence depth, where each sample is represented by a varying number of reads [13]. Systematic variability also comes from other technical sources, such as inconsistencies in the DNA extraction and sample handling, varying quality between sequencing runs, errors in the read mapping, and incompleteness of the reference databasescd 
+If the null hypothesis is true, then the $F$-ratio calculated using the original ordering of labels relative to the samples will be similar to the values obtained under permutation. If the grouping however, produces a significant effect, then the original $F$ value will be larger than those obtained from the permutation $\{F_p\}$. To test for significance we calculate the probability associated with $F$ under the true null by counting the number of permuted ratios $F_p$ that have larger value than $F$ and dividing by the total number of permutations
+\begin{equation}
+	P = \frac{\#\{F_p\in\{F_p\}| F_p \geq F \}+1}{\#\{F_p\}+1}.
+\end{equation}  
+We include the original $F$ value in the distribution as well, that is why $+1$ is included in both denominator and numerator.
 
 
-\subsection{Feature Correlation}
+Not all permutations of the data are necessary, a subset of them is enough to calculate a valid P-value. If it is calculated to be less than $5\%$ then we can reject the null. Of course the permutation will affect greatly the calculated value so it is important that an appropriate scheme is used. The way we chose was to permute the labels within sites. As explained earlier, samples were collected along the rivers in groups of 4-6. This means that even if samples collected close together came from different water colour, their dissimilarity would be relatively low when compared to far away sites. Thus, this shuffling will make it less probable for water colour to have a significant effect. 
 
-A big minority of OTUs in our data set have been found to have an absolute Spearman correlation of more than 0.9 with at least one other OTU. This correlation has a biological underpinning as it is expected that the abundance of species in a river environment would co-vary along it's length. Relationships between species in an environment have been modelled and can take many forms, like parasitic (the abundance of OTU1 and OTU2 is increased and decreased and they are both present), competitive (the abundance of both OTU1 and OTU2 is decreased when they are both present), and mutual (the abundance of both OTU1 and OTU2 is increased when they are both present). More complicated, non-linear correlation networks exist in nature between more than two species that are very difficult to capture even with large amounts of unbiased data \cite{weiss_correlation_2016}. 
-
-
-
-For our problem at hand, recovering such correlation networks is not of interest. We are more interested in selecting the best features from our data that would aid in the classification. Thus, we used the Spearman correlation with a threshold of 0.9 to remove 122 OTUs to create a new data set without highly correlated OTUs. 
+The P-value calculated when using the OTU table and the permutation scheme outlined previously, with 2000 permutations, was $2.6\%$.When no restriction is put on the shuffling, the P-value is $0.05\%$, significantly smaller. This means the null hypothesis is rejected, and the two distributions have different centroids and/or dispersion, defined by the distance matrix. This is of course evident when one looks at the ordination plots in section \ref{sec:ordination}, which show a different spread of black and white water samples. This is especially true for NMDS.
 
 
-
-
-
-
-
-
-\section{PERMANOVA}
 \section{Classification Models}
+\label{sec:classification}
 \subsection{Logistic Regression}
-\subsubsection{MCMC approach}
+\subsubsection{Bayesian approach}
 Binary classification involves deciding in which of two groups (classes) an object (point) should be categorised. A point is constituted of a response variable and features. The purpose of a classifier is then to correctly identify the response variable given it's features and any other relevant information. 
 
 Our data set's response variable is the water colour of the sample, defined here as $y_i \in \{ 1 (White),0 (Black)\}$ for the $i$th sample, where $i=1,...N$. The notation $ \mathbf{x}_i = [x_{i1},x_{i2},...,x_{im}]$ is used to represent the $m$ dimensional row vector of features for the $i$th sample. Stacking up the feature vectors we construct the matrix $X_{ij}$, with rows denoting the samples and columns the features.
@@ -464,16 +412,17 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
   and making use of the sigmoid function. The probability of point $i$ belonging to class $y_i \in \{1,0\}$  is thus
     \begin{align}
   	P(C = y_i |  \mathbf{x}_i, \bm{\theta}) &= P(C=1 |  \mathbf{x}_i)^{y_i}(1-P(C=1 |  \mathbf{x}_i))^{1-y_i}\\
+  	\label{eq:bernoulilikelihood}
 	&= \left(\frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}\right)^{y_i}\left(\frac{1}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}\right)^{1-y_i} \\
 	&=\frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)^{y_i}}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}.
   \end{align}
 
-The class distribution defines a Bernoulli likelihood with success probability $P(y_i = 1| \mathbf{x}_i, \bm{\theta})$ being modelled as a function of the features
-\begin{align}
-	P(y_i | \mathbf{x}_i  \bm{\theta}) &= \mu( \bm{\theta})^{y_i}(1 - \mu( \bm{\theta}))^{1-y_i}\\
-	\mu( \bm{\theta}) &= 	P(y_i =1 | \mathbf{x}_i  \bm{\theta}) \\
-	&= \sigma(\phi( \mathbf{x}) \bm{\theta}^T) = \frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}.
-\end{align}
+%The likelihood has thus a Bernoulli distribution with success probability $P(y_i = 1| \mathbf{x}_i, \bm{\theta})$ being modelled as a function of the features.
+%\begin{align}
+%	P(y_i | \mathbf{x}_i  \bm{\theta}) &= \mu( \bm{\theta})^{y_i}(1 - \mu( \bm{\theta}))^{1-y_i}\\
+%	\mu( \bm{\theta}) &= 	P(y_i =1 | \mathbf{x}_i  \bm{\theta}) \\
+%	&= \sigma(\phi( \mathbf{x}) \bm{\theta}^T) = \frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}.
+%\end{align}
   
   
   The aim now is to figure out which distribution of parameters $ \bm{\theta}^T$ model a decision function best so that it classifies the most points correctly. To do that, we agglomerate all of our samples into two sets; train and test. The train set will be used to `learn' the best parameters and the test set to evaluate it's performance on unseen data. Thus the response variables $\mathbf{y}$ are grouped into $ \mathbf{y}_{train}$ and $ \mathbf{y}_{test} $, and the features $X$ into ${X}_{train}$ and $X_{test}$. The index set of samples belonging to train and test is given by $I_{train}$ and $I_{test}$ respectively.
@@ -482,6 +431,7 @@ The class distribution defines a Bernoulli likelihood with success probability $
   \begin{align}
    P(\mathbf{y} | X, \bm{\theta}) &=\prod_{n=1}^{N} P\left(C=y_{i} | \mathbf{x}_{n}, \bm{\theta}\right) \\ 
    &=\prod_{n=1}^{N} \frac{\exp \left(\phi\left(\mathbf{x}_{i}\right)\bm{\theta}^{T} \right)^{y_{n}}}{1+\exp \left(\phi\left(\mathbf{x}_{i}\right) \bm{\theta}^{T} \right)} .
+   \label{eq:likelihood}
    \end{align}
 	
 	We can thus construct the posterior distribution of the parameters $\bm{\theta}$ by utilising Bayes' theorem and conditioning on the train sets
@@ -522,130 +472,273 @@ The class distribution defines a Bernoulli likelihood with success probability $
    where $\delta(\bm{\theta} = z^{(i)})$ denotes the Dirac delta function centred at the vector $z^{(i)}$. Using this point-mass function, integrals $I(f)$ can be approximated with sums $I_M(f)$ that converge in the following manner
    \begin{equation}
    	I_M(f) = \frac{1}{M}\sum_{i = 1}^M \delta(\bm{\theta} = z^{(i)})      \underset{M \rightarrow \infty}{{\rightarrow}} \int_{\Theta} f(\theta)P_M(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\theta = I(f).
+   	\label{eq:convergencemcmc}
    \end{equation}
-   If the $z_{(i)}$ samples were i.i.d, the estimator $I_M(f)$ is unbiased and by the strong law of large numbers it almost surely converges to $I(f)$. 
+   If the $z_{(i)}$ samples were i.i.d, the estimator $I_M(f)$ is unbiased and by the strong law of large numbers it almost surely converges to $I(f)$. MCMC samples need to satisfy some conditions for them to be used in monte carlo estimates.
    
-   However, MCMC samples are not i.i.d and thus have different convergence rates and 
+   The ergodic theorem generalises the law of large numbers. Suppose that $\{z^{(i)}\}_{i \in \mathrm{N}}$ is an ergodic Markov Chain with stationary distribution our target distribution and function $f:\mathrm{R}^D \rightarrow \mathrm{R}$ defined on the state space of our sample. Then \eqref{eq:convergencemcmc} holds.
    
+   This motivates the use of Metropolis-Hastings, an MCMC sampling method. A step of the algorithm involves drawing a sample $z^*$ from a proposal distribution (that aims at exploring the state space) $q(z^*|z^{(i-1)})$ given the current value of the chain $z^{(i)}$. Then the chain moves to the candidate value $z^*$ with an acceptance probability 
+   \begin{equation}
+   	min\left( 1,\frac{p(z^*)q(z^*|z^{(i-1)})}{p(z^{(i-1)})q(z^{(i-1)}|z^*)}\right),
+   \end{equation} 
+   where $p(z)$ is the unnormalised target density (or the target density up to a constant, the marginal likelihood which is independent of $z$).
    
+   If the candidate $z^*$ is not accepted then a new one is drawn from the proposal conditioned on the previously accepted sample. The process goes on up until we have generated a sufficient number of samples. More detailed explanation of the algorithm and the theory behind Markov Chain can be found in {\bf Probability notes} and {\bf Lange}.
+   
+	Instead of using Metropolis-Hastings (MH), Hamiltonian Monte Carlo (HMC) was used. When compared to a MH using a Gaussian random-walk as proposal distribution, it reduces the correlation between successive sampled states, and thus it needs fewer samples to approximate integrals.
+	
+	
+	
+   
+%   
+%   We will hence outline some basic theory of Markov Chains so that the samplers subsequently discussed are coherent to the reader. This will not be an formal treatment on the subject, and no proofs to theorems or corollaries will be given. More extensive material on the subject can be found elsewhere .
+%   
+%   We introduce Discrete time and space Markov Chains because of the ease of pressentation. Let $z^0,z^1,...$ be a sequence of random variables, each of which takes some value in a state space $E \subseteq \mathrm{Z}$. We denote $\mathrm{N}_0 = \mathrm{N} \cup \{0\}$. 
+%   \begin{defn}
+%   	
+%   \end{defn}
+%   
+%   The aim of MCMC is to construct a markov chain whose stationary distribution is the target distribution. 
+%   
+%   However, MCMC samples are not i.i.d and thus have different convergence rates. MCMC 
+   
+\subsubsection{Maximum Likelihood Estimation}
+
+The Maximum Likelihood approach to fitting a logistic regression model to the data involves, as the name suggests, maximising the likelihood of response variables given the features and the parameters , with respect to the parameters \eqref{eq:likelihood}.
+
+Instead of looking at the likelihood we can look at its log transform, which has the same relations of order as the likelihood
+\begin{equation}
+	P(a_1|b) > P(a_2|b) \Leftrightarrow 	\log P(a_1|b) >\log P(a_2|b).
+\end{equation} 
+We can define the loss function by taking the negative logarithm of the likelihood, which gives what is called the cross-entropy loss function
+\begin{align}
+	L(\bm{\theta})= - \left(\sum_{n=1}^N y_n \phi\left(\mathbf{x}_{i}\right)\cdot\bm{\theta}^{T} -\log\left(1+\exp\left(\phi\left(\mathbf{x}_{i}\right)\bm{\theta}^{T}\right)\right) \right).
+\end{align}
+Thus, instead of maximising the likelihood, we can minimise the loss, which allows for more computational accuracy.  
+The parameters $\bm{\theta}^*$ that minimise this loss are then used for the prediction of new features. If the discriminant function,
+\begin{align}
+	 \log \frac{P(C=1 |  \mathbf{x}_i)}{P(C = 0 |  \mathbf{x}_i)} = \phi( \mathbf{x}) (\bm{\theta}^*)^T,
+\end{align}
+ is bigger than 0 then the point is classified as coming from white water, and if it is smaller then from black. 
+ 
+ Regularisation can also be introduced that would reduce over fitting on the training data. If not employed, the model might become too complicated, modelling noise in our data, and thus nt generalisable to new data. Using regularisation in machine learning amounts to penalising model complexity by adding a term to the loss function. This will cause some of the parameters to shrink towards zero, thus creating a simpler model.
+ 
+ Ridge, or $L_2$ regularisation, involves adding the $L_2$ norm of the parameters to the loss function
+ \begin{equation}
+ 		L(\bm{\theta},s)= - \left(\sum_{n=1}^N y_n \phi\left(\mathbf{x}_{i}\right)\cdot\bm{\theta}^{T} -\left(1-y_n\right)\log\left(1+\exp\left(\phi\left(\mathbf{x}_{i}\right)\bm{\theta}^{T}\right)\right) \right) + s||\bm{\theta}||_2.
+ \end{equation}
+  A sparsity parameter $s$ is used to control how much the model complexity will be penalised. With Ridge the parameters are prevented from taking large values.
+  
+  Lasso, or $L_1$ regularisation, involves adding the $L_1$ norm of the parameters to the loss function
+ \begin{equation}
+L(\bm{\theta},s)= - \left(\sum_{n=1}^N y_n \phi\left(\mathbf{x}_{i}\right)\cdot\bm{\theta}^{T} -\log\left(1+\exp\left(\phi\left(\mathbf{x}_{i}\right)\bm{\theta}^{T}\right)\right) \right) + s||\bm{\theta}||_1.
+\end{equation}
+	Lasso's use of the $L_1$ norm allows some parameters to become zero during fitting, thus reducing the complexity of the model. This is in contrast to Ridge which generally will not force any parameters to take a zero value, but something close to it.
+	
+	This ability of Lasso makes it also useful as a feature selection method, which is especially important in data sets with a large number of features. 
+	
+	Choosing one of these regularisation techniques is equivalent to maximising the posterior distribution $P(\bm{\theta}|X_{train},\mathbf{y}_{train},s)$, and choosing an appropriate prior for the parameters. To demonstrate, let's assume that the prior is a multivariate normal distribution with mean zero and the identity matrix multiplied by a constant as covariance. Then the log posterior can be written as
+	\begin{align}
+		P(\bm{\theta}|s) &= (2\pi)^{-\frac{M}{2}}s^{-\frac{1}{2}}\exp\left(-\frac{\bm{\theta}\cdot\bm{\theta}^T}{2s}\right)\\
+		\log P(\bm{\theta}|X_{train},\mathbf{y}_{train},s) &=\left(\sum_{n=1}^N y_n \phi\left(\mathbf{x}_{i}\right)\cdot\bm{\theta}^{T} -\log\left(1+\exp\left(\phi\left(\mathbf{x}_{i}\right)\bm{\theta}^{T}\right)\right) \right) - \frac{\bm{\theta}\cdot\bm{\theta}^T}{2s},
+	\end{align}
+  by ignoring constants, like the marginal likelihood $P(\mathbf{y}_{train}|X_{train},s)$ and the prior constants that do not depend on the parameters. Therefore, maximising the posterior with multivariate Normal prior is equivalent to minimising the loss with an $L_2$ regularisation. 
+  
+  
+  Using instead independent Laplace priors centred at zero for each parameter
+  \begin{align}
+  		P(\bm{\theta}|s) &= \prod_{i = 1}^{M} \frac{1}{2s} \exp\left(\frac{|\theta_i|}{2s}\right),
+  \end{align} 
+  and maximising the posterior, is equivalent to minimising the loss with lasso regularisation.
 \subsection{Random Forests}
-\section{Data-Splitting}
+Random Forests is an ensemble method that works by training multiple decision trees and averaging their predicted class when it comes to classification. The combination of trees is done to reduce the overfitting of single decision trees on the train set {\bf Elementsofstatisticallearning} . In particular, trees grown very deeply to learn complex patterns in the data have often low bias but very high variance. 
 
-Together with the OTU table, our data also include the location of the samples in the rivers (in Easting and Northing coordinates) and in which part of the river they belong to. Because of this location attribute, our samples cannot be said to be independent. Thus, the way we choose to split our data into training and testing sets will surely affect the accuracy of the classifier. For example, testing on a set that is composed of samples maximally distant from the ones in the training set (see Figure \ref{fig:groupsamp}) will produce different results than testing on a set with all samples in close proximity to the ones in the training set (see Figure \ref{fig:stratsampl}).
+To combat this the features and observations used by each tree are randomly sub-sampled from the training set (with or without replacement) \footnote{Sampling only the observations with replacement is called bagging (bootstrap aggregating)}. Thus the random forest algorithm averages out deep decision trees trained on different parts of the training set, so as to reduce their variance.  
 
-To avoid choosing a split method, several ones have been employed that represented different splitting conditions. The classifiers have then been tested on all of them so as to evaluate how well they can perform under various circumstances.
-%% Stratified an group folds for tain test split plot
-\begin{figure}[h]
+ \subsubsection{Decision Trees}
+
+To illustrate how binary decision trees work, let's consider the classification of humans into male and females using two features: height in centimetres and weight in kilograms. An example of a decision tree applicable for such a problem is given in figure \ref{fig:extree}. The root node splits the features space of height into two regions, one above 180cm and one below. In the first region, the tree classifies all points as male. The second region is further split into two based on weight; above and below 80kg. 
+\begin{figure}
 \centering
-\begin{subfigure}{0.4\textwidth}
-\includegraphics[width = \textwidth]{stratsamp.png}
-\end{subfigure}
-\begin{subfigure}{0.4\textwidth}
-\includegraphics[width = \textwidth]{stratsamp2.png}
-\end{subfigure}
-\caption{Test set samples are geographically among Train set samples. This represents a maximally similar split which is created by ensuring constant distribution of samples in each part of the river in both the Train and Test set.}
-\label{fig:stratsampl}
+	\includegraphics[width=0.5\textwidth]{Example-Decision-Tree}
+	\caption{An example of a decision tree constructed for the classification to males and females}
+	\label{fig:extree}
 \end{figure}
 
-%Group sample plot
-\begin{figure}[h]
-\centering
-\begin{subfigure}{0.4\textwidth}
-\includegraphics[width = \textwidth]{groupsamp.png}
-\end{subfigure}
-\begin{subfigure}{0.4\textwidth}
-\includegraphics[width = \textwidth]{groupsamp2.png}
-\end{subfigure}
-\caption{Test set samples are geographically distinct from Train set samples. This represents a maximally dissimilar split which is created by choosing a different part of the river as the Testing set.}
-\label{fig:groupsamp}
-\end{figure}
+Decision trees constructed by Random Forest are done so using the Classification and Regression Trees (CART) algorithm. These are binary trees were each node represents a single input feature and a split condition in that feature's space. The leaf nodes of the trees (end points) contain an output variable (class label). The selection of which features is to be used at each node is done using a cost function. The construction of a tree ends when a predefined stopping condition is met.
 
 
+Our data sets is made up of $N$ response variables $y_i \in \{1,0\}$ and features $\mathbf{x}_i \in \mathrm{R}^p$. Let's also define the regions our feature space is split into by each node of the tree by $R(j,s)$, where $j$ is the splitting feature and s is the split point. The pair of regions is given by 
+\begin{equation}
+	R_1(j,s) = \{X|X_j \leq s\} \text{ and } 	R_2(j,s) = \{X|X_j > s\}.  
+\end{equation}
+
+The proportion of class $k \in \{1,0\}$ observations in region $m$ which has a total of $N_m$ observations is given by
+\begin{equation}
+	\hat{p}_{m,k}(j,s) = \frac{1}{N_m} \sum_{\mathbf{x}_i \in R_m(j,s)} I(y_i = k), 
+\end{equation}
+where $I(y_i=k)$ is the indicator function (equals to one when $y_i =k$, zero otherwise) and the sum is over all the points which lie in region $R_m$. The proportion depends on the splitting feature and point $(j,s)$ of the region $R_m$.
 
 
-%Validation sets
-In addition to splitting the data into training and test sets, the train set was further split into validation sets so as to tune the hyperparameters of the models. The splitting into validation sets followed the same principle/method as the train-test split. So if, for example, the train and test sets were split using the maximally similar approach, the validation sets produced from the train set were chosen so as to be maximally similar to the remaining set.
+To create a tree we need to divide up the feature space; a greedy approach called recursive binary splitting is used. It involves searching over all available features (to that node) and all split points to find the split (or regions) with the lowest cost.  To create this cost function, impurity measures are used; which measure how pure a node is.
+One commonly used is the Gini index which takes the form
+\begin{equation}
+	G_m = 2\hat{p}_{m,1}(1-\hat{p}_{m,1}),
+\end{equation}
+in region $m$ for binary classification. When samples at a node  belong  with equal proportions to both classes (thus a bad/impure split), the index takes the value 0.5. When the node has samples in only one class it takes the value 0 (a perfect/pure split).
 
+To construct the cost function we need to take into consideration the number of observations in the two child nodes $N_{mL},\ N_{mR}$ created by splitting the $m$ node, and weight the corresponding node impurity measure. This gives the cost function of node $m$ 
+\begin{align}
+	\Delta G_m &=G_m - G_{mL} \frac{N_{mL}}{N_m} - G_{mR}\frac{N_{mR}}{N_m}\\ &=2\hat{p}_{mL,1}(j,s)(1-\hat{p}_{mL,1})\frac{N_{mL}}{N_m} + 2\hat{p}_{mR,1}(1-\hat{p}_{mR,1})\frac{N_{mR}}{N_m},
+	\label{eq:decreaseimpurity}
+\end{align}
+which depends on the choice of region $m$, and consequently on the split feature and point $(j,s)$. The subscripts $mL$ and $mR$ denote the two child nodes created after the split, and $\hat{p}_{mR,1}$ the proportion of samples in class 1 in the right node. This cost function is the decrease in impurity at node $m$.
 
-The steps of testing a classifier using a specific split method are as follows:
-\begin{enumerate}
-\item The data set is split into train and test sets based on the splitting method of choice. 
-\item The train set is split into $K$-folds using the same method for the train-test split.
-\item A set of hyperparameters and potential values are chosen for the cross-validation procedure. For example, in Logistic Regression a set of numbers ranging from 0.001 to 20 is chosen for the sparsity parameter and the set $\{True,False\}$ is chosen for the intercept parameter    
-\item The classifier is trained on the $K-1$ folds and tested on the remaining validation set for all possible combinations of hyperparameters (e.g. the Logistic Regressor is trained with hyperparameters $\{0.001,True\},\{0.001,False\},\{1.001,True\},\{1.001,False\}$ etc...).
-\item Step 4 is repeated for all the $K$-folds (by training on the $K-1$ and testing on the one left out). The average score across the validation sets is found for each hyperparameter combination and the classifier is retrained on the train set using the best hyperparameters set.
-\item The retrained model is tested on the test set and the prediction score is calculated.
-\item Steps  1 through 6 are repeated a number of times for different train-test splits using the same split principles. The scores for each repetition are stored.  
-\end{enumerate}
+The feature (from those available to the tree) and split point that maximises the decrease in impurity $\Delta G_m$ are used to construct child nodes, increasing the depth of the tree.
 
-This procedure can be repeated for different features (data sets), so as to evaluate how feature selection and transformations can alter the results. The best classifier for the particular features and splitting method is the one which has the highest mean score across all train-test splits. The various data sets used to test the classifiers on are summarised in table \ref{table:features}.
-\begin{table}
-	\caption{Features used in Classification}
-	\centering
-	\label{table:features}
-	\begin{tabularx}{\textwidth}{l X  }
-		\hline 
-		Features used &Description of dataset\\ 
-		
-		\hline
-		OTU &The OTU table as it is without any modifications done to it \\
-		OTU LOW & The OTU table without highly correlated features\\
-		OTU CSS & The normalised OTU table using CSS\\
-		OTU Min CSS & The normalised OTU table using CSS without samples with total counts of less than 10000 reads  \\
-		OTU CSS LOG & A $\log_2$ transformed OTU CSS \\
-		PCoA Bray-Curtis &The transformation of the OTU table with PCoA using the Bray-Curtis measure  \\
-		PCoA Bray-Curtis CSS &The transformation of the normalised OTU table with PCoA using the Bray-Curtis measure\\
-		
-		\hline 
-	\end{tabularx}
-\end{table}
+The most common stopping criterion is to set a minimum number of observables that each node needs to satisfy before it is further split. If the count is less than that then the node becomes a leaf node.  
 
-\large{ \bf Maximising Similarity} \\
-\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is similar geographically to the train set.\\
-\textit{Method}: Testing and validation sets are made up of samples coming from every part of the river. Care is taken to ensure that no geographical area is over represented. This is done using Stratified sampling (using the method StratifieKfold) where the strata (or groups) are the areas of the rivers the samples belong to. Stratified sampling ensures that the distribution of test or validation samples in each area is approximately the same as for train samples.
+\subsubsection{Aggregating}
+As mentioned earlier, trees used in random forest are not trained on the whole data set. In particular, bagging is usually employed so that each tree fits a model on a different set of observables. Furthermore, at each node of a tree, a predetermined number of features are sampled without replacement; only these are considered in the splitting condition. Usually this number is set to the square root of the total number of features in the train set (rounded up).
 
+When it comes to prediction, the output class probability predicted by each tree $T_i(\mathbf{x})$ is averaged over all $B$ trees to give the class probability of the ensemble
+\begin{align}
+	T_i(\mathbf{x}_{test}) &= P(C=1|\mathbf{x}_{test})_i\\ &= \text{Proportion of class 1 observables in leaf node reached by }\mathbf{x}_{test}\\
+	P(C = 1|\mathbf{x}_{test},\{T_i\}_{1}^B) &= \frac{1}{B} \sum_{i=1}^B T_i(\mathbf{x}_{test}) .
+\end{align}
 
-
-
-\large{  \bf Maximising Dissimilarity}\\
-\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is dissimilar (or far away) geographically to the train set.\\
-\textit{Method}: Testing and Validation sets are made up of all the samples which belong to a particular area of the river. For example, the test set might be constituted by all the samples in the Upper Marañón area, and the validation sets by all the remaining areas (Huallaga, Min Maranon, Lower Maranon, Ucayali, Tapiche, Napo). The method used to produce these splits is called GroupKfold.
-
-\large{ \bf Random Splits}\\
-\textit{Aim}: Evaluate the performance of the classifiers on train and test sets obtained by random splitting
-\textit{Method}: Test and Validation sets are obtained by randomly splitting the data. Care is taken to ensure that the balance of white and black water samples is the same across splits. This is done using Stratified sampling with the colour of the river as the strata.
-
-
-{ \bf Ideal Splits}
-An ideal sampling method would take into account the spatial correlation structures between the samples, besides just their location. Since the river flows eastwards from Maranon Upper down to all other streams, samples collected upstream would inevitably affect those from downstream, but the opposite might not be true. Thus, euclidean proximity of the river samples is not always a good enough indicator for detecting similarity between samples. For example, sample A collected near the opening of the Tapiche stream and sample B collected a bit further South of the opening, in the Ucayali stream, will have a smaller distance between them than with other samples collected further south in the Tapiche and Ucayaly streams. However, since the streams diverge, A and B might be more similar to samples found downstream their part of the river (Tapiche and Ucayaly respectively) than between them. 
-
-To achieve this, a directed graph of the river can be constructed, with vertices representing the samples, and edges the river path between them. Then a sampling scheme can take into account the stream direction and split the dataset in more sophisticated ways. One such way can test a classifier's ability to predict river colour if the test set is downstream from the train set, and the opposite, if the test set is upstream from the train. 
-
-
-%\begin{table}
-%\caption{Even better looking table using booktabs}
+ The construction of the algorithm allows it to determined which features offer most of the explanatory power in separating samples. There are several ways to do this and none of them outperforms the other in all cases (since explanatory power is a difficult concept to define). One approach uses the out-of-bag samples that were not used in the construction of a tree (if bagging was used). Its prediction accuracy on these samples is measured and used as a benchmark for feature evaluation. Then the values for a feature in the out-of-bag data set are randomly permuted, and the prediction accuracy of the tree is tested again. The drop in accuracy is associated with the predictive power of the feature whose values where permuted. This is done for all features, and the loss in accuracy is averaged over all trees. The larger the drop, the more predictive the feature. 
+ 
+ Another way is to measure the mean decrease in impurity of each feature. For a feature $X_j$ this is done by adding up the weighted decrease in impurity for all nodes where $X_j$ is used, and then average over all trees in the forest. The formula is given by 
+ \begin{equation}
+ 	Importance(X_j) = \frac{1}{B} \sum_{b= 1}^{B}\sum_{t \in \phi_b} I(j_t =j)\left[prop(t)\Delta G_t\right],
+ \end{equation}
+where the sum is over all trees $b$ and all nodes of the tree $\phi_b$, and $I(j_t =j)$ is the indicator function that takes the value 1 when node $t$ is split using variable $X_j$. The proportion of samples, from the initial number, at node $t$ is given by $prop(t)$. \textbf{Gilles} 
+%
+% With just bagging, the algorithm produces an ensemble of structurally similar trees. That's why feature sampling is used in random forests; to reduce the correlation between trees.
+ 
+ The random forest algorithm was implemented using scikit-learn in python. The gini impurity measure is used both for tree growing and for feature importance (using also trees' depth as an indicator). 
+%%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% DATA SPLITTING
+%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%\section{Data-Splitting}
+%
+%Together with the OTU table, our data also include the location of the samples in the rivers (in Easting and Northing coordinates) and in which part of the river they belong to. Because of this location attribute, our samples cannot be said to be independent. Thus, the way we choose to split our data into training and testing sets will surely affect the accuracy of the classifier. For example, testing on a set that is composed of samples maximally distant from the ones in the training set (see Figure \ref{fig:groupsamp}) will produce different results than testing on a set with all samples in close proximity to the ones in the training set (see Figure \ref{fig:stratsampl}).
+%
+%To avoid choosing a split method, several ones have been employed that represented different splitting conditions. The classifiers have then been tested on all of them so as to evaluate how well they can perform under various circumstances.
+%%% Stratified an group folds for tain test split plot
+%\begin{figure}[h]
 %\centering
-%\label{table:good_table}
-%\begin{tabular}{l c c c c}
-%\toprule
-%\multirow{2}{*}{Dental measurement} & \multicolumn{2}{c}{Species I} & \multicolumn{2}{c}{Species II} \\ 
-%\cmidrule{2-5}
-%  & mean & SD  & mean & SD  \\ 
-%\midrule
-%I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
+%\begin{subfigure}{0.4\textwidth}
+%\includegraphics[width = \textwidth]{stratsamp.png}
+%\end{subfigure}
+%\begin{subfigure}{0.4\textwidth}
+%\includegraphics[width = \textwidth]{stratsamp2.png}
+%\end{subfigure}
+%\caption{Test set samples are geographically among Train set samples. This represents a maximally similar split which is created by ensuring constant distribution of samples in each part of the river in both the Train and Test set.}
+%\label{fig:stratsampl}
+%\end{figure}
 %
-%I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
+%%Group sample plot
+%\begin{figure}[h]
+%\centering
+%\begin{subfigure}{0.4\textwidth}
+%\includegraphics[width = \textwidth]{groupsamp.png}
+%\end{subfigure}
+%\begin{subfigure}{0.4\textwidth}
+%\includegraphics[width = \textwidth]{groupsamp2.png}
+%\end{subfigure}
+%\caption{Test set samples are geographically distinct from Train set samples. This represents a maximally dissimilar split which is created by choosing a different part of the river as the Testing set.}
+%\label{fig:groupsamp}
+%\end{figure}
 %
-%I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
 %
-%I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
 %
-%CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
 %
-%CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
-%\bottomrule
-%\end{tabular}
+%%Validation sets
+%In addition to splitting the data into training and test sets, the train set was further split into validation sets so as to tune the hyperparameters of the models. The splitting into validation sets followed the same principle/method as the train-test split. So if, for example, the train and test sets were split using the maximally similar approach, the validation sets produced from the train set were chosen so as to be maximally similar to the remaining set.
+%
+%
+%The steps of testing a classifier using a specific split method are as follows:
+%\begin{enumerate}
+%\item The data set is split into train and test sets based on the splitting method of choice. 
+%\item The train set is split into $K$-folds using the same method for the train-test split.
+%\item A set of hyperparameters and potential values are chosen for the cross-validation procedure. For example, in Logistic Regression a set of numbers ranging from 0.001 to 20 is chosen for the sparsity parameter and the set $\{True,False\}$ is chosen for the intercept parameter    
+%\item The classifier is trained on the $K-1$ folds and tested on the remaining validation set for all possible combinations of hyperparameters (e.g. the Logistic Regressor is trained with hyperparameters $\{0.001,True\},\{0.001,False\},\{1.001,True\},\{1.001,False\}$ etc...).
+%\item Step 4 is repeated for all the $K$-folds (by training on the $K-1$ and testing on the one left out). The average score across the validation sets is found for each hyperparameter combination and the classifier is retrained on the train set using the best hyperparameters set.
+%\item The retrained model is tested on the test set and the prediction score is calculated.
+%\item Steps  1 through 6 are repeated a number of times for different train-test splits using the same split principles. The scores for each repetition are stored.  
+%\end{enumerate}
+%
+%This procedure can be repeated for different features (data sets), so as to evaluate how feature selection and transformations can alter the results. The best classifier for the particular features and splitting method is the one which has the highest mean score across all train-test splits. The various data sets used to test the classifiers on are summarised in table \ref{table:features}.
+%\begin{table}
+%	\caption{Features used in Classification}
+%	\centering
+%	\label{table:features}
+%	\begin{tabularx}{\textwidth}{l X  }
+%		\hline 
+%		Features used &Description of dataset\\ 
+%		
+%		\hline
+%		OTU &The OTU table as it is without any modifications done to it \\
+%		OTU LOW & The OTU table without highly correlated features\\
+%		OTU CSS & The normalised OTU table using CSS\\
+%		OTU Min CSS & The normalised OTU table using CSS without samples with total counts of less than 10000 reads  \\
+%		OTU CSS LOG & A $\log_2$ transformed OTU CSS \\
+%		PCoA Bray-Curtis &The transformation of the OTU table with PCoA using the Bray-Curtis measure  \\
+%		PCoA Bray-Curtis CSS &The transformation of the normalised OTU table with PCoA using the Bray-Curtis measure\\
+%		
+%		\hline 
+%	\end{tabularx}
 %\end{table}
+%
+%{ \large\bf Maximising Similarity} \\
+%\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is similar geographically to the train set.\\
+%\textit{Method}: Testing and validation sets are made up of samples coming from every part of the river. Care is taken to ensure that no geographical area is over represented. This is done using Stratified sampling (using the method StratifieKfold) where the strata (or groups) are the areas of the rivers the samples belong to. Stratified sampling ensures that the distribution of test or validation samples in each area is approximately the same as for train samples.
+%
+%
+%
+%
+%{ \large \bf Maximising Dissimilarity}\\
+%\textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is dissimilar (or far away) geographically to the train set.\\
+%\textit{Method}: Testing and Validation sets are made up of all the samples which belong to a particular area of the river. For example, the test set might be constituted by all the samples in the Upper Marañón area, and the validation sets by all the remaining areas (Huallaga, Min Maranon, Lower Maranon, Ucayali, Tapiche, Napo). The method used to produce these splits is called GroupKfold.
+%
+%{\large \bf Random Splits}\\
+%\textit{Aim}: Evaluate the performance of the classifiers on train and test sets obtained by random splitting
+%\textit{Method}: Test and Validation sets are obtained by randomly splitting the data. Care is taken to ensure that the balance of white and black water samples is the same across splits. This is done using Stratified sampling with the colour of the river as the strata.
+%
+%
+%{ \bf Ideal Splits}
+%An ideal sampling method would take into account the spatial correlation structures between the samples, besides just their location. Since the river flows eastwards from Maranon Upper down to all other streams, samples collected upstream would inevitably affect those from downstream, but the opposite might not be true. Thus, euclidean proximity of the river samples is not always a good enough indicator for detecting similarity between samples. For example, sample A collected near the opening of the Tapiche stream and sample B collected a bit further South of the opening, in the Ucayali stream, will have a smaller distance between them than with other samples collected further south in the Tapiche and Ucayaly streams. However, since the streams diverge, A and B might be more similar to samples found downstream their part of the river (Tapiche and Ucayaly respectively) than between them. 
+%
+%To achieve this, a directed graph of the river can be constructed, with vertices representing the samples, and edges the river path between them. Then a sampling scheme can take into account the stream direction and split the dataset in more sophisticated ways. One such way can test a classifier's ability to predict river colour if the test set is downstream from the train set, and the opposite, if the test set is upstream from the train. 
+%
+%
+%%\begin{table}
+%%\caption{Even better looking table using booktabs}
+%%\centering
+%%\label{table:good_table}
+%%\begin{tabular}{l c c c c}
+%%\toprule
+%%\multirow{2}{*}{Dental measurement} & \multicolumn{2}{c}{Species I} & \multicolumn{2}{c}{Species II} \\ 
+%%\cmidrule{2-5}
+%%  & mean & SD  & mean & SD  \\ 
+%%\midrule
+%%I1MD & 6.23 & 0.91 & 5.2  & 0.7  \\
+%%
+%%I1LL & 7.48 & 0.56 & 8.7  & 0.71 \\
+%%
+%%I2MD & 3.99 & 0.63 & 4.22 & 0.54 \\
+%%
+%%I2LL & 6.81 & 0.02 & 6.66 & 0.01 \\
+%%
+%%CMD & 13.47 & 0.09 & 10.55 & 0.05 \\
+%%
+%%CBL & 11.88 & 0.05 & 13.11 & 0.04\\ 
+%%\bottomrule
+%%\end{tabular}
+%%\end{table}
 
 
 
