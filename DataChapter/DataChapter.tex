@@ -122,6 +122,7 @@ For our problem at hand, recovering such correlation networks is not of interest
 %% DATA SPLITTING
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \section{Splitting}
+\label{sec:splitting}
 
 Together with the OTU table, our data also include the location of the samples in the rivers (in Easting and Northing coordinates) and in which part of the river they belong to. Because of this location attribute, our samples cannot be said to be independent. Thus, the way we choose to split our data into training and testing sets will surely affect the accuracy of the classifier. For example, testing on a set that is composed of samples maximally distant from the ones in the training set (see Figure \ref{fig:groupsamp}) will produce different results than testing on a set with all samples in close proximity to the ones in the training set (see Figure \ref{fig:stratsampl}).
 
@@ -166,11 +167,19 @@ The steps of testing a classifier using a specific split method are as follows:
 \item A set of hyperparameters and potential values are chosen for the cross-validation procedure. For example, in Logistic Regression a set of numbers ranging from 0.001 to 20 is chosen for the sparsity parameter and the set $\{True,False\}$ is chosen for the intercept parameter    
 \item The classifier is trained on the $K-1$ folds and tested on the remaining validation set for all possible combinations of hyperparameters (e.g. the Logistic Regressor is trained with hyperparameters $\{0.001,True\},\{0.001,False\},\{1.001,True\},\{1.001,False\}$ etc...).
 \item Step 4 is repeated for all the $K$-folds (by training on the $K-1$ and testing on the one left out). The average score across the validation sets is found for each hyperparameter combination and the classifier is retrained on the train set using the best hyperparameters set.
-\item The retrained model is tested on the test set and the prediction score is calculated.
-\item Steps  1 through 6 are repeated a number of times for different train-test splits using the same split principles. The scores for each repetition are stored.  
+\item The retrained model is tested on the test set and the confusion matrix is calculated.
+\item Steps  1 through 6 are repeated a number of times for different train-test splits using the same split principles. The confusion matrix for each repetition is stored and added at the end of the process.  
 \end{enumerate}
 
-This procedure can be repeated for different features (data sets), so as to evaluate how feature selection and transformations can alter the results. The best classifier for the particular features and splitting method is the one which has the highest mean score across all train-test splits. The various data sets used to test the classifiers on are summarised in table \ref{table:features}.
+The best hyperparameters are the ones that maximise the F score. This score combines both the precision and recall of the validation test. Precision is the number of correctly identified positive results divided by the number of all positive results returned by the classifier. Recall is the number of correctly identified positive results divided by the true number of positive results. The score is the harmonic mean of the two
+\begin{equation}
+	F_1 = \frac{2}{\text{recall}^{-1} + \text{precision}^{-1}}.
+\end{equation} 
+If black water was chosen as the positive result then there would be cases that recall would be undefined. This is because in the case of maximum dissimilarity, a validation set might end up with only white water samples (thus only negatives). So recall, which measures how many positive observations were correctly identified from the total number of positive observations, would be $\frac{0}{0}$. Thus, white samples were chosen as the positive observations.
+
+This procedure can be repeated for different features (data sets), so as to evaluate how feature selection and transformations can alter the results.
+% The best classifier for the particular features and splitting method is the one which has the highest mean score across all train-test splits. 
+ The various data sets used to test the classifiers on are summarised in table \ref{table:features}.
 \begin{table}
 	\caption{Features used in Classification}
 	\centering
@@ -190,6 +199,32 @@ This procedure can be repeated for different features (data sets), so as to eval
 		
 		\hline 
 	\end{tabularx}
+\end{table}
+
+
+The baseline performance for this problem was also devised so that meaningful evaluations could be made of the classifiers. This method is essentially setting the `coin flip' rate; prediction based on prior probabilities of the classes. Using their distribution on the whole data set would be an unfair baseline for the classifiers since they wouldn't be able to train on the whole data set, and the proportions of black and white water samples change significantly with the train set. 
+
+Thus, for every train-test split we calculated the prior probability $P(C=1)$ of a sample being white using the train set by dividing the number of white samples to the total number of samples. Then, for each observation in the test set $y_i$ we calculated the expected times the `coin' would identify it correctly and falsely
+\begin{align}
+	E(\text{Correct Prediction}|y_i ) = y_i*P(C=1) + (1-y_i)*(1-P(C=1)) \\
+	E(\text{False Prediction}|y_i) = (1-y_i)*P(C=1) + y_i*(1-P(C=1)).
+\end{align}
+Then a confusion matrix was constructed (see table \ref{table:baseline}) using the total number of white $N_{white}$ and black $N_{black}$ water samples in the test set.
+\begin{table}[h]
+
+	\centering
+
+	\begin{tabularx}{\textwidth}{l| c c}
+	 
+		 &Predicted Black&Predicted White\\ 
+		
+		\hline
+		Actual Black&$N_{black}*E(\text{Correct}|\text{Black} )$&$N_{black}*E(\text{False}|\text{Black})$\\
+		Actual White& $N_{white}*E(\text{Correct}|\text{White} )$&$N_{white}*E(\text{False}|\text{White})$
+
+	\end{tabularx}
+	\caption{Confusion matrix of baseline benchmark}
+		\label{table:baseline}
 \end{table}
 
 { \large\bf Maximising Similarity} \\

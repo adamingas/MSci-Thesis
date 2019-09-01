@@ -10,6 +10,62 @@
 \else
     \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
 \fi
+
+In this chapter we present the performance of the classifiers under the different split schemes outlined earlier. The various features used and their applicability on different splitting conditions is also be evaluated. 
+
+The confusion matrix used will have the form 
+\begin{align}
+	\begin{bmatrix}
+	\text{True Black/ Black Predicted correctly}&\text{False White/ Black  Predicted falsely}\\
+	\text{False Black/ White Predicted falsely}&\text{True White/ White  Predicted correctly}
+	\end{bmatrix}
+\end{align}
+
+
+
+The results of the benchmark method we devised in section \ref{sec:splitting} are presented in table \ref{label} for maximum similarit, table \ref{label} for maximum dissimilarity, and table \ref{label} for random splits.
+
+
+\begin{table}
+	\centering
+	\begin{tabular}{l c c c}
+		\toprule 
+		&\multicolumn{2}{c}{Confusion Matrix} &Accuracy\\
+		Features used & Predicted Black&Predicted White&\\ 
+		
+		\midrule
+		\multirow{2}{*}{Full OTU }& 	2.64 & 18.36&		\multirow{2}{*}{77.6\%}\\
+					&	18.36 &124.64&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{Min OTU}  &2.75 & 18.25&		\multirow{2}{*}{76.8\%}\\
+		&18.25& 117.75&\\
+		\bottomrule
+		\hline 
+	\end{tabular}
+	\caption{Benchmark for Maximum Similarity}
+	\label{table:benchmarksim}
+\end{table}
+
+\begin{table}
+	\centering
+	\begin{tabular}{l c c c }
+		\toprule 
+		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
+		Features used & Predicted Black&Predicted White&\\ 
+		
+		\midrule
+		\multirow{2}{*}{Full OTU }&  1.75 &19.25&\multirow{2}{*}{76.7\%}\\
+								  &	 18.96&124.04 &\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{Min OTU}    &1.83&19.17&\multirow{2}{*}{75.8\% }\\
+									&18.83&117.17&\\
+		\bottomrule
+		\hline 
+	\end{tabular}
+	\caption{Benchmark for Maximum Dissimilarity}
+	\label{table:benchmarkdissim}
+\end{table}
+
 \begin{table}
 \caption{Results from maximising similarity using Logistic Regression}
 \centering

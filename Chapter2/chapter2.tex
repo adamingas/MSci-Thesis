@@ -3,7 +3,7 @@
 %****************************** Second Chapter *********************************
 %*******************************************************************************
 
-\chapter{Methods, Models and Data-Splitting}
+\chapter{Methods}
 
 \ifpdf
     \graphicspath{{Chapter2/Figs/Raster/}{Chapter2/Figs/PDF/}{Chapter2/Figs/}}
@@ -14,7 +14,7 @@
 
 \section{Ordination}
 \label{sec:ordination}
-Ordination can be thought of as series of operations/transformations performed on a data matrix (samples and species table) with the purpose of representing the relationships between the species and samples as faithfully as possible. These methods are made up of two stages; the data are converted into a dissimilarity/similarity matrix of the samples or species which are subsequently transformed into a lower dimensional space where the interpoint distances are related to the distance matrix through the scaling method used.
+Ordination can be thought of as series of operations/transformations performed on a data matrix (samples and species table) with the purpose of representing the relationships between the species and samples as faithfully as possible. These methods are made up of two stages; the data are converted into a dissimilarity/similarity matrix of the samples or species and are subsequently transformed into a lower dimensional space where the interpoint distances are related to the distance matrix through the scaling method used.
 
 Metric scaling methods try to maximise the linear correlation between the distances in the dissimilarity matrix and in the lower dimensional space. Non-metric methods on the other hand aim at maximising rank-order correlation between those distances instead.
 
@@ -103,7 +103,7 @@ The centred $n \times p$ data matrix $B$ has maximum rank $r$ equal to the minim
 
 An important assumption of PCA that plays a role in our data, is that it is a linear method. This means that the basis that the data are projected onto is a linear combination of their features. Thus, the projection is essentially a rotation and stretching of the basis set. 
 
-This linear assumption of PCA makes it unsuitable for use in Ecological data sets. The species composition varies non linearly across samples, and the relationship between species is also not linear. The presence of a species in a sample is usually much more important that the actual number of reads of that species. Thus, when the data are projected onto the eigenvectors of the covariance matrix (Figure \ref{fig:pcaotu12}), they are distorted into a horseshoe shape (i.e. like an arch) \cite{Gauch 1982}.
+This linear assumption of PCA makes it unsuitable for use in Ecological data sets. The species composition varies non linearly across samples, and the relationship between species is also not linear. The presence of a species in a sample is usually much more important that the actual number of reads of that species. Thus, when the data are projected onto the eigenvectors of the covariance matrix (Figure \ref{fig:pcaotu12}), they are distorted into a horseshoe shape (i.e. like an arch) \cite{Gauch 1982}. PCA was performed using the rda function in the Vegan package \textbf{Vegan}
 
 %FIGURE OF PCA
 \begin{figure}
@@ -200,7 +200,7 @@ A Euclidean distance metric, however, is not very useful when it comes to ecolog
 \end{equation}
 where $X_{ik}$ is the data matrix which denotes the number of reads of speciment $k$ in sample $i$. The statistic ranges from 0, where the samples have the same species composition, to 1 where the samples do not have any species in common, and is semimetric\footnote{Semimetric measures do not satisfy the triangle inequality.}.
 
-If we use this statistic to calculate the distance matrix $D_{ij}$ and then carry out PCoA, the arch effect is removed from the 2 dimensional ordination plot and can better separate the different river samples. As it can be seen in Figure \ref{fig:pcoaotu12}, the method can separate well samples from the upper Marañón part of the river (yellow points on the upper right corner of the plot). Samples from the other parts are grouped together on the opposite side from the upper Marañón part. Black and white river samples are not very well separated, and occupy the same space (except on the upper right corner where no black water samples are found). Even when the ordination method produces a better spread of results than when using PCA, the variance explained by the first 2 axes is only 19.8\%.
+If we use this statistic to calculate the distance matrix $D_{ij}$ and then carry out PCoA, the arch effect is removed from the 2 dimensional ordination plot and can better separate the different river samples. As it can be seen in Figure \ref{fig:pcoaotu12}, the method can separate well samples from the upper Maranon part of the river (yellow points on the upper right corner of the plot). Samples from the other parts are grouped together on the opposite side from the upper Maranon part. Black and white river samples are not very well separated, and occupy the same space (except on the upper right corner where no black water samples are found). Even when the ordination method produces a better spread of results than when using PCA, the variance explained by the first 2 axes is only 19.8\%.
 
 
 %% PCoA bray curtis.
@@ -215,7 +215,7 @@ To illustrate the effect of measures on the PCoA algorithm, we produced 2 dimens
 \begin{equation}
 Jac_{ij} =\frac{2C_{ij}}{1-C_{ij}},
 \end{equation} 
-where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordination plot produced using this index is shown in Figure \ref{fig:pcoajac}.
+where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordination plot produced using this index is shown in Figure \ref{fig:pcoajac}. PCoA was performed using the pcoa function in the ape package in R \textbf{ape}.
 
 %%RESULTS of PCoA with different metrics
 \begin{figure}[h]
@@ -292,10 +292,10 @@ The algorithm first starts by generating a random configuration of $n$ non-ident
 
  The interpoint distance $D_{ij}$ is then calculated and the stress for the configuration is found by minimising the dissimilarity proxies  $\hat{D}_{ij}$ in the way described earlier. Then, the gradient of the configuration is calculated and if some stopping conditions are not met, that signify the algorithm reached an appropriate minimum, the points are moved towards the direction of decreasing stress. A new configuration is thus obtained and the procedure is repeated until some minimum conditions are met; either the stress is low enough that finding another minimum would not improve the solution significantly, or several attempts from different starting configurations have been attempted and the lowest stress solution is chosen. 
 
-NMDS ordination was performed using the metaMDS function in vegan \textbf{vegan} package for R. As mentioned previously, the number of dimensions have to be predetermined before running the algorithm. There is also a maximum number of iteration to try if a non-convergent solution is found. Using a dissimilarity measure of Bray-Curtis \ref{fig:nmds} and Euclidean \ref{fig:nmdseuc}, ordination plots where plotted using the same legends as in the PCoA case. The Bray-Curtis measure can separate river colour much better than when using the Euclidean measure. 
+NMDS ordination was performed using the metaMDS function in vegan \textbf{vegan} package for R. As mentioned previously, the number of dimensions have to be predetermined before running the algorithm. There is also a maximum number of iteration to try if a non-convergent solution is found. Using a dissimilarity measure of Bray-Curtis \ref{fig:nmds} and Euclidean \ref{fig:nmdseuc}, ordination plots where plotted using the same legends as in the PCoA case. The Bray-Curtis measure can separate river colour much better than when using the Euclidean measure. For NMDS ordination, function metaMDS was used in the Vegan package for R \textbf{Vegan}. 
 
 
-The stress of the 2 dimensional NMDS configuration was 15.8\% and 12.8\% for Bray-Curtis and Euclidean respectively. This is considered `fair' in the literature, and is good enough for discerning patterns in a plot. With increasing dimensions the stress falls, however, the number of iterations needed to get a convergent solution also increases considerably. After XXXX (100000) iterations a convergent solution for 20 dimensions was not found.  
+The stress of the 2 dimensional NMDS configuration was 15.8\% and 12.8\% for Bray-Curtis and Euclidean respectively. This is considered `fair' in the literature, and is good enough for discerning patterns in a plot. With increasing dimensions the stress falls, however, the number of iterations needed to get a convergent solution also increases considerably. After 100000 iterations a convergent solution for 20 dimensions was not found. Thus, its inclusion as a feature selection method might not be warranted. 
 
 \begin{figure}[h]
 	\centering
@@ -361,9 +361,9 @@ We include the original $F$ value in the distribution as well, that is why $+1$ 
 
 Not all permutations of the data are necessary, a subset of them is enough to calculate a valid P-value. If it is calculated to be less than $5\%$ then we can reject the null. Of course the permutation will affect greatly the calculated value so it is important that an appropriate scheme is used. The way we chose was to permute the labels within sites. As explained earlier, samples were collected along the rivers in groups of 4-6. This means that even if samples collected close together came from different water colour, their dissimilarity would be relatively low when compared to far away sites. Thus, this shuffling will make it less probable for water colour to have a significant effect. 
 
-The P-value calculated when using the OTU table and the permutation scheme outlined previously, with 2000 permutations, was $2.6\%$.When no restriction is put on the shuffling, the P-value is $0.05\%$, significantly smaller. This means the null hypothesis is rejected, and the two distributions have different centroids and/or dispersion, defined by the distance matrix. This is of course evident when one looks at the ordination plots in section \ref{sec:ordination}, which show a different spread of black and white water samples. This is especially true for NMDS.
+The P-value calculated when using the OTU table and the permutation scheme outlined previously, with 2000 permutations, was $2.6\%$. When no restriction is put on the shuffling, the P-value is $0.05\%$, significantly smaller. This means the null hypothesis is rejected, and the two distributions have different centroids and/or dispersion, defined by the distance matrix. This is of course evident when one looks at the ordination plots in section \ref{sec:ordination}, which show a different spread of black and white water samples. This is especially true for NMDS.
 
-
+The test was performed using function adonis from the Vegan package in R \textbf{Vegan}.
 \section{Classification Models}
 \label{sec:classification}
 \subsection{Logistic Regression}
