@@ -171,11 +171,14 @@ The steps of testing a classifier using a specific split method are as follows:
 \item Steps  1 through 6 are repeated a number of times for different train-test splits using the same split principles. The confusion matrix for each repetition is stored and added at the end of the process.  
 \end{enumerate}
 
-The best hyperparameters are the ones that maximise the F score. This score combines both the precision and recall of the validation test. Precision is the number of correctly identified positive results divided by the number of all positive results returned by the classifier. Recall is the number of correctly identified positive results divided by the true number of positive results. The score is the harmonic mean of the two
+ 
+The best hyperparameters are the ones that maximise either the F score or accuracy. The former combines both the precision and recall of the validation test. Precision is the number of correctly identified positive results divided by the number of all positive results returned by the classifier. Recall is the number of correctly identified positive results divided by the true number of positive results. The score is the harmonic mean of the two
 \begin{equation}
 	F_1 = \frac{2}{\text{recall}^{-1} + \text{precision}^{-1}}.
 \end{equation} 
 If black water was chosen as the positive result then there would be cases that recall would be undefined. This is because in the case of maximum dissimilarity, a validation set might end up with only white water samples (thus only negatives). So recall, which measures how many positive observations were correctly identified from the total number of positive observations, would be $\frac{0}{0}$. Thus, white samples were chosen as the positive observations.
+
+The whole testing procedure was repeated using accuracy as the metric for picking the best hyperparameters. This is because the F score might lead to choosing classifiers that minimise False Negatives (maximising recall). 
 
 This procedure can be repeated for different features (data sets), so as to evaluate how feature selection and transformations can alter the results.
 % The best classifier for the particular features and splitting method is the one which has the highest mean score across all train-test splits. 
@@ -202,7 +205,7 @@ This procedure can be repeated for different features (data sets), so as to eval
 \end{table}
 
 
-The baseline performance for this problem was also devised so that meaningful evaluations could be made of the classifiers. This method is essentially setting the `coin flip' rate; prediction based on prior probabilities of the classes. Using their distribution on the whole data set would be an unfair baseline for the classifiers since they wouldn't be able to train on the whole data set, and the proportions of black and white water samples change significantly with the train set. 
+The baseline performance for this problem was also devised so that meaningful evaluations could be made of the classifiers. This method is essentially setting the `coin flip'/naive rate; prediction based on prior probabilities of the classes. Using their distribution on the whole data (87.2\%) set would be an unfair baseline for the classifiers since they are trained on a fraction of it, and the proportions of black and white water samples change significantly with the train set. 
 
 Thus, for every train-test split we calculated the prior probability $P(C=1)$ of a sample being white using the train set by dividing the number of white samples to the total number of samples. Then, for each observation in the test set $y_i$ we calculated the expected times the `coin' would identify it correctly and falsely
 \begin{align}
