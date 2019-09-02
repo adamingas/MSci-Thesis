@@ -48,7 +48,7 @@ The results of the benchmark method we devised in section \ref{sec:splitting} ar
 
 \end{table}
 
-\begin{table}[h]
+\begin{table}[!h]
 	\centering
 		\caption{Benchmark for Maximum Dissimilarity}
 	\label{table:benchmarkdissim}
@@ -70,7 +70,7 @@ The results of the benchmark method we devised in section \ref{sec:splitting} ar
 \end{table}
 
 %RANDOM SPLITS
-\begin{table}[h]
+\begin{table}[!h]
 	\centering
 		\caption{Benchmark for Maximum Dissimilarity}
 	\label{table:benchmarkrand}
@@ -105,7 +105,7 @@ Using the $L_1$ penalty in Logistic regression has reduced the coefficients of m
 
 
 %LOGISTIC SIM
-\begin{table}[h]
+\begin{table}[!h]
 \centering
 \caption{Results from maximising similarity using Logistic Regression}
 \label{table:lrsimilarity}
@@ -141,7 +141,7 @@ Features used & Predicted Black&Predicted White&\\
 
 
 % RFR similarirtty
-\begin{table}[h]
+\begin{table}[!h]
 	\centering
 	\caption{Results from maximising similarity using Random Forest}
 	\label{table:rfrsimilarity}
@@ -184,7 +184,7 @@ Therefore, another aggregating method has to be used to get a better idea of the
 
 
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 
 	\begin{subfigure}{0.45\textwidth}
@@ -227,7 +227,7 @@ Results for PCoA sets explaining 99\% and 90\% of the variance, and for the NMDS
 Again, the $L_1$ penalty reduced many coefficients to zero; among the best performing sets,  PCoA CSS had 88.33\% of it's coefficients go to zero, OTU CSS LOG had 95.58\%, and PCoA 90.78\%. The sets OTU, OTU CSS, and OTU CSS LOG shared 3.05\% of their non zero coefficients. This means that once again only a limited number of OTUs contribute to the classification. 
  
 % Logistic Dissimilarity
-\begin{table}[h]
+\begin{table}[!h]
 	\centering
 		\caption{Results from maximising dissimilarity using Logistic Regression}
 	\label{table:lrdissimilarity}
@@ -264,7 +264,7 @@ Again, the $L_1$ penalty reduced many coefficients to zero; among the best perfo
 
 
 % RFR dissimilarity table
-\begin{table}[h]
+\begin{table}[!h]
 	\centering
 		\caption{Results from maximising dissimilarity using Random Forest}
 	\label{table:rfrdissimilarity}
@@ -305,7 +305,7 @@ Summing instead of averaging produces the same result seen previously in the max
 
 The same conclusions are drawn for this setting as well; all four taxonomic Orders are within the six most explanatory ones in both aggregating methods. This suggests that they are indeed useful in prediction,
 %%DISIMILARITY PIE CHART
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 	\begin{subfigure}{0.45\textwidth}
 		\includegraphics[width=\textwidth]{rfr_dis_mean_pieOTU CSS}
@@ -334,36 +334,81 @@ The same conclusions are drawn for this setting as well; all four taxonomic Orde
 \end{figure}
 
 \section{Random Splits}
-\begin{table}[h]
+The classifiers' performance under the Random splitting setting is between than of maximum similarity and dissimilarity. The results are summarised in tables \ref{table:lrrandom} for Logistic regression and \ref{table:rfrrandom} for Random Forest. Both methods have accuracy scores significantly better than the baseline.
+
+
+The best features set for Logistic regression is OTU CSS LOG with 96.34\% accuracy. For Random Forest it is OTU CSS LOG and OTU CSS with a score of 95.73\%. Neither classifier performs better than the other consistently for all features sets. 
+
+
+Overall, when taking into consideration all the splitting settings, the features set that produces on average the highest accuracy score is OTU CSS LOG. Furthermore, it seems that the sets produced using PCoA fair better when used in Logistic regression, whereas the NMDS configuration is better used by Random Forest (see Appendix).
+%LOGISTIC RANDOM
+\begin{table}[!h]
 	\centering
-	\caption{Results from maximising dissimilarity using Logistic Regression}
-	\label{table:lrdissimilarity}
+	\caption{Results from random splits using Logistic Regression}
+	\label{table:lrrandom}
 	\begin{tabular}{l c  c c}
 		\toprule
 		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
 		Features used & Predicted Black&Predicted White&\\
 		\midrule
-		\multirow{2}{*}{OTU} &5 &16&\multirow{2}{*}{79.27\%}\\
-		&	 18&125&\\
+		\multirow{2}{*}{OTU} &18 &3&\multirow{2}{*}{94.51\%}\\
+		&	6&137&\\
 		\cmidrule{2-3}
-		\multirow{2}{*}{OTU LOW} &5 &16&\multirow{2}{*}{79.88\%}\\
-		&	 17&126&\\
+		\multirow{2}{*}{OTU LOW} &17 &4&\multirow{2}{*}{88.41\%}\\
+		&	 9&134&\\
 		\cmidrule{2-3}
-		\multirow{2}{*}{OTU CSS}&7 &14&\multirow{2}{*}{82.93\%}\\
-		&	 14&129&\\
+		\multirow{2}{*}{OTU CSS}&16 &5&\multirow{2}{*}{87.20\%}\\
+		&	 16&127&\\
 		\cmidrule{2-3}
-		\multirow{2}{*}{OTU Min CSS}&3 &18&\multirow{2}{*}{79.61\%}\\
-		&	 14&122&\\
+		\multirow{2}{*}{OTU Min CSS}&15 &6&\multirow{2}{*}{82.17\%}\\
+		&	 22&114&\\
 		\cmidrule{2-3}
-		\multirow{2}{*}{OTU CSS LOG}&5 &16&\multirow{2}{*}{87.80\%}\\
-		&	 4&139&\\
+		\multirow{2}{*}{OTU CSS LOG}&18 &3&\multirow{2}{*}{96.34\%}\\
+		&	6&137&\\
 		\cmidrule{2-3}
-		\multirow{2}{*}{PCoA Bray-Curtis} &7 &14&\multirow{2}{*}{86.59\%}\\
-		&	 8&135&\\
+		\multirow{2}{*}{PCoA Bray-Curtis} &14 &7&\multirow{2}{*}{91.46\%}\\
+		&	 7&136&\\
 		\cmidrule{2-3}
-		\multirow{2}{*}{PCoA Bray-Curtis CSS} &9 &12&\multirow{2}{*}{87.80\%}\\
-		&	 8&135&\\
+		\multirow{2}{*}{PCoA Bray-Curtis CSS} &11 &10&\multirow{2}{*}{88.41\%}\\
+		&	9&134&\\
 		\bottomrule
 	\end{tabular}
 	
 \end{table}
+
+%RFR RANDOM
+\begin{table}[!h]
+	\centering
+	\caption{Results from random splits using Random Forest}
+	\label{table:rfrrandom}
+	\begin{tabular}{l c  c c}
+		\toprule
+		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
+		Features used & Predicted Black&Predicted White&\\
+		\midrule
+		\multirow{2}{*}{OTU} &15 &6&\multirow{2}{*}{95.12\%}\\
+		&	2&141&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{OTU LOW} &15 &6&\multirow{2}{*}{90.24\%}\\
+		&	10&143&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{OTU CSS}&17 &4&\multirow{2}{*}{95.73\%}\\
+		&	 3&140&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{OTU Min CSS}&17 &4&\multirow{2}{*}{95.54\%}\\
+		&	 3&133&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{OTU CSS LOG}&17 &4&\multirow{2}{*}{95.73\%}\\
+		&	 3&140&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{PCoA Bray-Curtis} &4 &17&\multirow{2}{*}{85.37\%}\\
+		&	 7&136&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{PCoA Bray-Curtis CSS} &4 &17&\multirow{2}{*}{85.37\%}\\
+		&	 2&141&\\
+		\bottomrule
+	\end{tabular}
+	
+\end{table}
+
+
