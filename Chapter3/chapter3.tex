@@ -3,7 +3,7 @@
 %****************************** Third Chapter **********************************
 %*******************************************************************************
 \chapter{Results and Discussion}
-
+\label{chap:results}
 % **************************** Define Graphics Path **************************
 \ifpdf
     \graphicspath{{Chapter3/Figs/Raster/}{Chapter3/Figs/PDF/}{Chapter3/Figs/}}
@@ -29,6 +29,8 @@ The results of the benchmark method we devised in section \ref{sec:splitting} ar
 
 \begin{table}
 	\centering
+		\caption{Benchmark for Maximum Similarity}
+	\label{table:benchmarksim}
 	\begin{tabular}{l c c c}
 		\toprule 
 		&\multicolumn{2}{c}{Confusion Matrix} &Accuracy\\
@@ -43,12 +45,13 @@ The results of the benchmark method we devised in section \ref{sec:splitting} ar
 		\bottomrule
 
 	\end{tabular}
-	\caption{Benchmark for Maximum Similarity}
-	\label{table:benchmarksim}
+
 \end{table}
 
 \begin{table}[h]
 	\centering
+		\caption{Benchmark for Maximum Dissimilarity}
+	\label{table:benchmarkdissim}
 	\begin{tabular}{l c c c }
 		\toprule 
 		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
@@ -63,13 +66,14 @@ The results of the benchmark method we devised in section \ref{sec:splitting} ar
 		\bottomrule
 
 	\end{tabular}
-	\caption{Benchmark for Maximum Dissimilarity}
-	\label{table:benchmarkdissim}
+
 \end{table}
 
 %RANDOM SPLITS
 \begin{table}[h]
 	\centering
+		\caption{Benchmark for Maximum Dissimilarity}
+	\label{table:benchmarkrand}
 	\begin{tabular}{l c c c }
 		\toprule 
 		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
@@ -83,18 +87,19 @@ The results of the benchmark method we devised in section \ref{sec:splitting} ar
 		&18.19&117.81&\\
 		\bottomrule
 	\end{tabular}
-	\caption{Benchmark for Maximum Dissimilarity}
-	\label{table:benchmarkrand}
+
 \end{table}
 %%%
 %
 %SIMILARITY
 \section{Maximum Similarity}
-The results for Logistic regression and Random forest tested on the maximum similarity scheme are shown in tables \ref{table:lrdissimilarity} and \ref{table:rfrsimilarity} respectively. Both methods performed relatively well when compared to the baseline. Furthermore, the PCoA features produced poorer results than the OTU ones. This was also the case when fewer dimensions, describing 99\% and 90\% of the variance, were chosen as features. The results for these can be found in the appendix.
+The results for Logistic regression and Random forest tested on the maximum similarity scheme are shown in tables \ref{table:lrdissimilarity} and \ref{table:rfrsimilarity} respectively. Both methods performed relatively well when compared to the baseline. Furthermore, the PCoA features produced poorer results than the OTU ones. This was also the case when fewer dimensions, describing 99\% and 90\% of the variance, were chosen as features. The results for these can be found in the appendix in tables \ref{table:lrdissimilarityappendix} and \ref{table:rfrsimilarityappendix}. The results for a 20-dimensional NMDS configuration were also included there and not in this Chapter because the method failed to converge to a minimum stress.
 
 Using the F score to find the best model in the cross validation step resulted in a lower number of black water samples correctly identified. This was especially the case of Random Forest. Therefore, we present the performance of the models selected using accuracy.
 
 Just from the accuracy score we can see that Logistic regression outperforms Random Forests. The best score for the former is 98.78\% using OTU LOW and close second is 98.17\% using OTU, OTU CSS, and OTU CSS LOG. For Random Forests, OTU CSS LOG has the best score of 96.95\% and close second is OTU CSS and OTU LOW with 96.34\%. Both methods have significantly better results than the baseline's 77.6\% and 76.8\% accuracy (the second is used to compare the OTU MIN CSS set).
+
+It also interesting that Random Forest has an equal or lower Recall for Black water samples for all feature sets. In other words, given that a sample comes from black waters, the classifier predicts it as such with a lower probability than Logistic regression. 
 
 Using the $L_1$ penalty in Logistic regression has reduced the coefficients of many features to zero. From the best performing sets, the percentage of zero coefficients to the total number is 82.34\% (OTU LOW), 85.29\% (OTU), 88.95\% (OTU CSS), and 95.32\% (OTU CSS LOG). From the remaining species, 3.79\% of them have non zero coefficients in three sets (OTU CSS< OTU CSS LOG, and OTU). This means that there are only a limited number of informative species that help us identify the water colour. 
 
@@ -102,6 +107,8 @@ Using the $L_1$ penalty in Logistic regression has reduced the coefficients of m
 %LOGISTIC SIM
 \begin{table}[h]
 \centering
+\caption{Results from maximising similarity using Logistic Regression}
+\label{table:lrsimilarity}
 \begin{tabular}{l c  c c}
 \toprule
 		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
@@ -129,14 +136,15 @@ Features used & Predicted Black&Predicted White&\\
 &	 1&142&\\
 \bottomrule
 \end{tabular}
-\caption{Results from maximising similarity using Logistic Regression}
-\label{table:lrsimilarity}
+
 \end{table}
 
 
 % RFR similarirtty
 \begin{table}[h]
 	\centering
+	\caption{Results from maximising similarity using Random Forest}
+	\label{table:rfrsimilarity}
 \begin{tabular}{l c  c c}
 	\toprule
 	&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
@@ -165,15 +173,14 @@ Features used & Predicted Black&Predicted White&\\
 	&	 0&143&\\
 	\bottomrule
 \end{tabular}
-\caption{Results from maximising similarity using Random Forest}
-\label{table:rfrsimilarity}
+
 \end{table}
 
-To explore which of these species contribute most to classification we used the feature importance of Random Forests. However, instead of checking only for individual species' predictive ability, we used the taxonomic order as an aggregating factor, to get a sense which contributes the most. This was done by averaging the importance of each species, as reported by Random Forests, within their Order. The results are presented for some feature sets in the form of pie charts in Figures \ref{fig:simmeanotucss} and \ref{fig:simmeanotucsslog}. 
+To explore which of these species contribute most to classification we used the feature importance of Random Forests. However, instead of checking only for individual species' predictive ability, we used the taxonomic order as an aggregating factor, to get a sense which contributes the most. This was done by averaging the importance of each species, as reported by Random Forests, within their Order. The results are presented for some feature sets in the form of pie charts in Figures \ref{fig:simmeanotucss} and \ref{fig:simmeanotucsslog}. For other features were this evaluation of taxonomic importance was possible are presented in the Appendix, in Figures \ref{fig:simotumean} and \ref{fig:simotumincssmean}. 
 
-For all feature sets used, species in the \textit{Perissodactyla} Order have on average the most explanatory power. However, this Order is only composed of two (sub)species; the South American and Mountain tapir. This method of aggregating feature importance thus favours orders with few species. It is evident in the next most important taxonomic Order as well, the \textit{Caticea}, which is again composed of two species; the Amazon river dolphin (which is technically a whale) and Tucuxi (a freshwater dolphin). 
+For all feature sets used, species in the \textit{Perissodactyla} Order have on average the most explanatory power. However, this Order is only composed of two (sub)species; the South American and Mountain tapir. This method of aggregating feature importance thus favours orders with few species. It is evident in the next most important taxonomic Order as well, the \textit{Cetacea}, which is again composed of two species; the Amazon river dolphin (which is technically a whale) and Tucuxi (a freshwater dolphin). 
 
-Therefore, another aggregating method has to be used to get a better idea of the explanatory power of the whole taxonomic Order. We chose to do this by summing the importance of each species, within their Order. The results are shown in Figures \ref{fig:simsumotucss} and \ref{fig:simsumotucsslog}, and highlight different Order. In particular, \textit{Characiformes }and \textit{Siluriformes} are in sum the most explanatory ones. This is to be expected however, since they are the most populous as well (although in reverse order) and summing importance will inevitably favour the most numerous groups. 
+Therefore, another aggregating method has to be used to get a better idea of the explanatory power of the whole taxonomic Order. We chose to do this by summing the importance of each species, within their Order. The results are shown in Figures \ref{fig:simsumotucss} and \ref{fig:simsumotucsslog} (\ref{fig:simotusum} and \ref{fig:simotumincsssum} in the Appendix), and highlight different Orders. In particular, \textit{Characiformes} and \textit{Siluriformes} are in sum the most explanatory ones. This is to be expected however, since they are the most populous as well (although in reverse order) and summing importance will inevitably favour the most numerous groups. 
 
 
 
@@ -201,7 +208,7 @@ Therefore, another aggregating method has to be used to get a better idea of the
 	\label{fig:simsumotucsslog}
 	\end{subfigure}
 
-		\caption{The importance of species per taxonomic order as calculated by Random Forest in the maximum similarity test. Averaging the importance for the sets: OTU CSS \ref{fig:simotucss}, and OTU CSS LOG \ref{fig:simotucsslog}. Summing the importance for the sets: OTU CSS \ref{fig:simsumotucss}, and OTU CSS LOG \ref{fig:simsumotucsslog}. }
+		\caption{Species' importance per taxonomic order as calculated by Random Forest in the maximum similarity test. Averaging the importance for the sets: OTU CSS \ref{fig:simmeanotucss}, and OTU CSS LOG \ref{fig:simmeanotucsslog}. Summing the importance for the sets: OTU CSS \ref{fig:simsumotucss}, and OTU CSS LOG \ref{fig:simsumotucsslog}. }
 	\label{fig:simpie}
 \end{figure}
 
@@ -211,12 +218,19 @@ Conclusions can be drawn despite the seemingly contradictory representations of 
 % DISSIMILARITY
 \section{Maximum Dissimilarity}
 
-The classifiers' performance in a maximum dissimilarity setting is worse than that of maximum similarity. The results are summarised in tables \ref{table:lrdissimilarity} and \ref{table:rfrdissimilarity} for Logistic regression and Random Forests respectively. In this setting, Random forests have on average a higher accuracy score. The highest is obtained with OTU MIN CSS (90.45\%), but OTU CSS and OTU CSS LOG come close (90.24\%). Logistic regression has the highest accuracy with PCoA CSS and OTU CSS LOG (87.80\%), and with PCoA coming close (86.58\%).
+The classifiers' performance in a maximum dissimilarity setting is worse than that of maximum similarity. The results are summarised in tables \ref{table:lrdissimilarity} and \ref{table:rfrdissimilarity} for Logistic regression and Random Forests respectively. In this setting, Random forests have on average a higher accuracy score. The highest is obtained with OTU MIN CSS (90.45\%), but OTU CSS and OTU CSS LOG come close (90.24\%). Logistic regression has the highest accuracy with PCoA CSS and OTU CSS LOG (87.80\%), and with PCoA coming close (86.58\%). If we consider only some of the axes of PCoA and PCoA CSS, the method attains an even higher accuracy (see table \ref{table:lrdissimilarityappendix} in the Appendix).
 
-Again, the $L_1$ penalty reduced many coefficients to zero; among the best performing sets, PCoA CSS 88.33\%   
+Some of the feature sets had an accuracy score close to the baseline, meaning that the classifiers were not significantly better than random guessing. Furthermore, both classifiers had black water Recall scores lower than 0.5 for all of their feature sets, and made a disproportionate amount of errors in classifying these samples. 
+
+Results for PCoA sets explaining 99\% and 90\% of the variance, and for the NMDS configuration, are given in tables \ref{table:lrdissimilarityappendix} and \ref{table:rfrdissimilarityappendix} in the Appendix.
+
+Again, the $L_1$ penalty reduced many coefficients to zero; among the best performing sets,  PCoA CSS had 88.33\% of it's coefficients go to zero, OTU CSS LOG had 95.58\%, and PCoA 90.78\%. The sets OTU, OTU CSS, and OTU CSS LOG shared 3.05\% of their non zero coefficients. This means that once again only a limited number of OTUs contribute to the classification. 
+ 
 % Logistic Dissimilarity
 \begin{table}[h]
 	\centering
+		\caption{Results from maximising dissimilarity using Logistic Regression}
+	\label{table:lrdissimilarity}
 	\begin{tabular}{l c  c c}
 		\toprule
 		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
@@ -244,8 +258,7 @@ Again, the $L_1$ penalty reduced many coefficients to zero; among the best perfo
 		&	 8&135&\\
 		\bottomrule
 	\end{tabular}
-	\caption{Results from maximising dissimilarity using Logistic Regression}
-	\label{table:lrdissimilarity}
+
 \end{table}
 
 
@@ -253,6 +266,8 @@ Again, the $L_1$ penalty reduced many coefficients to zero; among the best perfo
 % RFR dissimilarity table
 \begin{table}[h]
 	\centering
+		\caption{Results from maximising dissimilarity using Random Forest}
+	\label{table:rfrdissimilarity}
 	\begin{tabular}{l c  c c}
 		\toprule
 		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
@@ -280,11 +295,15 @@ Again, the $L_1$ penalty reduced many coefficients to zero; among the best perfo
 		&	 5&138&\\
 		\bottomrule
 	\end{tabular}
-	\caption{Results from maximising dissimilarity using Random Forest}
-	\label{table:rfrdissimilarity}
+
 \end{table}
 
+The feature importance method of Random Forest was again employed to explore which species contributed most to their predictive power. Averaging the importance within taxonomic Order for OTU CSS  and OTU CSS LOG is shown in Figures \ref{fig:dissimotucss} and \ref{fig:dissimotucsslog} respectively. For the feature sets OTU and OTU MIN CSS the Figures are \ref{fig:dissimotumean} and \ref{fig:dissimotumincssmean} respectively, presented in the Appendix. As was the case for the maximum similarity setting, \textit{Perissodactyla} is on average the Order with the most explanatory species, with \textit{Cetacea} coming second.
 
+
+Summing instead of averaging produces the same result seen previously in the maximum similarity setting. Once again \textit{Characiformes} are in sum the most explanatory Order, and \textit{Siluriformes} the second most explanatory. The pie charts for OTU CSS and OTU CSS LOG can be seen in Figures \ref{fig:dissimsumotucss} and \ref{fig:dissimsumotucsslog}, for OTU and OTU MIN CSS in Figures \ref{fig:dissimotusum} and \ref{fig:dissimotumincsssum} in the Appendix. 
+
+The same conclusions are drawn for this setting as well; all four taxonomic Orders are within the six most explanatory ones in both aggregating methods. This suggests that they are indeed useful in prediction,
 %%DISIMILARITY PIE CHART
 \begin{figure}[h]
 	\centering
@@ -301,16 +320,50 @@ Again, the $L_1$ penalty reduced many coefficients to zero; among the best perfo
 		\begin{subfigure}{0.45\textwidth}
 		\includegraphics[width=\textwidth]{rfr_dis_sum_pieOTU CSS}
 		\caption{}
-		\label{fig:dissimotucss}
+		\label{fig:dissimsumotucss}
 	\end{subfigure}
 	\begin{subfigure}{0.45\textwidth}
 	\includegraphics[width=\textwidth]{rfr_dis_sum_pieOTU CSS LOG}
 	\caption{}
-	\label{fig:dissimotucsslog}
+	\label{fig:dissimsumotucsslog}
 \end{subfigure}\\
 
-	\caption{The average importance of species per taxonomic order as calculated by Random Forest in the maximum dissimilarity test on OTU \ref{fig:dissimotu}, OTU CSS \ref{fig:dissimotucss}, OTU Min CSS \ref{fig:dissimotumincss}, and OTU CSS LOG \ref{fig:dissimotucsslog}.  }
+	\caption{Species' importance per taxonomic order as calculated by Random Forest in the maximum dissimilarity test. Averaging the importance for the sets: OTU CSS \ref{fig:dissimotucss}, and OTU CSS LOG \ref{fig:dissimotucsslog}. Summing the importance for the sets: OTU CSS \ref{fig:dissimsumotucss}, and OTU CSS LOG \ref{fig:dissimsumotucsslog}.
+	 }
 	\label{fig:dispie}
 \end{figure}
 
-
+\section{Random Splits}
+\begin{table}[h]
+	\centering
+	\caption{Results from maximising dissimilarity using Logistic Regression}
+	\label{table:lrdissimilarity}
+	\begin{tabular}{l c  c c}
+		\toprule
+		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
+		Features used & Predicted Black&Predicted White&\\
+		\midrule
+		\multirow{2}{*}{OTU} &5 &16&\multirow{2}{*}{79.27\%}\\
+		&	 18&125&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{OTU LOW} &5 &16&\multirow{2}{*}{79.88\%}\\
+		&	 17&126&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{OTU CSS}&7 &14&\multirow{2}{*}{82.93\%}\\
+		&	 14&129&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{OTU Min CSS}&3 &18&\multirow{2}{*}{79.61\%}\\
+		&	 14&122&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{OTU CSS LOG}&5 &16&\multirow{2}{*}{87.80\%}\\
+		&	 4&139&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{PCoA Bray-Curtis} &7 &14&\multirow{2}{*}{86.59\%}\\
+		&	 8&135&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{PCoA Bray-Curtis CSS} &9 &12&\multirow{2}{*}{87.80\%}\\
+		&	 8&135&\\
+		\bottomrule
+	\end{tabular}
+	
+\end{table}
