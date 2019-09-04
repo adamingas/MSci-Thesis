@@ -14,21 +14,27 @@
 
 
 \section{Processing}
+
+In this Chapter, we explore in what ways we can process our data before using them for classification and how we might test our classifiers while taking into account the spatial distribution of the samples. Datasets obtained through metabarcoding or metagenetic methods usually display high variability in read counts between and within samples that stems from systematic biases. Several normalisation techniques have been developed to deal with this issue; we present some of them and  will evaluate their usefulness in classification. Furthermore, inspired by the interdependent nature of species in animal communities, we use correlations between features for feature selection.
+
+
+The samples' location in the river surely introduces some dependencies between them; animals tend to wander around their habitat, and thus eDNA collected from sites close together will be more similar than those far apart. The way our data is split for training, validating and testing will influence our classifiers' performance. We present two methods of splitting them, using their location as the deciding variable, that will test the classifiers' ability to extrapolate information gained through training. Furthermore, we outline the cross-validation procedure to be used for the evaluation.
 \subsection{Normalisation}
 
 Count data from amplicon sequencing display a very high degree of variability in total read counts per sample \cite{inadmissible_rareying}. A histogram, Figure \ref{fig:counthistogram}, of the samples' total count reads for our data exemplifies this variability. The sums range from 17 to 219113, with a median and mean of 63672 and 77152 respectively. This much variation between samples makes it hard to identify which OTUs' difference in abundance between samples is significant and also might negatively impact the performance of the classifiers. 
  
  The increased variation comes from a systematic variability affecting multiple samples and OTUs in a similar manner. Sources of such variability can be the inconsistencies in DNA extraction and handling of samples,  a varying quality of sequencing runs \cite{pereira_comparison_2018}, and other PCR-specific amplification biases (like primer mismatch, GC-content etc.) \cite{abundance_nodate,krehenwinkel_estimating_2017}.
  
- Furthermore, these biases can cause the distribution of read counts obtained from high-throughput amplicon sequencing to diverge significantly from the actual distribution of species abundances in the same samples. The Pearson correlation between read and species frequencies is close to zero \cite{edgar_unbias:_2017}.
+ Furthermore, these biases can cause the distribution of read counts obtained from high-throughput amplicon sequencing to diverge significantly from the actual distribution of species abundances inhabiting in the same regions where the samples were collected. The Pearson correlation between read counts and actual species frequencies is close to zero \cite{edgar_unbias:_2017}.
  
- The removal of this Systematic Variability is called \textit{Normalisation} and it's original aim in the bioinformatics literature is to increase the statistical power and false positive rates of differential abundance analysis \footnote{Differential abundance analysis aims at finding OTUs (or genes in the case of metagenomic studies) whose variation between groups of samples (e.g. black and white water river samples) is statistically significant.}. We will be testing if normalisation methods have any effect on the classifiers' scores.
+ The removal of this systematic variability is called \textit{Normalisation} and it's original aim in the bioinformatics literature is to increase the statistical power and false positive rates of differential abundance analysis \footnote{Differential abundance analysis aims at finding OTUs (or genes in the case of metagenomic studies) whose variation between groups of samples (e.g. black and white water river samples) is statistically significant.}. We will be testing if normalisation methods have any effect on the classifiers' scores.
  
- A normalisation method that produced promising results in differential analysis on datasets similar to ours is Cumulative sum scaling (CSS). This method is an extension to the quantile normalisation approach which divided read counts by the $Q$th percentile of each sample’s non-zero count distribution. CSS determines that percentile using a data-driven approach\cite{css_diff_abund}.
+ A normalisation method that produced promising results in differential analysis on datasets similar to ours is Cumulative sum scaling (CSS). This method is an extension to the quantile normalisation approach which divides read counts by the $Q$th percentile of each sample’s non-zero count distribution. CSS determines that percentile using a data-driven approach \cite{css_diff_abund}.
  
  To illustrate how normalisation methods work we define $X_{i,j}$ as the read counts of sample  $i =1,...,n$ and OTU $j=1,...,p$. The normalisation factor of the total sum scaling (TSS) method is found by summing the read counts in a sample $i$:
  \begin{equation}
  	N_i = \sum_{j=1}^{p} X_{ij}.
+ 	\label{eq:totalsum}
  \end{equation}
 Then the counts in row $i$ of the read matrix $X$ are divided by the factor $N_i$. TSS is the most commonly used method of normalisation but it has been shown to introduce biases in differential analysis estimates \cite{bullard_evaluation_2010}.
 
@@ -52,7 +58,7 @@ We define the $l$th quantile of sample $i$ as $q_i^l$, which means that $l$ OTUs
 \begin{equation}
 	s_{i}^{l}=\sum_{j|X_{ij} \leq q_{i}^{l}} X_{ij}.
 \end{equation} 
-With this notation, the total sum normalising factor is given by $N_i = s_i^p$ (where $p$ is the total number of OTUs). CSS chooses a value $\hat{l} \leq p$ using a data driven approach to calculate the scaling factor ($N_i = s_i^{\hat{l}}$) for each sample and get normalised counts.
+With this notation, the total sum normalising factor \eqref{eq:totalsum} is given by $N_i = s_i^p$ (where $p$ is the total number of OTUs). CSS chooses a value $\hat{l} \leq p$ using a data driven approach to calculate the scaling factor ($N_i = s_i^{\hat{l}}$) for each sample and get normalised counts.
 In particular, the quantile $\hat{l}$ for the threshold $q_i^{\hat{l}}$ is chosen  to be the smallest value where the median absolute deviation of sample-specific quantiles $q_i^l$ from a reference point (the median quantile $q_i^l$ across all samples) shows high instability. \cite{css_diff_abund}.
 % web
 
@@ -75,7 +81,7 @@ In particular, the quantile $\hat{l}$ for the threshold $q_i^{\hat{l}}$ is chose
 \end{figure}
 
 
-After applying the CSS normalisation, the variation of read counts per samples drops significantly (except for some samples whose total read counts increase, see Figure \ref{fig:histcss}). Applying a $log_2$ transformation to the data after normalising reduces the variation drops even more (see Figure \ref{fig:histcsslog}). Furthermore, using Principal coordinate analysis and Non-metric multidimensional scaling (Figure \ref{fig:pcoa12otucss} and \ref{fig:nmds12otucss} respectively) ordination on the normalised data separates white and black water samples better than if the normalisation was not applied\footcite{These methods are similar to Principal Components Analysis in that they reduce the dimensions of the data. They will be explained in the next Chapter.}. However, doing the same on the $log_2$ transformed data does not have the same effect.
+Using CSS normalisation on our data causes the variation of read counts per sample to drop significantly (except for some samples whose total read counts increase, see Figure \ref{fig:histcss}). Applying a further $log_2$ transformation to the data after normalising reduces the variation even more (see Figure \ref{fig:histcsslog}). The transformation does not apply the logarithm to $0$ valued read counts.  Furthermore, using Principal coordinate analysis and Non-metric multidimensional scaling (Figure \ref{fig:pcoa12otucss} and \ref{fig:nmds12otucss} respectively) ordination on the normalised data separates white and black water samples better than if the normalisation was not applied\footnote{These methods are similar to Principal Components Analysis in that they reduce the dimensions of the data. An outline of their use and how they are performed will be presented in the next Chapter.}. However, doing the same on the $log_2$ transformed data does not have the same effect.
 
 \begin{figure}[h]
 	\centering
@@ -91,7 +97,7 @@ After applying the CSS normalisation, the variation of read counts per samples d
 		\caption{}
 		\label{fig:pcoa12otucss}
 	\end{subfigure}
-	\caption{Ordination plots for the CSS normalised data. \ref{fig:nmds12otucss} shows an NMDS plot of the data and \ref{fig:pcoa12otucss} a PCoA using Bray-Curtis measure. Both methods separate white and black water samples better than their respective ordination methods applied to non-normalised data.}
+	\caption{Ordination plots for the CSS normalised data. Figure \ref{fig:nmds12otucss} shows an NMDS and Figure \ref{fig:pcoa12otucss} a PCoA plot of the data using the Bray-Curtis measure. Both methods separate white and black water samples better than when applied to non-normalised data.}
 \end{figure}
 
 We will be checking if this normalisation method and transformation produces any significant improvements (over the unnormalised dataset) in the classifiers ability to determine the river colour. 
@@ -103,11 +109,11 @@ We will be checking if this normalisation method and transformation produces any
 
 \subsection{Feature Correlation}
 
-A big minority of OTUs in our data set have been found to have an absolute Spearman correlation of more than 0.9 with at least one other OTU. This correlation has a biological underpinning as it is expected that the abundance of species in a river environment would co-vary along it's length. Relationships between species in an environment have been modelled and can take many forms, like parasitic (the abundance of OTU1 and OTU2 is increased and decreased and they are both present), competitive (the abundance of both OTU1 and OTU2 is decreased when they are both present), and mutual (the abundance of both OTU1 and OTU2 is increased when they are both present). More complicated, non-linear correlation networks exist in nature between more than two species that are very difficult to capture even with large amounts of unbiased data \cite{weiss_correlation_2016}. 
+A big minority of OTUs in our data set have been found to have an absolute Spearman correlation of more than 0.9 with at least one other OTU. This correlation has a biological underpinning as it is expected that the abundance of species in a river environment would co-vary along it's length. Relationships between species in an environment can take many forms, like parasitic (the abundance of OTU1 is increased and for OTU2 is decreased when they are both present), competitive (the abundance of both OTU1 and OTU2 is decreased when they are both present), and mutual (the abundance of both OTU1 and OTU2 is increased when they are both present). More complicated, non-linear correlation networks exist in nature between more than two species that are very difficult to capture even with large amounts of unbiased data \cite{weiss_correlation_2016}. 
 
 
 
-For our problem at hand, recovering such correlation networks is not of interest. We are more interested in selecting the best features from our data that would aid in the classification. Thus, we used the Spearman correlation with a threshold of 0.9 to remove 122 OTUs to create a new data set without highly correlated OTUs. 
+For our problem at hand, recovering such correlation networks is not of interest. We are more interested in selecting the best features from our data that would aid in the classification. Thus, we used the Spearman correlation with a threshold of 0.9 to remove 122 OTUs and create a new data set without highly correlated OTUs. 
 
 
 
@@ -126,7 +132,7 @@ For our problem at hand, recovering such correlation networks is not of interest
 
 Together with the OTU table, our data also include the location of the samples in the rivers (in Easting and Northing coordinates) and in which part of the river they belong to. Because of this location attribute, our samples cannot be said to be independent. Thus, the way we choose to split our data into training and testing sets will surely affect the accuracy of the classifier. For example, testing on a set that is composed of samples maximally distant from the ones in the training set (see Figure \ref{fig:groupsamp}) will produce different results than testing on a set with all samples in close proximity to the ones in the training set (see Figure \ref{fig:stratsampl}).
 
-To avoid choosing a split method, several ones have been employed that represented different splitting conditions. The classifiers have then been tested on all of them so as to evaluate how well they can perform under various circumstances.
+To avoid choosing a split method, several ones are employed that represent different splitting conditions. The classifiers are then tested on all of them so as to evaluate how well they can perform under various circumstances.
 %% Stratified an group folds for tain test split plot
 \begin{figure}[h]
 \centering
@@ -136,7 +142,7 @@ To avoid choosing a split method, several ones have been employed that represent
 \begin{subfigure}{0.4\textwidth}
 \includegraphics[width = \textwidth]{stratsamp2.png}
 \end{subfigure}
-\caption{Test set samples are geographically among Train set samples. This represents a maximally similar split which is created by ensuring constant distribution of samples in each part of the river in both the Train and Test set.}
+\caption{Test set samples are selected such that they are located among the Train set. This represents a maximally similar split which is created by ensuring constant distribution of samples in each part of the river in both the Train and Test set.}
 \label{fig:stratsampl}
 \end{figure}
 
@@ -157,18 +163,18 @@ To avoid choosing a split method, several ones have been employed that represent
 
 
 %Validation sets
-In addition to splitting the data into training and test sets, the train set was further split into validation sets so as to tune the hyperparameters of the models. The splitting into validation sets followed the same principle/method as the train-test split. So if, for example, the train and test sets were split using the maximally similar approach, the validation sets produced from the train set were chosen so as to be maximally similar to the remaining set.
+In addition to splitting the data into training and test sets, the train set is further split into validation sets so as to tune the hyperparameters of the models. The splitting into validation sets follows the same principle/method as the train-test split. So if, for example, the train and test sets are split using the maximally similar approach, the validation sets created from the train set are chosen so as to be maximally similar to the remaining set.
 
 
 The steps of testing a classifier using a specific split method are as follows:
 \begin{enumerate}
+\item A set of hyperparameters values are chosen for the cross-validation procedure. For example, in Logistic Regression a set of numbers ranging from 0.001 to 20 is chosen for the sparsity parameter and the set $\{True,False\}$ is chosen for the intercept parameter.
 \item The data set is split into train and test sets based on the splitting method of choice. 
-\item The train set is split into $K$-folds using the same method for the train-test split.
-\item A set of hyperparameters and potential values are chosen for the cross-validation procedure. For example, in Logistic Regression a set of numbers ranging from 0.001 to 20 is chosen for the sparsity parameter and the set $\{True,False\}$ is chosen for the intercept parameter    
+\item The train set is split into $K$-folds, each being a validation set, using the same method as for the train-test split. 
 \item The classifier is trained on the $K-1$ folds and tested on the remaining validation set for all possible combinations of hyperparameters (e.g. the Logistic Regressor is trained with hyperparameters $\{0.001,True\},\{0.001,False\},\{1.001,True\},\{1.001,False\}$ etc...).
 \item Step 4 is repeated for all the $K$-folds (by training on the $K-1$ and testing on the one left out). The average score across the validation sets is found for each hyperparameter combination and the classifier is retrained on the train set using the best hyperparameters set.
 \item The retrained model is tested on the test set and the confusion matrix is calculated.
-\item Steps  1 through 6 are repeated a number of times for different train-test splits using the same split principles. The confusion matrix for each repetition is stored and added at the end of the process.  
+\item Steps  2 through 6 are repeated a number of times for different train-test splits using the same split principles. The confusion matrix for each repetition is stored and added at the end of the process.  
 \end{enumerate}
 
  
@@ -176,9 +182,9 @@ The best hyperparameters are the ones that maximise either the F score or accura
 \begin{equation}
 	F_1 = \frac{2}{\text{recall}^{-1} + \text{precision}^{-1}}.
 \end{equation} 
-If black water was chosen as the positive result then there would be cases that recall would be undefined. This is because in the case of maximum dissimilarity, a validation set might end up with only white water samples (thus only negatives). So recall, which measures how many positive observations were correctly identified from the total number of positive observations, would be $\frac{0}{0}$. Thus, white samples were chosen as the positive observations.
+Choosing black water as the positive result would lead to cases were recall is undefined; in the case of maximum dissimilarity, a validation set might end up with only white water samples (thus only negatives). So recall, which measures how many positive observations were correctly identified from the total number of positive observations, would be $\frac{0}{0}$. Thus, white samples are chosen as the positive observations.
 
-The whole testing procedure was repeated using accuracy as the metric for picking the best hyperparameters. This is because the F score might lead to choosing classifiers that minimise False Negatives (maximising recall). 
+The whole testing procedure is repeated using accuracy as the metric for picking the best hyperparameters. This is because the F score might lead to choosing classifiers that minimise False Negatives (maximising recall), and as such, have an increased concentration of mistakes in identifying black water samples.
 
 This procedure can be repeated for different features (data sets), so as to evaluate how feature selection and transformations can alter the results.
 % The best classifier for the particular features and splitting method is the one which has the highest mean score across all train-test splits. 
@@ -192,27 +198,27 @@ This procedure can be repeated for different features (data sets), so as to eval
 		Features used &Description of dataset\\ 
 		
 		\hline
-		OTU &The OTU table as it is without any modifications done to it \\
+		OTU &The OTU table as it is \\
 		OTU LOW & The OTU table without highly correlated features\\
-		OTU CSS & The normalised OTU table using CSS\\
-		OTU Min CSS & The normalised OTU table using CSS without samples with total counts of less than 10000 reads  \\
+		OTU CSS & The CSS normalised OTU table\\
+		OTU Min CSS & The CSS normalised OTU table without samples with total read counts of less than 10000 reads  \\
 		OTU CSS LOG & A $\log_2$ transformed OTU CSS \\
 		PCoA Bray-Curtis &The transformation of the OTU table with PCoA using the Bray-Curtis measure  \\
-		PCoA Bray-Curtis CSS &The transformation of the normalised OTU table with PCoA using the Bray-Curtis measure\\
+		PCoA Bray-Curtis CSS &The transformation of the OTU CSS table with PCoA using the Bray-Curtis measure\\
 		
 		\hline 
 	\end{tabularx}
 \end{table}
 
 
-The baseline performance for this problem was also devised so that meaningful evaluations could be made of the classifiers. This method is essentially setting the `coin flip'/naive rate; prediction based on prior probabilities of the classes. Using their distribution on the whole data (87.2\%) set would be an unfair baseline for the classifiers since they are trained on a fraction of it, and the proportions of black and white water samples change significantly with the train set. 
+A baseline benchmark for this problem is also set so that the classifiers' evaluation is meaningful. We are essentially setting the `coin flip'/naive rate; prediction based on prior probabilities of the classes. Using their distribution on the whole data set (87.2\% of samples come from white water) would be an unfair baseline for the classifiers since they are trained only on a fraction of it, and the proportions of black and white water samples change significantly with the train set. 
 
-Thus, for every train-test split we calculated the prior probability $P(C=1)$ of a sample being white using the train set by dividing the number of white samples to the total number of samples. Then, for each observation in the test set $y_i$ we calculated the expected times the `coin' would identify it correctly and falsely
+Thus, for every train-test split we calculate the prior probability $P(C=1)$ of a sample being white, using the train set, by dividing the number of white samples by the total number of samples. Then, for each observation in the test set $y_i \in \{1 for White, 0 for Black\}$ we calculate the expected times the `coin' would identify it correctly and falsely
 \begin{align}
 	E(\text{Correct Prediction}|y_i ) = y_i*P(C=1) + (1-y_i)*(1-P(C=1)) \\
 	E(\text{False Prediction}|y_i) = (1-y_i)*P(C=1) + y_i*(1-P(C=1)).
 \end{align}
-Then a confusion matrix was constructed (see table \ref{table:baseline}) using the total number of white $N_{white}$ and black $N_{black}$ water samples in the test set.
+A confusion matrix is constructed (see table \ref{table:baseline}) using the total number of white $N_{white}$ and black $N_{black}$ water samples in the test set.
 \begin{table}[h]
 
 	\centering
@@ -223,7 +229,7 @@ Then a confusion matrix was constructed (see table \ref{table:baseline}) using t
 		
 		\hline
 		Actual Black&$N_{black}*E(\text{Correct}|\text{Black} )$&$N_{black}*E(\text{False}|\text{Black})$\\
-		Actual White& $N_{white}*E(\text{Correct}|\text{White} )$&$N_{white}*E(\text{False}|\text{White})$
+		Actual White& $N_{white}*E(\text{False}|\text{White} )$&$N_{white}*E(\text{Correct}|\text{White})$
 
 	\end{tabularx}
 	\caption{Confusion matrix of baseline benchmark}
@@ -239,10 +245,10 @@ Then a confusion matrix was constructed (see table \ref{table:baseline}) using t
 
 { \large \bf Maximising Dissimilarity}\\
 \textit{Aim}: Evaluate how well the classifiers perform when they are tested on a set which is dissimilar (or far away) geographically to the train set.\\
-\textit{Method}: Testing and Validation sets are made up of all the samples which belong to a particular area of the river. For example, the test set might be constituted by all the samples in the Upper Marañón area, and the validation sets by all the remaining areas (Huallaga, Min Maranon, Lower Maranon, Ucayali, Tapiche, Napo). The method used to produce these splits is called GroupKfold.
+\textit{Method}: Testing and Validation sets are made up of all the samples which belong to a particular area of the river. For example, the test set might be constituted by all the samples in the Upper Maranon area, and the validation sets by all the remaining areas (Huallaga, Min Maranon, Lower Maranon, Ucayali, Tapiche, and Napo). The method we use to produce these splits is GroupKfold.
 
-{\large \bf Random Splits}\\
-\textit{Aim}: Evaluate the performance of the classifiers on train and test sets obtained by random splitting
+{\large \bf Random Splits}\newline
+\textit{Aim}: Evaluate the performance of the classifiers on train and test sets obtained by random splitting \\
 \textit{Method}: Test and Validation sets are obtained by randomly splitting the data. Care is taken to ensure that the balance of white and black water samples is the same across splits. This is done using Stratified sampling with the colour of the river as the strata.
 
 

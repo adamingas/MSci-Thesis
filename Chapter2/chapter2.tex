@@ -10,7 +10,12 @@
 \else
     \graphicspath{{Chapter2/Figs/Vector/}{Chapter2/Figs/}}
 \fi
+In this chapter we introduce all the methods we used in this project. The explanations are not exhaustive but act as a good primer if more details are of interested.
+In the first section we present ordination methods, which are very frequently used as part of exploratory data analysis in ecological studies. We use them to sketch plots and search for patterns in our data and also as dimensionality reduction techniques.
 
+The classical hypothesis test permutational multivariate analysis of variance is introduced in the following section. It is used to check if the groupings of samples along the levels of a categorical variable significantly different from each other. A distance metric is used to quantify the dissimilarity between samples, and a permutation scheme to avoid assuming the F-statistic's distribution. 
+
+Classification models are introduced in the last section together with a brief outline of their working. In particular, the models presented are Logistic Regression and Random Forest. A Bayesian interpretation of the former is also given which can be implemented with Markov chain Monte Carlo methods.  
 
 \section{Ordination}
 \label{sec:ordination}
@@ -33,15 +38,15 @@ Indirect gradient analysis finds the most important gradients in the sites by sp
 %%PCA
 \subsection{Principal Components Analysis}
 \label{ssec:PCA}
-Principal Component analysis (PCA) is a clustering technique that can be used as an ordination method as well. It works by finding the direction that maximises the variance in the data and setting it as the first axis. Then it finds the direction with the second highest explanation of variance that is orthogonal to the first one, and sets it as the second axis, and the direction that is uncorrelated with both the first and the second axis and explains the most variance as the third, and so on. For ordination, since all ecological community data are measured in the same units, the data do not need to be standardised to unit variance, and thus the method involves finding the eigenvectors of the covariance matrix of the data (and not the correlation matrix).
+Principal Component analysis (PCA) is a clustering technique that can be used as an ordination method as well. It works by finding the direction that explains the most variance in the data and setting it as the first axis. Then it finds the direction with the second highest explanation of variance that is orthogonal to the first one, and sets it as the second axis, and the direction that is uncorrelated with both the first and the second axis and explains the most variance as the third, and so on. For ordination, since all ecological community data are measured in the same units, the data do not need to be standardised to unit variance, and thus the method involves finding the eigenvectors of the covariance matrix of the data (and not the correlation matrix).
 
-Let the row vector $x_i$ with $p$ columns represent the $i$th sample of our data, with each element denoting how many individual of that particular column (species) where encountered in the sample. We can place the vectors into an $n \times p$ matrix $X$, where $n$ is the number of samples collected. For ecological abundance data we only have to centre the data by finding the mean abundance of each species and subtracting it from matrix $X$:
+Let the row vector $x_i$ with $p$ columns represent the $i$th sample of our data, with each element denoting how many individuals of that particular column (species/OTU) are encountered in the sample. We can place the vectors into an $n \times p$ matrix $X$, where $n$ is the number of samples collected. For ecological abundance data we only have to centre the data by finding the mean abundance of each species and subtracting it from matrix $X$:
 \begin{align}
 \label{eq:columnmean}
 u_j &= \frac{1}{n} \sum_{i = 1}^{n} X_{ij} \\
 B &= X - h u^T,
 \end{align}
-where  $u_j$ is the $p\times 1$ vector of mean values, $h$ is a $n \times 1$ vector of ones and $B$ is the centred matrix. This expression can be rewritten by using the $n \times n$ centering matrix $J$ which is defined as
+where  $u_j$ is the $p\times 1$ vector of mean values, $h$ is a $n \times 1$ vector of ones and $B$ is the centred matrix. This expression can be rewritten  using the $n \times n$ centering matrix $J$ which is defined as
 \begin{align}
 J = I - \frac{1}{n}O,
 \end{align}
@@ -53,7 +58,7 @@ The $p\times p$ empirical covariance matrix is then computed as
 \begin{equation}
 C = \frac{B^T B}{n},
 \end{equation}
-which is diagonalised to find its eigenvectors and eigenvalues 
+which is diagonalised to find its eigenvectors and eigenvalues \cite{franklin_matrix_2012}
 \begin{equation}
 C = VDV^{-1},
 \end{equation}
@@ -88,7 +93,7 @@ B = U \Sigma V^T,
 C &= \frac{B^TB}{n} = \frac{(U\Sigma V^T)^TU\Sigma V^T}{n} = \frac{V\Sigma^T U^TU\Sigma V^T}{n} = \frac{V \Sigma^T\Sigma V^T }{n} \\
 G &= \frac{BB^T}{n} = \frac{U\Sigma V^T(U\Sigma V^T)^T}{n} = \frac{U\Sigma V^TV\Sigma^T U^T}{n} = \frac{U\Sigma \Sigma^T U^T}{n}.
 \end{align}
-Since matrices $U$ and $V$ are orthogonal,  their inverse is equal to their transpose (e.g. $U^{-1} = U^T$). The projection of the centred data onto the eigenvectors of the covariance matrix $C$ can be reformulated using the SVD
+Since matrices $U$ and $V$ are orthogonal,  their inverse is equal to their transpose (e.g. $U^{-1} = U^T$) \cite{franklin_matrix_2012}. The projection of the centred data onto the eigenvectors of the covariance matrix $C$ can be reformulated using the SVD
 \begin{align}
 Y = BV = U \Sigma V^T V = U \Sigma.
 \end{align}
@@ -99,11 +104,13 @@ Y_r = U_m \Sigma_m,
 \end{align}
 where $\Sigma_m$ is the matrix of the $m$ largest singular values, and $U_m$ the matrix with their corresponding eigenvectors as columns.
 
-The centred $n \times p$ data matrix $B$ has maximum rank $r$ equal to the minimum of the numbers $n$ and $p$. This means that there are at most $r$ linearly independent row (or columns) vectors, and consequently, at most $r$ singular values in the $n \times p$ matrix $\Sigma$. Comparing the two decompositions of the Covariance and Gram matrix, we note that the matrices $\Sigma^T \Sigma$ and $\Sigma \Sigma^T$ have the same number of non-zero elements in their diagonals, even if they are of dimension $p \times p$ and $n \times n$ respectively. Thus, we can conclude that the Covariance and Gram matrices have the same eigenvalues.
+The centred $n \times p$ data matrix $B$ has maximum rank $r$ equal to the minimum of the numbers $n$ and $p$. This means that there are at most $r$ linearly independent row (or column) vectors, and consequently, at most $r$ singular values in the $n \times p$ matrix $\Sigma$. Comparing the two decompositions of the Covariance and Gram matrix, we note that the matrices $\Sigma^T \Sigma$ and $\Sigma \Sigma^T$ have the same number of non-zero elements in their diagonals, even if they are of dimension $p \times p$ and $n \times n$ respectively. Thus, we can conclude that the Covariance and Gram matrices have the same eigenvalues.
 
-An important assumption of PCA that plays a role in our data, is that it is a linear method. This means that the basis that the data are projected onto is a linear combination of their features. Thus, the projection is essentially a rotation and stretching of the basis set. 
 
-This linear assumption of PCA makes it unsuitable for use in Ecological data sets. The species composition varies non linearly across samples, and the relationship between species is also not linear. The presence of a species in a sample is usually much more important that the actual number of reads of that species. Thus, when the data are projected onto the eigenvectors of the covariance matrix (Figure \ref{fig:pcaotu12}), they are distorted into a horseshoe shape (i.e. like an arch) \cite{Gauch 1982}. PCA was performed using the rda function in the Vegan package \textbf{Vegan}
+
+%Principal component analysis (PCA) is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables (entities each of which takes on various numerical values) into a set of values of linearly uncorrelated variables called principal components. This transformation is defined in such a way that the first principal component has the largest possible variance (that is, accounts for as much of the variability in the data as possible), and each succeeding component in turn has the highest variance possible under the constraint that it is orthogonal to the preceding components. The resulting vectors (each being a linear combination of the variables and containing n observations) are an uncorrelated orthogonal basis set. PCA is sensitive to the relative scaling of the original variables.
+
+An important assumption of PCA is that there are linear relationships between all the features. Therefore, the principal components are constructed such that they decouple the linear correlations between them. This assumption, however, makes it unsuitable for use in Ecological data sets. The species composition varies non linearly across samples, and the relationship between species is also not linear. The presence of a species in a sample is usually much more important that the actual number of read counts of that species. Thus, when the data are projected onto the eigenvectors of the covariance matrix (Figure \ref{fig:pcaotu12}), they are distorted into a horseshoe shape (i.e. like an arch) \cite{gauch_noise_1982}. PCA was performed using the rda function in the Vegan package \cite{oksanen_vegan_nodate,oksanen_multivariate_nodate}.
 
 %FIGURE OF PCA
 \begin{figure}
@@ -115,19 +122,19 @@ This linear assumption of PCA makes it unsuitable for use in Ecological data set
 
 %%PCOA
 \subsection{Principal Coordinates Analysis}
-A more general method of ordination, of which PCA is a special case, is called Principal Coordinates Analysis (PCoA), otherwise known as classical multidimensional scaling. The method aims to represent distances between samples (in the species space), but in a lower dimension, so that they can be easily interpreted. This is done by creating a distance matrix using whatever metric we wish (with the condition that it returns a scalar given two vectors of arbitrary dimensions) and projecting it to a lower dimensional space by maximising the correlations between the distances in the distance matrix and the distances in the lower dimensional representation. Thus, the method assumes that the distances used are meaningful and thus try to reserve them.
+A more general method of ordination, of which PCA is a special case, is called Principal Coordinates Analysis (PCoA), otherwise known as classical multidimensional scaling. The method aims to represent dissimilarities between samples (in the species space) in a lower dimensional space, so that they can be easily interpreted. This is done by creating a distance matrix using whatever metric we wish (with the condition that it returns a scalar given two vectors of arbitrary dimensions) that quantifies the dissimilarities between our samples. The data are then projected to a lower dimensional space by maximising the linear correlation between the distances in the distance matrix and the inter-point distances in the lower dimensional projection. Thus, the method assumes that the distances used are meaningful and thus try to reserve them. It was first introduced by Torgerson in 1952 as a tool in psychometrics \cite{torgerson_multidimensional_1952}.
 
-Lets define by $D_{ij}$ the $n \times n$ distance matrix between the samples (rows) in $X$ (where $D_{ij}$ indicates the distance between the sample $i$ with sample $j$). It is evident from the construction of the matrix that it is symmetric, since the distance between sample $i$ and $j$ is the same the distance between $j$ and $i$. When using a euclidean measure the diagonals of the matrix are zero. The euclidean metric is given by
+Lets define by $D_{ij}$ the $n \times n$ distance matrix between the samples (rows) in $X$ (where $D_{ij}$ indicates the distance between sample $i$ with $j$). It is evident from its construction that it is symmetric, since the distance between sample $i$ and $j$ is the same as the distance between $j$ and $i$. When using a euclidean metric to quantify the distance the diagonals are zero. The euclidean metric is given by
 \begin{align}
-D_{ij} = {||\bf{x}_i- \mathbf{x}_j||^2},
+D_{ij} = {||\mathbf{x}_i- \mathbf{x}_j||},
 \label{eq:euclideanmetric}
 \end{align}
-where $ \mathbf{x}_i$ is a row vector of the data matrix $X$ containing the abundance reading for the sample $i$, and $||\cdot||^2$ is the L2 norm.
+where $ \mathbf{x}_i$ is a row vector of the data matrix $X$ containing the abundance reading for the sample $i$, and $||\cdot||$ is the L2 norm.
 
-The algorithm works by double centering the distance matrix, or in other words subtracting the row and column mean, and multiplying it by $-\frac{1}{2}$
+The algorithm first double centres the element squared distance matrix $D^2$, or in other words subtracts the row and column mean, and multiplying it by $-\frac{1}{2}$
 \begin{align}
 \label{eq:Kmatrix}
-K = -\frac{1}{2}JDJ.
+K = -\frac{1}{2}JD^2J.
 \end{align}
 Then the matrix $K$ is decomposed into its eigenvectors, which are the columns of matrix $E$, and eigenvalues, which make up the diagonals of matrix $\Lambda$
 \begin{equation}
@@ -138,22 +145,22 @@ The $m$ largest eigenvalues with their corresponding eigenvectors are collected 
 \begin{align}
 Y_r = E_m \Lambda_m^{(1/2)},
 \end{align}
-where the exponent is applied elementwise on all eigenvalues (so the square root of the eigenvalues is used). This representation looks very similar to the one obtained in equation \ref{eq:reducedGram}, where the projection is calculated using the eigenvectors of the Gram matrix. We will show how, when using an Euclidean metric, PCoA is equivalent to PCA.
+where the exponent is applied element-wise on all eigenvalues (the square root of each eigenvalue is used). This representation looks very similar to the one obtained in equation \ref{eq:reducedGram}, where the projection is calculated using the eigenvectors of the Gram matrix. We will show how, when using an Euclidean metric, PCoA is equivalent to PCA.
 
 We can expand the euclidean distance matrix into 
 \begin{align}
-D_{ij} &= ||x_i - x_j||^2 = ||x_i - \bar{x}+\bar{x} -x_j||^2   \\
-&= ||x_i - \bar{x}||^2 + ||x_j - \bar{x}||^2 - 2(x_i - \bar{x})\cdot (x_j - \bar{x}),
+D^2_{ij} &= ||\mathbf{x}_i - \mathbf{x}_j||^2 = ||\mathbf{x}_i - \mathbf{\bar{x}}+\mathbf{\bar{x}} -\mathbf{x}_j||^2   \\
+&= ||\mathbf{x}_i - \mathbf{\bar{x}}||^2 + ||\mathbf{x}_j - \mathbf{\bar{x}}||^2 - 2(\mathbf{x}_i - \mathbf{\bar{x}})\cdot (\mathbf{x}_j - \mathbf{\bar{x}}),
 \end{align}
-where the last term is the dot product between the vectors of the mean-centred samples $i$ and $j$. The $||x_i - \bar{x}||^2$ term is an additive constant over the columns of $D_{ij}$, and so is the corresponding term with $x_j$ over the rows of the matrix.  To explore the connection between the last term and the Gram matrix, we have to reformulate the later to an equivalent representation of the first. 
+where the last term is the dot product between the vectors of the mean-centred samples $i$ and $j$. The $||\mathbf{x}_i - \mathbf{\bar{x}}||^2$ term is an additive constant over the columns of $D_{ij}$, and so is the corresponding term with $\mathbf{x}_j$ over the rows of the matrix.  To uncover the connection between the last term and the Gram matrix, we have to reformulate the later to an equivalent representation of the former. 
 
 
-The mean centred matrix $B$ can be visualised as row vectors $x_i - \bar{x}$ stacked on top of each other vertically, where $x_i$ denotes the row vector of data matrix $X$ (i.e. the species abundance of sample $i$) and $\bar{x}$ denotes the row vector with the mean number of reads of each species across all samples
+The mean centred matrix $B$ can be interpreted as row vectors $\mathbf{x}_i - \mathbf{\bar{x}}$ stacked on top of each other vertically. As before, $\mathbf{x}_i$ denotes the row vector of data matrix $X$ (i.e. the species abundance of sample $i$) and $\mathbf{\bar{x}}$ denotes the row vector with the mean number of reads of each species across all samples
 \begin{equation}
-\bar{x} = [u_1,u_2,...,u_p], 
+\mathbf{\bar{x}} = [u_1,u_2,...,u_p], 
 \end{equation}
-where $u_j$ is defined as in equation \ref{eq:columnmean}. To construct the Gram matrix, we multiply the mean-centred matrix with its transpose
-\begin{equation}
+where $u_j$ is defined as in equation \eqref{eq:columnmean}. To construct the Gram matrix, we multiply the mean-centred matrix with its transpose
+\begin{equation}\frac{1}{n}
 \brows{(x_1 - \bar{x})\\(x_2 - \bar{x})\\ \rowsvdots \\(x_n - \bar{x})} \cdot 
 \begin{pmatrix}
 \vert &\vert&&\vert\\
@@ -165,7 +172,7 @@ where $u_j$ is defined as in equation \ref{eq:columnmean}. To construct the Gram
 \text{\begin{sideways}$(x_n - \bar{x})$
 \end{sideways}}\\
 \vert&\vert &&\vert 
-\end{pmatrix}= 
+\end{pmatrix}= \frac{1}{n}
 \begin{pmatrix}
 (x_1-\bar{x})\cdot (x_1-\bar{x}) &\hdots&(x_1-\bar{x}) \cdot (x_n-\bar{x}) \\
 (x_2-\bar{x}) \cdot (x_1-\bar{x})&\hdots&(x_2-\bar{x}) \cdot (x_n-\bar{x})\\
@@ -175,32 +182,32 @@ where $u_j$ is defined as in equation \ref{eq:columnmean}. To construct the Gram
 \end{equation}
 and get the expression 
 \begin{equation}
-G_{ij} =(x_i-\bar{x}) \cdot (x_j-\bar{x}). 
+G_{ij} =\frac{1}{n}(x_i-\bar{x}) \cdot (x_j-\bar{x}). 
 \end{equation}
-The Gram matrix's rows and columns means are equal to zero since it is double-centred by construction
+The Gram matrix rows' and columns' means are equal to zero since it is double-centred by construction
 \begin{align}
-G = BB^T = JX(JX)^T = JXX^TJ^T = JG_{uc}J,
+G = \frac{1}{n}BB^T = \frac{1}{n}JX(JX)^T =\frac{1}{n} JXX^TJ^T = \frac{1}{n}JG_{uc}J,
 \end{align}
 where $J$ is the centring matrix (which  is symmetric), and $G_{uc}$ the uncentered Gram matrix. Therefore, when we double centre the Distance matrix, we end up with the Gram matrix scaled by a constant number
 \begin{align}
-JD_{ij}J&= J\left(||x_i - \bar{x}||^2 + ||x_j - \bar{x}||^2 - 2G_{ij}\right)J \\
-&= -2G_{ij}\\
-K &= G,
+JD_{ij}J&= J\left(||x_i - \bar{x}||^2 + ||x_j - \bar{x}||^2 - 2nG_{ij}\right)J \\
+&\propto -2G_{ij}\\
+K &\propto G,
 \end{align}
-Where $K$ is the matrix we decompose into its eigenvalues and eigenvectors in the PCoA method (equation \ref{eq:Kmatrix}). The two terms preceding the Gram matrix go to zero when double-centred since they are constants over rows and columns. As mentioned earlier, the Gram matrix itself stays the same when double centred since its rows' and columns' mean is zero. 
+Where $K$ is the matrix we decompose into its eigenvalues and eigenvectors in the PCoA method (equation \eqref{eq:Kmatrix}). The two terms preceding the Gram matrix go to zero when double-centred since they are constants over rows and columns. As mentioned earlier, the Gram matrix itself stays the same when double centred since its rows' and columns' mean is zero. 
 
 Therefore, diagonalising the $K$ matrix when using a euclidean distance metric (PCoA method) is equivalent to diagonalising the Gram matrix of the mean-centred data. The projections produced by the two methods are the same since the eigenvector ($E$ for PCoA and $U$ for PCA) and eigenvalue ($\Lambda^{(1/2)}$ for PCoA and $\Sigma $ for PCA) matrices are the same. 
 
 %Other distance metrics
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-A Euclidean distance metric, however, is not very useful when it comes to ecological abundance data. This is because it suffers from the same drawbacks that PCA does (see earlier discussion in section \ref{ssec:PCA}). The framework of PCoA was developed so as to enable the use of other measures which are more suitable to ecological data, where the presence of a species in a sample is more important than the number of reads of that species. Such a measure is the bray-curtis dissimilarity statistic, which quantifies how dissimilar two samples are based on species common to both of them. The measure $B_{ij}$ is defined as
+A Euclidean distance metric, however, is not very useful when it comes to ecological abundance data. This is because it suffers from the same drawbacks that PCA does (see earlier discussion in section \ref{ssec:PCA}). The framework of PCoA was developed so as to enable the use of other measures which are more suitable to ecological data; as mentioned earlier, the number of read counts for each species might suffer from biases and thus not much emphasis should be place on their value. Such a measure is the Bray-Curtis dissimilarity statistic, which quantifies how dissimilar two samples are by taking the absolute value of their difference. The measure $B_{ij}$ is defined as
 %~~~~~~~~~~~~~~~~Bray Curtis
 \begin{equation}
     B_{ij} = \frac{\sum_{k =1}^{p} |X_{ik} - X_{jk}|}{\sum_{k =1}^{p} X_{ik} + X_{jk}},
 \end{equation}
-where $X_{ik}$ is the data matrix which denotes the number of reads of speciment $k$ in sample $i$. The statistic ranges from 0, where the samples have the same species composition, to 1 where the samples do not have any species in common, and is semimetric\footnote{Semimetric measures do not satisfy the triangle inequality.}.
+where $X_{ik}$ is the data matrix which denotes the number of reads of speciment $k$ in sample $i$. The statistic ranges from 0, where the samples have the same species composition, to 1 where the samples do not have any species in common, and is semimetric\footnote{Semimetric measures do not satisfy the triangle inequality.}. If the data matrix is instead made up of presence and absence values (1 if an OTU was found in a sample, 0 otherwise), the Bray-Curtis index quantifies the fraction of species not in common between the samples. 
 
-If we use this statistic to calculate the distance matrix $D_{ij}$ and then carry out PCoA, the arch effect is removed from the 2 dimensional ordination plot and can better separate the different river samples. As it can be seen in Figure \ref{fig:pcoaotu12}, the method can separate well samples from the upper Maranon part of the river (yellow points on the upper right corner of the plot). Samples from the other parts are grouped together on the opposite side from the upper Maranon part. Black and white river samples are not very well separated, and occupy the same space (except on the upper right corner where no black water samples are found). Even when the ordination method produces a better spread of results than when using PCA, the variance explained by the first 2 axes is only 19.8\%.
+If we use this statistic to calculate the distance matrix $D_{ij}$ and then carry out PCoA, the arch effect is absent from the 2 dimensional ordination plot and can better separate the different river samples. As it can be seen in Figure \ref{fig:pcoaotu12}, the method can separate well samples from the upper Maranon part of the river (yellow points in the upper right corner of the plot). Samples from other parts are grouped together on the opposite side from the upper Maranon points. Black and white river samples are not very well separated, and occupy the same space (except on the upper right corner where no black water samples are found). Even when the ordination method produces a better spread of results than when using PCA, the variance explained by the first 2 axes is only 19.8\%.
 
 
 %% PCoA bray curtis.
@@ -215,7 +222,7 @@ To illustrate the effect of measures on the PCoA algorithm, we produced 2 dimens
 \begin{equation}
 Jac_{ij} =\frac{2C_{ij}}{1-C_{ij}},
 \end{equation} 
-where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordination plot produced using this index is shown in Figure \ref{fig:pcoajac}. PCoA was performed using the pcoa function in the ape package in R \textbf{ape}.
+where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordination plot produced using this index is shown in Figure \ref{fig:pcoajac}. PCoA was performed using the pcoa function in the ape package in R \cite{paradis_ape_nodate}.
 
 %%RESULTS of PCoA with different metrics
 \begin{figure}[h]
@@ -246,16 +253,17 @@ where $C_{ij}$ is the Bray-Curtis statistic between sample $i$ and $j$. The ordi
 % \label{fig:minion}
 % \end{figure}
 \subsection{Non-metric multidimensional scaling}
-Non-metric multidimensional scaling (NMDS) is distinct from classical multidimensional scaling methods, like PCA and PCoA, in that it does not maximise linear correlation between the distances of the projected lower dimensional object and the actual distances. Furthermore, it is an random iterative approach and the number of dimensions to project the data onto must be decided from beforehand. Like PCoA, NMDS was first introduced in the psychometrics field for use in psychology.
+Non-metric multidimensional scaling (NMDS) is distinct from classical multidimensional scaling methods, like PCA and PCoA, in that it does not assume there is a linear relationship between the actual ecological distance of two samples and their dissimilarity (e.g. using Bray-Curtis). In contrast it assumes only that there is a rank order relationship between the two (i.e. the most different samples should also have the largest dissimilarity). Thus, it derives a configuration of points representing the samples, in which the inter-point distance of the pairs are in rank order with the dissimilarities of the samples.
+Furthermore, it is a random iterative approach and the number of dimensions of the configuration of points must be decided from beforehand. Like PCoA, NMDS was first introduced in the psychometrics field for use in psychology \cite{kruskal_multidimensional_1964}.
 %%PCoA and so-called 'classical' multidimensional
 %scaling (Torgerson, 1952) assume that the dissimilarity measure has a linear relationship with ecological distance. In contrast, nonmetric multidimensional scaling (NMDS, Shepard, 1962a, b; Kruskal,
 %1964a, b) assumes only rnonotonicity: a configuration is derived in which the distances between sample pairs are in rank order with their dissimilarities. 
 
-The goal of the algorithm is to find $n$ points in an $m$ dimensional spaces whose interpoint distances are somewhat related to the experimental dissimilarities of our $n$ objects/samples. In this instance, dissimilarity is given by the distance matrix between samples $\Delta_{ij}$ which is calculated using a dissimilarity measure. In NMDS ordination we are not interested in the numerical distance between our objects but rather their ordinal relationship (the rank of dissimilarities between samples is of importance); that's why the word dissimilarity is used. In contrast, PCoA or classical MDS assume a linear relationship between the calculated dissimilarity measure and the ecological distances of the samples. What we label as distance ${D}_{ij}$ in NMDS is between the points in the $m$ dimensional projection of our object. A measure of relatedness between distance and dissimilarity is given by a goodness-of-fit statistic which is an integral part of the procedure; in classical MDS however no such statistic is used.
+The goal of the algorithm is to find $n$ points in an $m$ dimensional spaces whose inter-point distances are somewhat related to the experimental dissimilarities of our $n$ objects/samples. In this instance, dissimilarity is given by the distance matrix between samples $\Delta_{ij}$ which is calculated using a dissimilarity measure. In NMDS ordination we are not interested in the numerical distance between our objects but rather their ordinal relationship (the rank of dissimilarities between samples is of importance); that's why the word dissimilarity is used. In contrast, PCoA or classical MDS assume a linear relationship between the calculated dissimilarity measure and the ecological distances of the samples. What we label as distance ${D}_{ij}$ in NMDS is between the points in the $m$ dimensional projection of our object. A measure of relatedness between distance and dissimilarity is given by a goodness-of-fit statistic which is an integral part of the procedure; in classical MDS however no such statistic is used.
 
 This statistic is called Stress and it measures how the configuration of points in the $m$ dimensional space match the data, through a monotonic relationship between them. A solution to the iterative algorithm, the best-fitting configuration of points, is found when the stress is minimised. The best solution is achieved when there is a perfect monotone relationship between the dissimilarities and distances. 
 
-The dissimilarities we are dealing with are symmetric; $\Delta_{ij} ==\Delta_{ji}$. Therefore, only the upper triangular matrix is needed without the diagonal (because samples are perfectly similar between themselves). We want to achieve a configuration of points in an $m$ dimensional space such that the rank ordering of dissimilarities
+The dissimilarities we are dealing with are symmetric; $\Delta_{ij} =\Delta_{ji}$. Therefore, only the upper triangular matrix is needed without the diagonal (because samples are perfectly similar between themselves). We want to achieve a configuration of points in an $m$ dimensional space such that the rank ordering of dissimilarities
 \begin{equation}
 	\Delta_{i_1 j_1} \leq 	\Delta_{i_2 j_2} \leq ... \leq 	\Delta_{i_M j_M},
 	\label{eq:mon}
@@ -264,11 +272,11 @@ where $M = \frac{n(n-1)}{2}$ is the number of interactions between the samples, 
 
 The objects are represented by points/vectors in an $m$-dimensional space ${ \mathbf x}_i \in \mathbb{R}^m$ or by the matrix $X_{ij}$, and their distance by any metric we want. In this case we choose the Euclidean:
 \begin{equation}
-	D_{i j}=\sqrt{\sum_{s=1}^{i}\left(X_{i s}-X_{i s}\right)^{2}}.
+	D_{i j}=\sqrt{\sum_{k=1}^{i}\left(X_{i k}-X_{j k}\right)^{2}}.
 \end{equation}
 
 
-Another important element in our calculation are the numbers $\hat{D}_{ij}$, which are used as proxies for the dissimilarities when it comes to calculating the stress. The reason we do not use the numerical values of the dissimilarities is because we are not interested in them, only in their rank order relationship. Thus, the numbers $\hat{D}_{ij}$ are constructed as such to be monotonically related to $\Delta_{ij}$; when arranged in the order
+An important element of the procedure are the numbers $\hat{D}_{ij}$, which are used as proxies for the dissimilarities when it comes to calculating the stress. The reason we do not use the numerical values of the dissimilarities is because we are not interested in them, only in their rank order relationship. Thus, the numbers $\hat{D}_{ij}$ are constructed as such to be monotonically related to $\Delta_{ij}$; when arranged in the order
 \begin{equation}
 	\hat{D}_{i_1 j_1},	\hat{D}_{i_2 j_2}, ...,	\hat{D}_{i_M j_M},
 \end{equation}
@@ -279,20 +287,20 @@ These numbers are chosen so as to be as `nearly equal' to $D_{ij}$ as possible, 
 Now we can introduce the stress formula for a configuration of points $X_{ij}$. This is given by
 \begin{align}
 	S(X_{ij})&= \text{stress of the fixed configuration } { \mathbf x_1, ...,x_n}\\
-	 &=\underset{numbers \hat{D}_{ij} satisfying \eqref{eq:mon}}{ min}
+	 &=\underset{\text{numbers }\hat{D}_{ij} \text{ satisfying \eqref{eq:mon}}}{ min}
 	 \sqrt{\frac{\sum_{i<j}\left(D_{ij},-\hat{D}_{i j}\right)^{2}}{\sum_{i<j} D_{i j}^{2}}},
 	 \label{eq:stress}
 \end{align}
 where the sum is taken over all $ij$ pairs such that $i<j$ is satisfied (sum over all upper triangular matrix elements), and the minimum is over the numbers $\hat{D}_{ij}$. This minimisation can also be seen as monotonic regression, if the dissimilarities $\Delta_{ij}$ are plotted against the distances $D_{ij}$ and the proxies are the points that make up the free-form line. The regression step is finding new $\hat{D}_{ij}$ numbers when the distances change. 
 
-The algorithm then aims at finding the configuration of points that minimises \eqref{eq:stress}. The minimisation over the configuration is done by a `method of gradients' (similar to gradient descent) outlined in \textbf{kruskal numerical}. That over the $\hat{D}_{ij}$ is done using a method of blocks outlined in \textbf{miles and kruskal numerical}.
+The algorithm then aims at finding the configuration of points that minimises \eqref{eq:stress}. The minimisation over the configuration is done by a `method of gradients' (similar to gradient descent) outlined in \cite{kruskal_nonmetric_1964}. That over the $\hat{D}_{ij}$ is done using a method of blocks outlined in \cite{miles_complete_1959,kruskal_nonmetric_1964}.
 
 
 The algorithm first starts by generating a random configuration of $n$ non-identical points that span an $m$-dimensional space. This can also be done by running another ordination method and using it's configuration of points limited to the $m$ first dimensions. This set is then normalised; the centre of gravity is set to the origin, and the points are uniformly stretched or shrank such that their root-mean-square distance from the origin is equal to one. This transformation does not affect the algorithm since the euclidean metric is invariant to translations and rotations, and the denominator of stress also makes it invariant to a uniform stretch of the points. 
 
- The interpoint distance $D_{ij}$ is then calculated and the stress for the configuration is found by minimising the dissimilarity proxies  $\hat{D}_{ij}$ in the way described earlier. Then, the gradient of the configuration is calculated and if some stopping conditions are not met, that signify the algorithm reached an appropriate minimum, the points are moved towards the direction of decreasing stress. A new configuration is thus obtained and the procedure is repeated until some minimum conditions are met; either the stress is low enough that finding another minimum would not improve the solution significantly, or several attempts from different starting configurations have been attempted and the lowest stress solution is chosen. 
+ The interpoint distance $D_{ij}$ is then calculated and the stress for the configuration is found by minimising the dissimilarity proxies  $\hat{D}_{ij}$ in the way described earlier. Then, the gradient of the configuration is calculated and, if some stopping conditions are not met that signify the algorithm reached an appropriate minimum, the points are moved towards the direction of decreasing stress. A new configuration is thus obtained and the procedure is repeated until some minimum conditions are met; either the stress is low enough that finding another minimum would not improve the solution significantly, or several attempts from different starting configurations have been attempted and the lowest stress solution is chosen. 
 
-NMDS ordination was performed using the metaMDS function in vegan \textbf{vegan} package for R. As mentioned previously, the number of dimensions have to be predetermined before running the algorithm. There is also a maximum number of iteration to try if a non-convergent solution is found. Using a dissimilarity measure of Bray-Curtis \ref{fig:nmds} and Euclidean \ref{fig:nmdseuc}, ordination plots where plotted using the same legends as in the PCoA case. The Bray-Curtis measure can separate river colour much better than when using the Euclidean measure. For NMDS ordination, function metaMDS was used in the Vegan package for R \textbf{Vegan}. 
+NMDS ordination was performed using the metaMDS function in vegan \cite{oksanen_vegan_nodate} package for R. As mentioned previously, the number of dimensions have to be predetermined before running the algorithm. There is also a maximum number of iteration to try if a non-convergent solution is found. Ordination plots for Bray-Curtis and Euclidean dissimilarity measures are shown in Figures \ref{fig:nmds} and \ref{fig:nmdseuc}. The same legends and colouring schemes have been used as in the PCoA case. The Bray-Curtis measure can separate river colour much better than when using the Euclidean measure. For NMDS ordination, function metaMDS was used in the Vegan package for R \textbf{Vegan}. 
 
 
 The stress of the 2 dimensional NMDS configuration was 15.8\% and 12.8\% for Bray-Curtis and Euclidean respectively. This is considered `fair' in the literature, and is good enough for discerning patterns in a plot. With increasing dimensions the stress falls, however, the number of iterations needed to get a convergent solution also increases considerably. After 100000 iterations a convergent solution for 20 dimensions was not found. Thus, its inclusion as a feature selection method might not be warranted. 
@@ -445,12 +453,12 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
    \end{align}
    The integral is usually intractable analytically because the parameters span a high-dimensional space.
    
-   Once we have the posterior distribution we can use it on a new data set (test set), make predictions, and evaluate the model's performance. This is done using the law of total probability 
+   Once we have the posterior distribution we can use it on a new data set (test set), make predictions, and evaluate the model's performance using the predictive posterior distribution. This is done using the law of total probability 
    \begin{align}
 		P({C} = 1|X_{train},\mathbf{y}_{train},\mathbf{x}_{i,test},s) &= \int P(C=1|\mathbf{x}_{i,test},\bm{\theta})P(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\bm{\theta}\label{eq:classprob} \\
 		&= E(P(C=1|\mathbf{x}_{i,test},\bm{\theta})|X_{train},\mathbf{y}_{train},s),
    \end{align}
-   where $\mathbf{x}_{i,test}=\mathbf{x}_{i \in I_{test}} $ is the features vector of any sample in the test set.  The result is the probability of the point being in group 1 (White water) given the train data sets and the parameter of the prior.
+   where $\mathbf{x}_{i,test}=\mathbf{x}_{i \in I_{test}} $ is the features vector of any sample in the test set.  This is the probability of observation $i$ being in group 1 (White water) given the train data sets and the parameter of the prior.
 
    Note that the distribution over the Class is not dependent on the parameters $\bm{\theta}$ since we integrated them out.
    

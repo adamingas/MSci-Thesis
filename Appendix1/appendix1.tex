@@ -1,7 +1,11 @@
 %!TEX root = ../thesis.tex
 % ******************************* Thesis Appendix A ****************************
 \chapter{Appendix} 
-
+\ifpdf
+\graphicspath{{Chapter3/Figs/Raster/}{Chapter3/Figs/PDF/}{Chapter3/Figs/}}
+\else
+\graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
+\fi
 Here we present additional results for different features sets than the ones presented in Chapter \ref{chap:results}, so as to complete and complement the discussion without burdening the reader with long, difficult to read tables and figures.
 
 The PCoA sets presented here were computed using the Bray-Curtis distance measure; their only difference with the ones presented in the Results \& Discussion Chapter is that only some of the axes where used for classification. In particular, the first axes to describe 99\% and 90\% of the variance were used. Also, the configuration of a 20-dimensional NMDS ordination was used as a feature set. The procedure was run for 10000 steps and did not converge, so it does not represent the best 20-dimensional NMDS configuration.
@@ -31,6 +35,9 @@ The results for maximum similarity are presented in tables \ref{table:lrsimilari
 		\cmidrule{2-3}
 		\multirow{2}{*}{NMDS}&13 &8&\multirow{2}{*}{90.24\%}\\
 		&	 8&135&\\
+				\cmidrule{2-3}
+		\multirow{2}{*}{PCA}&4 &17&\multirow{2}{*}{88.41\%}\\
+		&	 2&141&\\
 		\bottomrule
 	\end{tabular}
 	\caption{Results from maximising similarity using Logistic Regression. The percentages indicate the total variance the axes of PCoA explain.}
@@ -59,6 +66,9 @@ The results for maximum similarity are presented in tables \ref{table:lrsimilari
 		\cmidrule{2-3}
 		\multirow{2}{*}{NMDS}&10 &11&\multirow{2}{*}{92.07\%}\\
 		&	 2&141&\\
+						\cmidrule{2-3}
+		\multirow{2}{*}{PCA}&2 &19&\multirow{2}{*}{88.41\%}\\
+		&	 0&143&\\
 		\bottomrule
 	\end{tabular}
 	\caption{Results from maximising similarity using Random Forest. The percentages indicate the total variance the axes of PCoA explain.}
@@ -95,6 +105,9 @@ The results for maximum dissimilarity are presented in tables \ref{table:lrdissi
 		\cmidrule{2-3}
 		\multirow{2}{*}{NMDS}&3 &18&\multirow{2}{*}{82.93\%}\\
 		&	 10&133&\\
+						\cmidrule{2-3}
+		\multirow{2}{*}{PCA}&0 &21&\multirow{2}{*}{87.20\%}\\
+		&	 0&143&\\
 		\bottomrule
 	\end{tabular}
 	\caption{Results from maximising dissimilarity using Logistic Regression. The percentages indicate the total variance the axes of PCoA explain.}
@@ -123,6 +136,9 @@ The results for maximum dissimilarity are presented in tables \ref{table:lrdissi
 		\cmidrule{2-3}
 		\multirow{2}{*}{NMDS}&1 &20&\multirow{2}{*}{86.59\%}\\
 		&	 2&141&\\
+						\cmidrule{2-3}
+		\multirow{2}{*}{PCA}&0 &21&\multirow{2}{*}{81.71\%}\\
+		&	 9&134&\\
 		\bottomrule
 	\end{tabular}
 	\caption{Results from maximising dissimilarity using Random Forest. The percentages indicate the total variance the axes of PCoA explain.}
