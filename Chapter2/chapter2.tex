@@ -15,7 +15,9 @@ In the first section we present ordination methods, which are very frequently us
 
 The classical hypothesis test permutational multivariate analysis of variance is introduced in the following section. It is used to check if the groupings of samples along the levels of a categorical variable significantly different from each other. A distance metric is used to quantify the dissimilarity between samples, and a permutation scheme to avoid assuming the F-statistic's distribution. 
 
-Classification models are introduced in the last section together with a brief outline of their working. In particular, the models presented are Logistic Regression and Random Forest. A Bayesian interpretation of the former is also given which can be implemented with Markov chain Monte Carlo methods.  
+Classification models are introduced in the next section together with a brief outline of their working. In particular, the models presented are Logistic Regression and Random Forest. A Bayesian interpretation of the former is also given which can be implemented with Markov chain Monte Carlo methods.  
+
+An outline of the Hamiltonian Monte Carlo method for sampling from normalisable distributions is given in the final section of this Chapter. We motivate its use by transforming the problem of sampling to physics terms. Then, we introduce Hamiltonian dynamics and their properties which allow for an efficient exploration of the state space of the target distribution.
 
 \section{Ordination}
 \label{sec:ordination}
@@ -497,7 +499,7 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
    If the candidate $z^*$ is not accepted then a new one is drawn from the proposal conditioned on the previously accepted sample. The process goes on up until we have generated a sufficient number of samples. More detailed explanation of the algorithm and the theory behind Markov Chain can be found in \cite{lange_markov_2010}.
    %ADD PROBABILITY NOTES IF TIME
    
-	Instead of using Metropolis-Hastings (MH), Hamiltonian Monte Carlo (HMC) was used. When compared to a MH using a Gaussian random-walk as proposal distribution, it reduces the correlation between successive sampled states, and thus it needs fewer samples to approximate integrals.
+	Instead of using Metropolis-Hastings (MH), Hamiltonian Monte Carlo (HMC) was used. When compared to a MH using a Gaussian random-walk as proposal distribution, it reduces the correlation between successive sampled states, and thus it needs fewer samples to approximate integrals. An outline of the method is given in section \ref{section:hmc}.
 	
 	
 	
@@ -633,7 +635,7 @@ When it comes to prediction, the output class probability predicted by each tree
 	P(C = 1|\mathbf{x}_{test},\{T_i\}_{1}^B) &= \frac{1}{B} \sum_{i=1}^B T_i(\mathbf{x}_{test}) .
 \end{align}
 
- The construction of the algorithm allows it to determined which features offer most of the explanatory power in separating samples. There are several ways to do this and none of them outperforms the other in all cases (since explanatory power is a difficult concept to define). One approach uses the out-of-bag samples that were not used in the construction of a tree (if bagging was used). Its prediction accuracy on these samples is measured and used as a benchmark for feature evaluation. Then the values for a feature in the out-of-bag data set are randomly permuted, and the prediction accuracy of the tree is tested again. The drop in accuracy is associated with the predictive power of the feature whose values where permuted. This is done for all features, and the loss in accuracy is averaged over all trees. The larger the drop, the more predictive the feature. 
+ The construction of the algorithm allows it to determine which features offer most of the explanatory power in separating samples. There are several ways to do this and none of them outperforms the other in all cases (since explanatory power is a difficult concept to define). One approach uses the out-of-bag samples that were not used in the construction of a tree (if bagging was used). Its prediction accuracy on these samples is measured and used as a benchmark for feature evaluation. Then the values for a feature in the out-of-bag data set are randomly permuted, and the prediction accuracy of the tree is tested again. The drop in accuracy is associated with the predictive power of the feature whose values where permuted. This is done for all features, and the loss in accuracy is averaged over all trees. The larger the drop, the more predictive the feature. 
  
  Another way is to measure the mean decrease in impurity of each feature. For a feature $X_j$ this is done by adding up the weighted decrease in impurity for all nodes where $X_j$ is used, and then average over all trees in the forest. The formula is given by 
  \begin{equation}
@@ -768,6 +770,7 @@ where the sum is over all trees $b$ and all nodes of the tree $\phi_b$, and $I(j
 
    %%%% HAMILTONIAN MCMC
 \section{Hamiltonian Monte Carlo}
+\label{section:hmc}
 \subsection{Motivation}
 
 Hamiltonian Monte carlo is a method for sampling from the distribution of interest, using properties of Hamiltonian dynamics. Because of the way new states are proposed in HMC, it can explore the state space faster (with less samples).
@@ -806,6 +809,11 @@ It can be expressed as the sum of the potential $U(q)$ and kinetic $K(p)$ energy
 \begin{equation}
 	H(q,p) = U(q) + K(p).
 \end{equation}
+and thus the equations of motion can be rewritten to 
+\begin{align}
+\frac{dq_i}{dt} &= \frac{\partial K}{\partial p_i}\nonumber\\
+\frac{dp_i}{dt} &= -\frac{\partial U}{\partial q_i} \label{eq:motion_kinetic_potential}
+\end{align}
 
 In the HMC, position variables $q$ denote the parameters of interest and the potential energy is the minus of the log of the target density. The kinetic energy is usually defined as 
 \begin{equation}
@@ -813,7 +821,9 @@ In the HMC, position variables $q$ denote the parameters of interest and the pot
 \end{equation}
 where $M$ is a symmetric positive-definite matrix which is usually a diagonal multiplied by a constant. In probabilistic terms, the momentum variables have a multivariate normal distribution with $M$ as the covariance matrix.
 
-The dynamics of the system have to satisfy some properties if they are to be used to explore the phase space. First of all, the Hamiltonian of the system is time invariant 
+
+
+The dynamics of the system satisfy some important properties without which the construction of valid MCMC updates would not be possible. First of all, the Hamiltonian of the system is time invariant 
 \begin{equation}
 	\frac{d H}{d t}=\sum_{i=1}^{d}\left[\frac{d q_{i}}{d t} \frac{\partial H}{\partial q_{i}}+\frac{d p_{i}}{d t} \frac{\partial H}{\partial p_{i}}\right]=\sum_{i=1}^{d}\left[\frac{\partial H}{\partial p_{i}} \frac{\partial H}{\partial q_{i}}-\frac{\partial H}{\partial q_{i}} \frac{\partial H}{\partial p_{i}}\right]=0.
 \end{equation}
@@ -839,15 +849,73 @@ Under this formulation, we can see how the potential energy $U(q)$ can be viewed
 	U(q) = -\log(p(q)).
 \end{equation}
 
-The kinetic energy on the other hand can be take the form 
+The kinetic energy on the other hand can take the form 
 \begin{equation}
 K(p)= \frac{p^T M^{-1}p}{2},
 \end{equation}
-where $M$ is a symmetric positive-definite matrix which is usually a diagonal multiplied by a constant. This is the usual definition of kinetic energy in physics, but under our probabilistic perspective it can be viewed as a multivariate Gaussian distribution over the momentum particles, centred at zero and with covariance matrix $M$.
+where $M$ is a symmetric positive-definite matrix which is usually a diagonal multiplied by a constant. This is the usual definition of kinetic energy in physics, but under our probabilistic perspective (and the canonical distribution) it can be viewed as a multivariate Gaussian distribution over the momentum particles, centred at zero and with covariance matrix $M$. The partial derivative of the kinetic energy with respect to momentum $p_i$ is given by
+\begin{equation}
+	\frac{\partial K(p)}{\partial p_i} = [M^{-1}p]_i = \frac{p_i}{m_i}.
+\end{equation}
+The last equality is given when the covariance (mass) matrix is diagonal with $m_i$ as its $i$th diagonal element. 
 
-The invariance of the Hamiltonian means that a trajectory obeying the dynamics will move within a space of constant density. 
-
-our aim is to generate a random momentum vector that, together with previously accepted position state, will give us a certain joint probability density. We can thus use hamiltonian dynamics to evolve the joint system to other regions of interest, and accept the new position variables.  
+Any trajectory in the phase space satisfying Hamilton's equations and the dynamics of the system leaves the joint probability density constant. Therefore, to draw samples of position from a previously unexplored region of phase space, we could generate a random momentum vector and use the previous value of the position. Then we could evolve the state $(q,p)$ using Hamilton's equations \eqref{eq:motion} until we reach the desired space, and accept the new samples. The process can be repeated by generating a new random momentum vector.
 
 
-HMC samples from the joint probability density of momentum and position
+The problem with this method is that Hamilton's equations must be approximated by descritising them in time. Then the evolution of states is from time $t$ $(q(t),p(t))$ to time $t+\epsilon$ $(q(t+\epsilon),p(t+\epsilon))$, and whatever numerical method we use to do this, will not be perfect and have some numerical errors. The method most commonly used is the leapfrog which evolves in time the momentum variable first by half a step, then the position by a whole step using the evolved momentum, and finally completes the evolution of the momentum by one more half step
+\begin{align}
+ p_{i}(t+\varepsilon / 2) &=p_{i}(t)-(\varepsilon / 2) \frac{\partial U}{\partial q_{i}}(q(t)) \\ q_{i}(t+\varepsilon) &=q_{i}(t)+\varepsilon \frac{p_{i}(t+\varepsilon / 2)}{m_{i}} \\ p_{i}(t+\varepsilon) &=p_{i}(t+\varepsilon / 2)-(\varepsilon / 2) \frac{\partial U}{\partial a_{i}}(q(t+\varepsilon)) .
+\end{align}
+
+Because of numerical approximation errors, the new state $q^*$ found by the evolution of the Hamiltonian using the leapfrog method is accepted with a probability of 
+\begin{equation}
+	\text{acceptance probability of new state} = \min(1,\exp \left(H(q,p) - H(q^*,p^*)\right) ).
+	\label{eq:acceptanceprobability}
+\end{equation}
+If the proposed state is not accepted then the next state is set to the current one. 
+
+The algorithm starts with a specified initial set of parameters $q$, that can be predetermined or randomly generated. For every iteration of the algorithm new momentum $p$ parameters are generated and, together with the current $q$, are updated according to Hamiltonian dynamics using the leapfrog method performed $L$ number of times with discretisation time $\epsilon$. A metropolis acceptance step is then applied with probability \eqref{eq:acceptanceprobability}; if the new state $q^*$ of the parameter is accepted then it is appended to the markov chain. If the new state is not accepted then the previous values are used again. 
+
+A crucial part of the method is the random generation of new momentum vector at each iteration. It is what moves the chain to $(q,p)$ points with different joint density, thus allowing for state phase exploration. The generation of new momentum for each step can change the density by a large amount, thus producing $q$ values with a much different density.
+
+A more extensive treatment and some theoretical results can be found in Chapter 5 of the MCMC Handbook \cite{brooks_mcmc_2011}. For a conceptual introduction to the matter see \cite{betancourt_conceptual_2017}.
+
+
+%\begin{algorithm}[H]
+%	\SetAlgoLined
+%	\KwReturn{A vector of the parameters of interest }
+%	
+%	\While{the number of samples obtained is less than $B$}{
+%		instructions\;
+%		\eIf{condition}{
+%			instructions1\;
+%			instructions2\;
+%		}{
+%			instructions3\;
+%		}
+%	}
+%	\caption{Hamiltonian Monte Carlo samples}
+%\end{algorithm}
+%
+%
+%\begin{algorithm}[H]
+%	\SetAlgoLined
+%	\DontPrintSemicolon
+%	\KwIn{}    
+%	\KwOut{$ S^{*} $ \Comment*[r]{Negation Excluded List}}
+%	
+%	\SetKwFunction{FMain}{HMC Step}
+%	\SetKwProg{Fn}{Function}{:}{}
+%	\Fn{\FMain{U,grad_U,epsilon,L,current_q}}{
+%		$q = current_q$
+%		$p = \mathcal{N}(length(q),mean =0,sd=1)$    
+%		$q,p = \text{Leapfrog_update}$
+%		
+%		current_U = U(current_q)
+%		
+%		\textbf{return} $ S^{*}; $ 
+%	}
+%	\textbf{End Function}
+%	\caption{Algorithm for Excluding the Negation}
+%	\label{NagetionAlgo}
+%\end{algorithm}
