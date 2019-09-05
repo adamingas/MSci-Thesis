@@ -513,7 +513,10 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
 %   The aim of MCMC is to construct a markov chain whose stationary distribution is the target distribution. 
 %   
 %   However, MCMC samples are not i.i.d and thus have different convergence rates. MCMC 
+
    
+   
+ %%%%%%%%%%%%%%%%%%%%%  
 \subsubsection{Maximum Likelihood Estimation}
 
 The Maximum Likelihood approach to fitting a logistic regression model to the data involves, as the name suggests, maximising the likelihood of response variables given the features and the parameters , with respect to the parameters \eqref{eq:likelihood}.
@@ -763,4 +766,88 @@ where the sum is over all trees $b$ and all nodes of the tree $\phi_b$, and $I(j
 %%\end{table}
 
 
+   %%%% HAMILTONIAN MCMC
+\section{Hamiltonian Monte Carlo}
+\subsection{Motivation}
 
+Hamiltonian Monte carlo is a method for sampling from the distribution of interest, using properties of Hamiltonian dynamics. Because of the way new states are proposed in HMC, it can explore the state space faster (with less samples).
+
+Usually the quantities we wish to evaluate in Bayesian Inference are the expectations of a function $f$ over the density of interest $p(q)$ in the parameter space $\mathcal{Q}$
+\begin{equation}
+	E_p(f) = \int_{\mathcal{Q}}p(q)f(q)dq.
+\end{equation}
+
+As was discussed previously, these integrals can be analytically intractable for any non-trivial target distribution, and that is why numerical methods are employed to approximate them. If the variation of the function of interest does not strongly affect the inegral, we might assume that most of it comes from the neighbourhood around the mode of the target density (where it is maximised).
+
+This assumption however is misplaced, as the integral is calculated by accumulating the integrand over a volume of parameter space. The volume plays an increasingly important role the more dimensions of the parameter space we consider. This can be better understood by partitioning a parameters space into rectangles centred around the mode of the distribution. 
+
+In one dimension, there are two partitions of our space, a line to the left and to the right of the mode. Thus it makes up for $1/3$ of the volume. In two dimensions we can fit eight squares/partitions around the mode, where it accounts for $1/9$th of the volume. In 3 dimensions, there are 26 partitions adjacent to the mode. If instead we consider the volume outside this neighbourhood of cubes, we find even more volume. 
+
+We can conclude that most of the volume exists in the tails of the distribution of interest, far away form the mode, and it grows exponentially as the dimensions increase. Densities on the other hand have exactly the opposite property, since they have to integrate to unity (or a constant). 
+
+
+Therefore, the regions of parameter space which contribute most to the expectation are not found either close to the mode, or very far away from it. These regions are usually called the typical set, which is found around the mode, and which is what we want to explore with an MCMC sampler. 
+
+
+The method we need to explore the typical set should do it fast enough and not get stuck at pathological points of the distribution. The metropolis-hastings algorithm, given enough time, will explore most of the space of interest. However, because of the necessary exploration needed of the parameter set in states of low probability density, and the way the algorithm proposes and accepts new samples, the markov chain will rarely move. Because of limited computational power, a new method is needed that explores the typical set much faster.
+
+This is where Hamiltonian dynamics becomes useful. The problem of exploring the typical set can be recast into a physics problem; the orbit of a satellite around a planet. The gravitational potential energy exerted by the planet can be viewed as the target density. Its gradient points towards the planet and thus going along it will cause the satellite to crash. To keep it in orbit we have to pump it with enough momentum to keep it going around the planet, but also not too much so that it flies away to the depths of space. Because of the conservative dynamics of this system, giving the satellite just enough energy at the start of the orbit will keep it at approximately the same zone.
+
+The key to exploring the typical set, is thus by introducing auxiliary momentum parameters to our probabilistic system. They have to be added, however in such a way that the conservative dynamics of the system are ensured.
+
+\subsection{Formulation}
+
+The Hamiltonian of a system is completely defined by its position $q_i$ and momentum $p_i$, and it describes how these variables change with time 
+\begin{align}
+	\frac{dq_i}{dt} &= \frac{\partial H}{\partial p_i}\nonumber\\
+		\frac{dp_i}{dt} &= -\frac{\partial H}{\partial q_i} \label{eq:motion}
+\end{align}
+It can be expressed as the sum of the potential $U(q)$ and kinetic $K(p)$ energy
+\begin{equation}
+	H(q,p) = U(q) + K(p).
+\end{equation}
+
+In the HMC, position variables $q$ denote the parameters of interest and the potential energy is the minus of the log of the target density. The kinetic energy is usually defined as 
+\begin{equation}
+	K(p)= \frac{p^T M^{-1}p}{2},
+\end{equation}
+where $M$ is a symmetric positive-definite matrix which is usually a diagonal multiplied by a constant. In probabilistic terms, the momentum variables have a multivariate normal distribution with $M$ as the covariance matrix.
+
+The dynamics of the system have to satisfy some properties if they are to be used to explore the phase space. First of all, the Hamiltonian of the system is time invariant 
+\begin{equation}
+	\frac{d H}{d t}=\sum_{i=1}^{d}\left[\frac{d q_{i}}{d t} \frac{\partial H}{\partial q_{i}}+\frac{d p_{i}}{d t} \frac{\partial H}{\partial p_{i}}\right]=\sum_{i=1}^{d}\left[\frac{\partial H}{\partial p_{i}} \frac{\partial H}{\partial q_{i}}-\frac{\partial H}{\partial q_{i}} \frac{\partial H}{\partial p_{i}}\right]=0.
+\end{equation}
+Another fundamental property is that the dynamics are reversible; there is a one-to-one map from the state $(q(t),p(t))$ at time $t$ to the state $(q(t+s),p(t+s))$ at time $t+s$, and thus the reverse map exists as well.
+Finally, the phase space's $(q,p)$ volume is conserved, therefore, any mapping from one region in the phase space to another must conserve the initial volume. 
+
+
+The introduction of the auxiliary momentum variables transforms the target distribution into a joint one in phase space 
+\begin{equation}
+	P(q,p) = P(p|q)P(q) = P(p)P(q).
+\end{equation}
+The joint density is equal to the probability of momentum given the position times the target distribution. This can be further simplified to the product of the two marginals, since we do not assume any dependence of the momentum to the position. The joint probability is related to the Hamiltonian via a canonical distribution
+\begin{equation}
+	P(q,p) = \frac{1}{Z}exp\left(-H(q,p)\right),
+\end{equation}
+where $Z$ is th normalising constant. 
+Therefore we can rewrite the density as 
+\begin{equation}
+	P(q, p)=\frac{1}{Z} \exp \left({-U(q)}\right) \exp \left({-K(p)}\right).
+\end{equation}
+Under this formulation, we can see how the potential energy $U(q)$ can be viewed as the negative log of the target density 
+\begin{equation}
+	U(q) = -\log(p(q)).
+\end{equation}
+
+The kinetic energy on the other hand can be take the form 
+\begin{equation}
+K(p)= \frac{p^T M^{-1}p}{2},
+\end{equation}
+where $M$ is a symmetric positive-definite matrix which is usually a diagonal multiplied by a constant. This is the usual definition of kinetic energy in physics, but under our probabilistic perspective it can be viewed as a multivariate Gaussian distribution over the momentum particles, centred at zero and with covariance matrix $M$.
+
+The invariance of the Hamiltonian means that a trajectory obeying the dynamics will move within a space of constant density. 
+
+our aim is to generate a random momentum vector that, together with previously accepted position state, will give us a certain joint probability density. We can thus use hamiltonian dynamics to evolve the joint system to other regions of interest, and accept the new position variables.  
+
+
+HMC samples from the joint probability density of momentum and position
