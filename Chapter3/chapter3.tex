@@ -11,9 +11,9 @@
     \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
 \fi
 
-In this chapter we present the performance of the classifiers under the different split schemes outlined earlier. The various features used and their applicability on different splitting conditions is also be evaluated. 
+In this chapter we present and comment upon the performance of the classifiers under the different split schemes outlined earlier. The various features used and their applicability on different splitting conditions is also to be evaluated. 
 
-The confusion matrix used has the form 
+The confusion matrix used throughout this chapter has the form 
 \begin{align}
 	\begin{bmatrix}
 	\text{True Black/ Black Predicted correctly}&\text{False White/ Black  Predicted falsely}\\
@@ -47,6 +47,7 @@ The results of the benchmark method we devised in section \ref{sec:splitting} ar
 	\end{tabular}
 
 \end{table}
+Furthermore, the benchmark is lower in the maximally dissimilar case. This is expected since black water samples are concentrated in only some rivers, and calculating the prior on a set excluding them will lead to more errors in prediction. It is also important to note that mistakes are made disproportionally in the direction of `False White' (black samples predicted as white).
 
 \begin{table}[!h]
 	\centering
@@ -93,19 +94,19 @@ The results of the benchmark method we devised in section \ref{sec:splitting} ar
 %
 %SIMILARITY
 \section{Maximum Similarity}
-The results for Logistic regression and Random forest tested on the maximum similarity scheme are shown in tables \ref{table:lrdissimilarity} and \ref{table:rfrsimilarity} respectively. Both methods performed relatively well when compared to the baseline. Furthermore, the PCoA features produced poorer results than the OTU ones. This was also the case when fewer dimensions, describing 99\% and 90\% of the variance, were chosen as features. The results for these can be found in the appendix in tables \ref{table:lrdissimilarityappendix} and \ref{table:rfrsimilarityappendix}. The results for a 20-dimensional NMDS configuration were also included there and not in this Chapter because the method failed to converge to a minimum stress.
+The results for Logistic regression (with $L_1$ regularisation) and Random forest tested on the maximum similarity scheme are shown in tables \ref{table:lrsimilarity} and \ref{table:rfrsimilarity} respectively. Both methods performed relatively well when compared to the baseline. Furthermore, the PCoA features produced poorer results than the OTU ones. This was also the case when fewer dimensions, describing 99\% and 90\% of the variance, were chosen as features. The results for these can be found in the appendix in tables \ref{table:lrdissimilarityappendix} and \ref{table:rfrsimilarityappendix}. The results for PCA and a 20-dimensional NMDS configuration were also included there and not in this Chapter. The NMDS method failed to converge to a minimum stress.
 
-Using the F score to find the best model in the cross validation step resulted in a lower number of black water samples correctly identified. This was especially the case of Random Forest. Therefore, we present the performance of the models selected using accuracy.
+Using the $F$ score to find the best model in the cross validation step resulted in a lower number of black water samples correctly identified. This was especially the case for Random Forest. Therefore, we present the performance of the models selected using accuracy.
 
-Just from the accuracy score we can see that Logistic regression outperforms Random Forests. The best score for the former is 98.78\% using OTU LOW and close second is 98.17\% using OTU, OTU CSS, and OTU CSS LOG. For Random Forests, OTU CSS LOG has the best score of 96.95\% and close second is OTU CSS and OTU LOW with 96.34\%. Both methods have significantly better results than the baseline's 77.6\% and 76.8\% accuracy (the second is used to compare the OTU MIN CSS set).
+Just from the accuracy score we can see that Logistic regression outperforms Random Forests. The best score for the former is 98.78\% using OTU LOW and close second is 98.17\% using OTU, OTU CSS, and OTU CSS LOG. For Random Forests, OTU CSS LOG has the best score of 96.95\% and close second is OTU CSS and OTU LOW with 96.34\%. When using the $L_2$ penalty, the algorithm had lower accuracy except for OTU CSS LOG, where it attained a score of 98.78\%. The results for $L_2$ will not be presented in a table but mentioned when they outperform $L_1$.  Both methods have significantly better results than the baseline's 77.6\% and 76.8\% accuracy (the second is used to compare the OTU MIN CSS set).
 
-It also interesting that Random Forest has an equal or lower Recall for Black water samples for all feature sets. In other words, given that a sample comes from black waters, the classifier predicts it as such with a lower probability than Logistic regression. 
+It is also interesting that Random Forest has an equal or lower Recall for Black water samples for all feature sets. In other words, given that a sample comes from black waters, the classifier predicts it as such with a lower probability than Logistic regression. 
 
-Using the $L_1$ penalty in Logistic regression has reduced the coefficients of many features to zero. From the best performing sets, the percentage of zero coefficients to the total number is 82.34\% (OTU LOW), 85.29\% (OTU), 88.95\% (OTU CSS), and 95.32\% (OTU CSS LOG). From the remaining species, 3.79\% of them have non zero coefficients in three sets (OTU CSS< OTU CSS LOG, and OTU). This means that there are only a limited number of informative species that help us identify the water colour. 
+Using the $L_1$ penalty in Logistic regression has reduced the coefficients of many features to zero. From the best performing sets, the percentage of zero coefficients to the total number is 82.34\% (OTU LOW), 85.29\% (OTU), 88.95\% (OTU CSS), and 95.32\% (OTU CSS LOG). From the remaining species, 3.79\% of them have non zero coefficients in three sets (OTU CSS, OTU CSS LOG, and OTU). This means that there are only a limited number of informative species that help us identify the water colour. 
 
 
 %LOGISTIC SIM
-\begin{table}[!h]
+\begin{table}[!htb]
 \centering
 \caption{Results from maximising similarity using Logistic Regression}
 \label{table:lrsimilarity}
@@ -141,7 +142,7 @@ Features used & Predicted Black&Predicted White&\\
 
 
 % RFR similarirtty
-\begin{table}[!h]
+\begin{table}[!htb]
 	\centering
 	\caption{Results from maximising similarity using Random Forest}
 	\label{table:rfrsimilarity}
@@ -176,7 +177,7 @@ Features used & Predicted Black&Predicted White&\\
 
 \end{table}
 
-To explore which of these species contribute most to classification we used the feature importance of Random Forests. However, instead of checking only for individual species' predictive ability, we used the taxonomic order as an aggregating factor, to get a sense which contributes the most. This was done by averaging the importance of each species, as reported by Random Forests, within their Order. The results are presented for some feature sets in the form of pie charts in Figures \ref{fig:simmeanotucss} and \ref{fig:simmeanotucsslog}. For other features were this evaluation of taxonomic importance was possible are presented in the Appendix, in Figures \ref{fig:simotumean} and \ref{fig:simotumincssmean}. 
+To explore which of these species contribute most to classification we used the feature importance of Random Forest. However, instead of checking only for individual species' predictive ability, we used the taxonomic order as an aggregating factor, to get a sense which contributes the most. This was done by averaging the importance of each species, as reported by Random Forests, within their Order. The results are presented for some feature sets in the form of pie charts in Figures \ref{fig:simmeanotucss} and \ref{fig:simmeanotucsslog}. For other features were this evaluation of taxonomic importance was possible are presented in the Appendix, in Figures \ref{fig:simotumean} and \ref{fig:simotumincssmean}. 
 
 For all feature sets used, species in the \textit{Perissodactyla} Order have on average the most explanatory power. However, this Order is only composed of two (sub)species; the South American and Mountain tapir. This method of aggregating feature importance thus favours orders with few species. It is evident in the next most important taxonomic Order as well, the \textit{Cetacea}, which is again composed of two species; the Amazon river dolphin (which is technically a whale) and Tucuxi (a freshwater dolphin). 
 
@@ -218,16 +219,15 @@ Conclusions can be drawn despite the seemingly contradictory representations of 
 % DISSIMILARITY
 \section{Maximum Dissimilarity}
 
-The classifiers' performance in a maximum dissimilarity setting is worse than that of maximum similarity. The results are summarised in tables \ref{table:lrdissimilarity} and \ref{table:rfrdissimilarity} for Logistic regression and Random Forests respectively. In this setting, Random forests have on average a higher accuracy score. The highest is obtained with OTU MIN CSS (90.45\%), but OTU CSS and OTU CSS LOG come close (90.24\%). Logistic regression has the highest accuracy with PCoA CSS and OTU CSS LOG (87.80\%), and with PCoA coming close (86.58\%). If we consider only some of the axes of PCoA and PCoA CSS, the method attains an even higher accuracy (see table \ref{table:lrdissimilarityappendix} in the Appendix).
+The classifiers' performance in a maximum dissimilarity setting is worse than in maximum similarity. The results are summarised in tables \ref{table:lrdissimilarity} and \ref{table:rfrdissimilarity} for Logistic regression and Random Forests respectively. In this setting, Random forests have on average a higher accuracy score. The highest is obtained with OTU MIN CSS (90.45\%), but OTU CSS and OTU CSS LOG come close (90.24\%). Logistic regression has the highest accuracy with PCoA CSS and OTU CSS LOG (87.80\%), and with PCoA coming close (86.58\%). If we consider only some of the axes of PCoA and PCoA CSS, the method attains an even higher accuracy (see table \ref{table:lrdissimilarityappendix} in the Appendix). Using the $L_2$ norm instead, the classifier reaches 93.90\% accuracy with OTU CSS LOG, with 9 true blacks and 1 true white being wrongly classified.
 
-Some of the feature sets had an accuracy score close to the baseline, meaning that the classifiers were not significantly better than random guessing. Furthermore, both classifiers had black water Recall scores lower than 0.5 for all of their feature sets, and made a disproportionate amount of errors in classifying these samples. 
-
-Results for PCoA sets explaining 99\% and 90\% of the variance, and for the NMDS configuration, are given in tables \ref{table:lrdissimilarityappendix} and \ref{table:rfrdissimilarityappendix} in the Appendix.
+Some of the feature sets had an accuracy score close to the baseline, meaning that the classifiers were not significantly better than random guessing. Furthermore, both classifiers had black water Recall scores lower than 0.5 for all of their feature sets, and made a disproportionate amount of errors in classifying black samples. 
+Results for the PCoA sets explaining 99\% and 90\% of the variance, for PCA, and for the NMDS configuration, are given in tables \ref{table:lrdissimilarityappendix} and \ref{table:rfrdissimilarityappendix} of the Appendix.
 
 Again, the $L_1$ penalty reduced many coefficients to zero; among the best performing sets,  PCoA CSS had 88.33\% of it's coefficients go to zero, OTU CSS LOG had 95.58\%, and PCoA 90.78\%. The sets OTU, OTU CSS, and OTU CSS LOG shared 3.05\% of their non zero coefficients. This means that once again only a limited number of OTUs contribute to the classification. 
  
 % Logistic Dissimilarity
-\begin{table}[!h]
+\begin{table}[!htb]
 	\centering
 		\caption{Results from maximising dissimilarity using Logistic Regression}
 	\label{table:lrdissimilarity}
@@ -264,7 +264,7 @@ Again, the $L_1$ penalty reduced many coefficients to zero; among the best perfo
 
 
 % RFR dissimilarity table
-\begin{table}[!h]
+\begin{table}[!htb]
 	\centering
 		\caption{Results from maximising dissimilarity using Random Forest}
 	\label{table:rfrdissimilarity}
@@ -303,9 +303,9 @@ The feature importance method of Random Forest was again employed to explore whi
 
 Summing instead of averaging produces the same result seen previously in the maximum similarity setting. Once again \textit{Characiformes} are in sum the most explanatory Order, and \textit{Siluriformes} the second most explanatory. The pie charts for OTU CSS and OTU CSS LOG can be seen in Figures \ref{fig:dissimsumotucss} and \ref{fig:dissimsumotucsslog}, for OTU and OTU MIN CSS in Figures \ref{fig:dissimotusum} and \ref{fig:dissimotumincsssum} in the Appendix. 
 
-The same conclusions are drawn for this setting as well; all four taxonomic Orders are within the six most explanatory ones in both aggregating methods. This suggests that they are indeed useful in prediction,
+The same conclusions are drawn for this setting as well; all four taxonomic Orders are within the six most explanatory ones in both aggregating methods. This suggests that they are the most important when it comes to prediction.
 %%DISIMILARITY PIE CHART
-\begin{figure}[!h]
+\begin{figure}[!htb]
 	\centering
 	\begin{subfigure}{0.45\textwidth}
 		\includegraphics[width=\textwidth]{rfr_dis_mean_pieOTU CSS}
@@ -340,9 +340,9 @@ The classifiers' performance under the Random splitting setting is between than 
 The best features set for Logistic regression is OTU CSS LOG with 96.34\% accuracy. For Random Forest it is OTU CSS LOG and OTU CSS with a score of 95.73\%. Neither classifier performs better than the other consistently for all features sets. 
 
 
-Overall, when taking into consideration all the splitting settings, the features set that produces on average the highest accuracy score is OTU CSS LOG. Furthermore, it seems that the sets produced using PCoA fair better when used in Logistic regression, whereas the NMDS configuration is better used by Random Forest (see Appendix).
+Overall, when taking into consideration all the splitting settings, the features set that produces on average the highest accuracy score is OTU CSS LOG. Furthermore, it seems that the sets produced using PCoA fair better when used in Logistic regression, whereas the NMDS configuration is better used by Random Forest (see Appendix). PCA (or PCoA with a euclidean metric) performs generally poorly for all classifiers; usually it has the lowest accuracy, but it always has the lowest black water recall score, classifying almost all the samples as white.
 %LOGISTIC RANDOM
-\begin{table}[!h]
+\begin{table}[!htb]
 	\centering
 	\caption{Results from random splits using Logistic Regression}
 	\label{table:lrrandom}
@@ -377,7 +377,7 @@ Overall, when taking into consideration all the splitting settings, the features
 \end{table}
 
 %RFR RANDOM
-\begin{table}[!h]
+\begin{table}[!htb]
 	\centering
 	\caption{Results from random splits using Random Forest}
 	\label{table:rfrrandom}
@@ -411,4 +411,68 @@ Overall, when taking into consideration all the splitting settings, the features
 	
 \end{table}
 
+\section{Bayesian vs MLE Logistic Regression}
+As mentioned previously, a downside of MCMC methods is their need for a large number of samples, especially when the parameter space is high dimensional. This is the case for our model as well, which needed almost one hour to get 5000 samples from the posterior, when using the OTU features set. The parameter space was even then not explored adequately and the prediction accuracy was lower than the benchmark. 
 
+
+That is why we will be presenting the results of training a logistic regression model on the NMDS features set; it has the lowest number of features from all others in consideration. Furthermore, cross-validating the model also takes a prohibitively large amount of time; for each train-test split we fit 240 models to choose the best hyperparamters (6 validation folds times 60 combinations of hyperparameters). Therefore, we choose to present a model with an intercept parameter and $s=1$ as the sparsity. We also show results for two priors over the parameters, Gaussian and Laplacian.
+
+The results for testing under the maximum similarity setting (without cross-validation) are presented in table \ref{table:bay_sim}. The feature set used is NMDS with $L_1$ and $L_2$ denoting the use of a Laplacian and Gaussian priors. Compared to the $L_1$ MLE implementation (see table \ref{table:lrdissimilarityappendix}), the MCMC method achieves a higher accuracy score even without cross-validation (using Laplacian prior). Using a ridge penalty we get an accuracy score of 95.12\% using the MLE method, which is higher than that obtained through the MCMC.
+
+\begin{table}[!htb]
+	\centering
+	\caption{Results from Maximum Similarity using MCMC Logistic Regression}
+	\label{table:bay_sim}
+	\begin{tabular}{l c  c c}
+		\toprule
+		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
+		Features used & Predicted Black&Predicted White&\\
+		\midrule
+		\multirow{2}{*}{NMDS $L_1$} &13 &8&\multirow{2}{*}{95.12\%}\\
+		&	0&143&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{NMDS $L_2$} &8&13&\multirow{2}{*}{92.07\%}\\
+		&	0&143&\\
+		
+		\bottomrule
+	\end{tabular}
+	
+\end{table}
+
+We can also check if the two methods reduced the same features' coefficients to zero. To do this we arbitrarily choose the $L_1$ model (and its parameters) which trained on the first split of our procedure. We plot the posterior distribution of the parameters in Figure \ref{fig:forest_sim_l1}; the beta terms denote the parameters $\bm{\theta}$. On the same plot we show with red the coefficients of features obtained by an MLE approach of the same model (sparsity parameter and $L_1$ regularisation). Most coefficients do not line up exactly, but some are very close. 
+Even though it is slower, the Bayesian approach is much richer in terms of information gained with regards to the parameters' distribution. 
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width = 0.5\textwidth]{forest_sim_l1}
+	\caption{A forest plot of the parameters and their 94\% credible interval. Red points denote the coefficients obtained through the MLE approach.}
+	\label{fig:forest_sim_l1}
+\end{figure}
+
+Comparing the MCMC method, table \ref{table:bay_dissim}, in the maximally dissimilar setting with the MLE, we see that the $L_1$ regularisation had similar performance for both. When we use $L_2$ however, the MLE's score is 84.15\%, much lower than that obtained through MCMC. 
+
+It is also noteworthy that Bayesian logistic regression using a Gaussian prior and the NMDS features set outperformed almost all other classifiers in the maximally dissimilar case (MLE logistic regression with OTU CSS LOG has an accuracy score of 93.90\%).
+
+
+
+It is possible that with much more samples and time, the Bayesian approach would be able to achieve an even greater accuracy by utilising the much larger feature sets, like OTU CSS LOG. 
+
+\begin{table}[!htb]
+	\centering
+	\caption{Results from Maximum Dissimilarity using MCMC Logistic Regression}
+	\label{table:bay_dissim}
+	\begin{tabular}{l c  c c}
+		\toprule
+		&\multicolumn{2}{c}{Confusion Matrix} & Accuracy\\
+		Features used & Predicted Black&Predicted White&\\
+		\midrule
+		\multirow{2}{*}{NMDS $L_1$} &3 &18&\multirow{2}{*}{83.54\%}\\
+		&	9&134&\\
+		\cmidrule{2-3}
+		\multirow{2}{*}{NMDS $L_2$} &0&21&\multirow{2}{*}{92.07\%}\\
+		&	21&140&\\
+		
+		\bottomrule
+	\end{tabular}
+	
+\end{table}

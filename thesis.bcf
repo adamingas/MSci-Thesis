@@ -1982,6 +1982,12 @@
     <bcf:citekey order="53">miles_complete_1959</bcf:citekey>
     <bcf:citekey order="53">kruskal_nonmetric_1964</bcf:citekey>
     <bcf:citekey order="54">oksanen_vegan_nodate</bcf:citekey>
+    <bcf:citekey order="55">anderson_permutational_2005</bcf:citekey>
+    <bcf:citekey order="56">lange_markov_2010</bcf:citekey>
+    <bcf:citekey order="57">scikit-learn</bcf:citekey>
+    <bcf:citekey order="58">Salvatier2016</bcf:citekey>
+    <bcf:citekey order="59">hastie_elements_2009</bcf:citekey>
+    <bcf:citekey order="60">.</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

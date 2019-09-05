@@ -198,6 +198,8 @@ Where $K$ is the matrix we decompose into its eigenvalues and eigenvectors in th
 
 Therefore, diagonalising the $K$ matrix when using a euclidean distance metric (PCoA method) is equivalent to diagonalising the Gram matrix of the mean-centred data. The projections produced by the two methods are the same since the eigenvector ($E$ for PCoA and $U$ for PCA) and eigenvalue ($\Lambda^{(1/2)}$ for PCoA and $\Sigma $ for PCA) matrices are the same. 
 
+%IF TIME DO THIS
+%Another, more intuitive, way to view PCoA is geometrically. It amounts to creating a multidimensional object using the distance matrix, and then applying orthogonal transformations to it to obtain 
 %Other distance metrics
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A Euclidean distance metric, however, is not very useful when it comes to ecological abundance data. This is because it suffers from the same drawbacks that PCA does (see earlier discussion in section \ref{ssec:PCA}). The framework of PCoA was developed so as to enable the use of other measures which are more suitable to ecological data; as mentioned earlier, the number of read counts for each species might suffer from biases and thus not much emphasis should be place on their value. Such a measure is the Bray-Curtis dissimilarity statistic, which quantifies how dissimilar two samples are by taking the absolute value of their difference. The measure $B_{ij}$ is defined as
@@ -300,7 +302,7 @@ The algorithm first starts by generating a random configuration of $n$ non-ident
 
  The interpoint distance $D_{ij}$ is then calculated and the stress for the configuration is found by minimising the dissimilarity proxies  $\hat{D}_{ij}$ in the way described earlier. Then, the gradient of the configuration is calculated and, if some stopping conditions are not met that signify the algorithm reached an appropriate minimum, the points are moved towards the direction of decreasing stress. A new configuration is thus obtained and the procedure is repeated until some minimum conditions are met; either the stress is low enough that finding another minimum would not improve the solution significantly, or several attempts from different starting configurations have been attempted and the lowest stress solution is chosen. 
 
-NMDS ordination was performed using the metaMDS function in vegan \cite{oksanen_vegan_nodate} package for R. As mentioned previously, the number of dimensions have to be predetermined before running the algorithm. There is also a maximum number of iteration to try if a non-convergent solution is found. Ordination plots for Bray-Curtis and Euclidean dissimilarity measures are shown in Figures \ref{fig:nmds} and \ref{fig:nmdseuc}. The same legends and colouring schemes have been used as in the PCoA case. The Bray-Curtis measure can separate river colour much better than when using the Euclidean measure. For NMDS ordination, function metaMDS was used in the Vegan package for R \textbf{Vegan}. 
+NMDS ordination was performed using the metaMDS function in vegan \cite{oksanen_vegan_nodate} package for R. As mentioned previously, the number of dimensions have to be predetermined before running the algorithm. There is also a maximum number of iteration to try if a non-convergent solution is found. Ordination plots for Bray-Curtis and Euclidean dissimilarity measures are shown in Figures \ref{fig:nmds} and \ref{fig:nmdseuc}. The same legends and colouring schemes have been used as in the PCoA case. The Bray-Curtis measure can separate river colour much better than when using the Euclidean measure. 
 
 
 The stress of the 2 dimensional NMDS configuration was 15.8\% and 12.8\% for Bray-Curtis and Euclidean respectively. This is considered `fair' in the literature, and is good enough for discerning patterns in a plot. With increasing dimensions the stress falls, however, the number of iterations needed to get a convergent solution also increases considerably. After 100000 iterations a convergent solution for 20 dimensions was not found. Thus, its inclusion as a feature selection method might not be warranted. 
@@ -327,10 +329,10 @@ The stress of the 2 dimensional NMDS configuration was 15.8\% and 12.8\% for Bra
 }
 \label{sec:permanova}
 
-Permutational multivariate analysis of variance is a hypothesis testing technique that involves permuting the data set such that normality assumptions are avoided. Its use in ecology is to test if the distribution and OTU abundance of two (or more) groups of samples is statistically significant. Distance measures are used to define the relationships between the samples.
+Permutational multivariate analysis of variance is a hypothesis testing technique that involves permuting the data set such that normality assumptions are avoided. Its use in ecology is to test if the OTU (read counts) distribution of two (or more) groups of samples is significantly different. Distance measures are used to define the relationships between the samples.
 
 Particularly, the null hypothesis is: The centroids and dispersion of the groups, defined by a distance measure, are equivalent for all groups.
-A rejection of the null means that either the centroid or the dispresion is different between groups.
+A rejection of the null means that the centroid and/or the dispersion is different between groups.
 
 In the case of a one-way test, testing for the effect of a single grouping variable (our case), with $a$ groups and $n$ samples, we construct the distance matrix $D_{ij}$ using any measure relevant to our data. The matrix is constructed in the same way as in section \ref{sec:ordination} and it quantifies the dissimilarity between observations $i$ and $j$. The index of samples in each group $k$ is given by $I_{k}$. We are interested in testing if the grouping of samples by water colour produces significantly different distributions is OTU abundance.
 
@@ -352,33 +354,33 @@ where the sum is taken over the samples belonging to the particular group. This 
 	SS_w = SS_{w,white} + SS_{w,black}.
 \end{equation}
 
-With this we can define the among-group sum-of-squares $SS_A = SS_T - SS_w$ which can be used to construct a pseudo F-ratio
+With this we can define the among-group sum-of-squares $SS_A = SS_T - SS_w$ which can be used to construct a pseudo $F$-ratio
 \begin{equation}
 F=	\frac{SS_A/(a-1)}{SS_w (n-a)}, 
 \end{equation}
-where $(a-1)$ are the degrees of freedom associated with the grouping factor and $(N-a)$ are the residual degrees of freedom \textbf{Anderson}.
+where $(a-1)$ are the degrees of freedom associated with the grouping factor and $(N-a)$ are the residual degrees of freedom \cite{anderson_permutational_2005}. 
 
-The distribution of this $F$-ratio under the null hypothesis is unknown, and we do not want to assume any. That is why use permutation of the samples to generate a distribution of $F$. If the groupings have no discernible effect on the samples, then it is equally likely that the group labels were associated with any of the samples. So, under a true null hypothesis, we can shuffle the labels onto the samples, calculate $F$-ratios (denoted by $F_p$) and construct an empirical (discrete) distribution $\{F_p\}$.
+The distribution of this $F$-ratio under the null hypothesis is unknown, and we do not want to assume any. That is why permutations of the samples are used to generate a distribution of $F$. If the groupings have no discernible effect on the samples, then it is equally likely that the group labels were associated with any of the samples. So, under a true null hypothesis, we can shuffle the labels onto the samples, calculate $F$-ratios (denoted by $F_p$) and construct an empirical (discrete) distribution $\{F_p\}_p$.
 
-If the null hypothesis is true, then the $F$-ratio calculated using the original ordering of labels relative to the samples will be similar to the values obtained under permutation. If the grouping however, produces a significant effect, then the original $F$ value will be larger than those obtained from the permutation $\{F_p\}$. To test for significance we calculate the probability associated with $F$ under the true null by counting the number of permuted ratios $F_p$ that have larger value than $F$ and dividing by the total number of permutations
+If the null hypothesis is true, then the $F$-ratio calculated using the original ordering of labels relative to the samples will be similar to the values obtained under permutation. If the grouping however, produces a significant effect, then the original $F$ value will be larger than those obtained from the permutation $\{F_p\}_p$. To test for significance we calculate the probability associated with $F$ under the true null by counting the number of permuted ratios $F_p$ that have larger value than $F$ and dividing by the total number of permutations
 \begin{equation}
-	P = \frac{\#\{F_p\in\{F_p\}| F_p \geq F \}+1}{\#\{F_p\}+1}.
+	P = \frac{\#\{F_q\in\{F_p\}_p| F_q \geq F \}+1}{\#\{F_p\}_p+1}.
 \end{equation}  
 We include the original $F$ value in the distribution as well, that is why $+1$ is included in both denominator and numerator.
 
 
-Not all permutations of the data are necessary, a subset of them is enough to calculate a valid P-value. If it is calculated to be less than $5\%$ then we can reject the null. Of course the permutation will affect greatly the calculated value so it is important that an appropriate scheme is used. The way we chose was to permute the labels within sites. As explained earlier, samples were collected along the rivers in groups of 4-6. This means that even if samples collected close together came from different water colour, their dissimilarity would be relatively low when compared to far away sites. Thus, this shuffling will make it less probable for water colour to have a significant effect. 
+Not all possible permutations of the labels are necessary, a subset of them is enough to calculate a valid P-value. If it is calculated to be less than $5\%$ then we can reject the null. Of course the permutation affects greatly the calculated value so it is important that an appropriate scheme is used. The one we choose involves permuting the labels within sites. As explained earlier,  4-6 samples were collected for each site along the rivers. This means that even if samples collected close together came from different water colour, their dissimilarity would be relatively low when compared to far away sites. Thus, this shuffling will make it less probable for water colour to have a significant effect. 
 
 The P-value calculated when using the OTU table and the permutation scheme outlined previously, with 2000 permutations, was $2.6\%$. When no restriction is put on the shuffling, the P-value is $0.05\%$, significantly smaller. This means the null hypothesis is rejected, and the two distributions have different centroids and/or dispersion, defined by the distance matrix. This is of course evident when one looks at the ordination plots in section \ref{sec:ordination}, which show a different spread of black and white water samples. This is especially true for NMDS.
 
-The test was performed using function adonis from the Vegan package in R \textbf{Vegan}.
+The test was performed using the function adonis from the Vegan package in R.
 \section{Classification Models}
 \label{sec:classification}
 \subsection{Logistic Regression}
 \subsubsection{Bayesian approach}
 Binary classification involves deciding in which of two groups (classes) an object (point) should be categorised. A point is constituted of a response variable and features. The purpose of a classifier is then to correctly identify the response variable given it's features and any other relevant information. 
 
-Our data set's response variable is the water colour of the sample, defined here as $y_i \in \{ 1 (White),0 (Black)\}$ for the $i$th sample, where $i=1,...N$. The notation $ \mathbf{x}_i = [x_{i1},x_{i2},...,x_{im}]$ is used to represent the $m$ dimensional row vector of features for the $i$th sample. Stacking up the feature vectors we construct the matrix $X_{ij}$, with rows denoting the samples and columns the features.
+Our data set's response variable is the water colour of the sample, defined here as $y_i \in \{ 1 (White),0 (Black)\}$ for the $i$th sample, where $i=1,...,N$. The notation $ \mathbf{x}_i = [x_{i1},x_{i2},...,x_{im}]$ is used to represent the $m$ dimensional row vector of features for the $i$th sample. Stacking up the feature vectors we construct the matrix $X_{ij}$, with rows denoting the samples and columns the features.
 
 Assuming we do not know the response variable of a point we would like to calculate its probability of belonging to one of the classes  given its features
 \begin{equation}
@@ -391,7 +393,7 @@ We can use Bayes' theorem to expand this probability into
  where the likelihood is given by $P(x_i|y_i)$, the prior by $P(y_i)$, and the marginal likelihood by $P(y_i)$. The prior indicates the point's probability of being in a class without taking into account its features. All the information about the point's features is encoded in the likelihood, where the probability of obtaining them is conditioned on the class. Finally, the marginal is the probability of obtaining the data, whatever the class of the point. 
  It can thus  be obtained by integrating out the class variable
  \begin{equation}
- 	P( \mathbf{x}_i) = \sum_{y_i =0}^{1} P( \mathbf{x}_i|y_i)P( \mathbf{x}_i).
+ 	P( \mathbf{x}_i) = \sum_{y_i =0}^{1} P( \mathbf{x}_i|y_i)P( y_i).
  \end{equation} 
 
 To decide in which class a point belongs to, we construct a decision boundary using the discriminant function
@@ -402,10 +404,10 @@ f( \mathbf{x}_i)=\log \frac{P(y_i=1 |  \mathbf{x}_i)}{P(y_i = 0 |  \mathbf{x}_i)
 If the function is greater than $0$ that means that the probability of the point coming from White water is greater than from Black water. 
 
 
-We can adopt either a generative or a discriminative approach. The generative approach requires modelling the class conditional distributions $P(x_i|y_i = 1)$ and $P(x_i|y_i = 0)$, and using Bayes' theorem to obtain the discriminant function directly. Typical samples could also be generated by drawing data from $P(x_i|y_i)$. The discriminant approach involves modelling the discriminant function \eqref{eq:discr} directly, using a linear model for example. We will be using the discriminative approach so as to avoid modelling the complex interaction between water colour and OTU-derived features.
+We can adopt either a generative or a discriminative approach. The generative approach requires modelling the class conditional distributions $P(\mathbf{x}_i|y_i = 1)$ and $P(\mathbf{x}_i|y_i = 0)$, and using Bayes' theorem to obtain the discriminant function directly. Typical samples could also be generated by drawing data from $P(\mathbf{x}_i|y_i)$. The discriminant approach involves modelling the discriminant function \eqref{eq:discr} directly, using a linear model for example. We will be using the discriminative approach so as to avoid modelling the complex interaction between water colour and OTU-derived features.
 
 
-A linear function (in parameters) can be used to model \eqref{eq:discr}. The features can be transformed by a non-linear function $\phi( \mathbf{x}_i) = [\phi_1( \mathbf{x_i}),\phi_2( \mathbf{x_i}),...,\phi_D( \mathbf{x_i})]$ which can span a higher or lower dimensional space. The model is given by
+A linear function (in parameters) can be used to model \eqref{eq:discr}. The features can be transformed by a non-linear function $\phi( \mathbf{x}_i) = [\phi_1( \mathbf{x}_i),\phi_2( \mathbf{x}_i),...,\phi_D( \mathbf{x}_i)]$ which can span a higher or lower dimensional space. The model is given by
 \begin{equation}
 	a = \log \frac{P(y_i=1 |  \mathbf{x}_i)}{P(y_i = 0 |  \mathbf{x}_i)} = \phi( \mathbf{x}) \bm{\theta}^T
 \end{equation}
@@ -419,10 +421,9 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
   \end{align}
   and making use of the sigmoid function. The probability of point $i$ belonging to class $y_i \in \{1,0\}$  is thus
     \begin{align}
-  	P(C = y_i |  \mathbf{x}_i, \bm{\theta}) &= P(C=1 |  \mathbf{x}_i)^{y_i}(1-P(C=1 |  \mathbf{x}_i))^{1-y_i}\\
-  	\label{eq:bernoulilikelihood}
-	&= \left(\frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}\right)^{y_i}\left(\frac{1}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}\right)^{1-y_i} \\
-	&=\frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)^{y_i}}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}.
+  	P(C = y_i |  \mathbf{x}_i, \bm{\theta}) &= P(C=1 |  \mathbf{x}_i)^{y_i}(1-P(C=1 |  \mathbf{x}_i))^{1-y_i}\nonumber\\
+	&= \left(\frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}\right)^{y_i}\left(\frac{1}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}\right)^{1-y_i} \nonumber\\
+	&=\frac{\exp(\phi( \mathbf{x}) \bm{\theta}^T)^{y_i}}{1+\exp(\phi( \mathbf{x}) \bm{\theta}^T)}. \label{eq:singlelikelihood}
   \end{align}
 
 %The likelihood has thus a Bernoulli distribution with success probability $P(y_i = 1| \mathbf{x}_i, \bm{\theta})$ being modelled as a function of the features.
@@ -446,7 +447,7 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
 	\begin{align}
 	P\left(\bm{\theta}|X_{train},\mathbf{y}_{train},s\right) = \frac{	P\left(\mathbf{y}_{train}|\bm{\theta},X_{train}\right) P\left(\bm{\theta}|s\right)}{P\left(\mathbf{y}_{train}|X_{train},s\right)}.
 	\end{align}
-   The $s$ parameter denotes the parameters of the prior that we have to assign from before hand. 
+   The $s$ denotes the (hyper)parameters of the prior that we have to assign from before hand. 
    The marginal likelihood is obtained by integrating out the parameters from the likelihood and the prior using the law of total probability
    \begin{align}
    P\left(\mathbf{y}_{train}|X_{train},s\right) = \int P\left(\mathbf{y}_{train}|\bm{\theta},X_{train}\right) P\left(\bm{\theta}|s\right) d\bm{\theta}.
@@ -458,11 +459,12 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
 		P({C} = 1|X_{train},\mathbf{y}_{train},\mathbf{x}_{i,test},s) &= \int P(C=1|\mathbf{x}_{i,test},\bm{\theta})P(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\bm{\theta}\label{eq:classprob} \\
 		&= E(P(C=1|\mathbf{x}_{i,test},\bm{\theta})|X_{train},\mathbf{y}_{train},s),
    \end{align}
-   where $\mathbf{x}_{i,test}=\mathbf{x}_{i \in I_{test}} $ is the features vector of any sample in the test set.  This is the probability of observation $i$ being in group 1 (White water) given the train data sets and the parameter of the prior.
-
-   Note that the distribution over the Class is not dependent on the parameters $\bm{\theta}$ since we integrated them out.
+   where $\mathbf{x}_{i,test}=\mathbf{x}_{i \in I_{test}} $ is the features vector of any sample in the test set.  This is the probability of observation $i$ being in group 1 (White water) given the train data sets and the parameter of the prior. The probability $P(C=1|\mathbf{x}_{i,test},\bm{\theta})$ is the likelihood we encountered earlier and has the analytic form \eqref{eq:singlelikelihood}. Note that the distribution over the Class is not dependent on the parameters $\bm{\theta}$ since we integrated them out.
    
-   A Bayesian approach to train and predict such a model is to use Markov chain Monte Carlo (MCMC) methods to sample from the posterior and then approximate the predictive probability over the Class assignment \eqref{eq:classprob} using a Monte Carlo estimator. The $M$ samples obtained are denoted with $z^{(j)}$ and have the same dimension as the parameters $\bm{\theta}$. The estimate,
+   
+%   We only get a single value from posterior predictive probability. The power of Bayesian inference is that we can get a distribution over the parameter of interest. 
+   
+   A Bayesian approach to train and predict with such a model is to use Markov chain Monte Carlo (MCMC) methods to sample from the posterior and then approximate the posterior predictive probability \eqref{eq:classprob} using a Monte Carlo estimator. The $M$ samples obtained are denoted with $z^{(j)}$ and have the same dimension as the parameters $\bm{\theta}$. The estimate,
    \begin{align}
    	\int P(C=1|\mathbf{x}_{i,test},\bm{\theta}) P(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\bm{\theta} &= \frac{1}{M}\sum_{j=1}^M P(C=1|\mathbf{x}_{i,test},z^{(j)}) \\
    	&= \frac{1}{M}\sum_{j=1}^M  \frac{\exp(\phi(\mathbf{x}_{i,test}) \cdot(z^{(j)})^T)}{1+\exp(\phi( \mathbf{x}_{i,test}) \cdot z^{(j)}T)},
@@ -471,7 +473,7 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
    
    
    The idea of MCMC is to generate samples $z^{(i)}$ while exploring the state space of interest (the space on which the posterior is defined, $\Theta$) using a markov chain mechanism. The chain is constructed such that it spends more time in more important regions. In particular, the aim is for the samples generated to mimic samples drawn from the target distribution ($P(\bm{\theta}|X_{train},\mathbf{y}_{train},s)$).
-   The reason MCMC methods are of interest in our case is that they allow drawing samples from the target distribution if it can be evaluated up to a normalising constant (but does not have to be normalised). 
+   The reason MCMC methods are of interest in our case is that they allow drawing samples from the target distribution if it can be evaluated up to a normalising constant (but does not have to be normalised, so we avoid calculating the marginal likelihood). 
    
    The $M$ resulting samples can be used to approximate the target density 
    \begin{align}
@@ -479,20 +481,21 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
    \end{align}
    where $\delta(\bm{\theta} = z^{(i)})$ denotes the Dirac delta function centred at the vector $z^{(i)}$. Using this point-mass function, integrals $I(f)$ can be approximated with sums $I_M(f)$ that converge in the following manner
    \begin{equation}
-   	I_M(f) = \frac{1}{M}\sum_{i = 1}^M \delta(\bm{\theta} = z^{(i)})      \underset{M \rightarrow \infty}{{\rightarrow}} \int_{\Theta} f(\theta)P_M(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\theta = I(f).
+   	I_M(f) = \frac{1}{M}\sum_{i = 1}^M f(z^{(i)})     \underset{M \rightarrow \infty}{{\rightarrow}} \int_{\Theta} f(\theta)P_M(\bm{\theta}|X_{train},\mathbf{y}_{train},s) d\theta = I(f).
    	\label{eq:convergencemcmc}
    \end{equation}
    If the $z_{(i)}$ samples were i.i.d, the estimator $I_M(f)$ is unbiased and by the strong law of large numbers it almost surely converges to $I(f)$. MCMC samples need to satisfy some conditions for them to be used in monte carlo estimates.
    
    The ergodic theorem generalises the law of large numbers. Suppose that $\{z^{(i)}\}_{i \in \mathrm{N}}$ is an ergodic Markov Chain with stationary distribution our target distribution and function $f:\mathrm{R}^D \rightarrow \mathrm{R}$ defined on the state space of our sample. Then \eqref{eq:convergencemcmc} holds.
    
-   This motivates the use of Metropolis-Hastings, an MCMC sampling method. A step of the algorithm involves drawing a sample $z^*$ from a proposal distribution (that aims at exploring the state space) $q(z^*|z^{(i-1)})$ given the current value of the chain $z^{(i)}$. Then the chain moves to the candidate value $z^*$ with an acceptance probability 
+   This motivates the use of Metropolis-Hastings, an MCMC sampling method. A step of the algorithm involves drawing a sample $z^*$ from a proposal distribution (that aims at exploring the state space) $q(z^*|z^{(i-1)})$ given the current value of the chain $z^{(i-1)}$. Then the chain moves to the candidate value $z^*$ with an acceptance probability 
    \begin{equation}
    	min\left( 1,\frac{p(z^*)q(z^*|z^{(i-1)})}{p(z^{(i-1)})q(z^{(i-1)}|z^*)}\right),
    \end{equation} 
-   where $p(z)$ is the unnormalised target density (or the target density up to a constant, the marginal likelihood which is independent of $z$).
+   where $p(z)$ is the unnormalised target density (or the target density up to a constant, the marginal likelihood, independent of $z$).
    
-   If the candidate $z^*$ is not accepted then a new one is drawn from the proposal conditioned on the previously accepted sample. The process goes on up until we have generated a sufficient number of samples. More detailed explanation of the algorithm and the theory behind Markov Chain can be found in {\bf Probability notes} and {\bf Lange}.
+   If the candidate $z^*$ is not accepted then a new one is drawn from the proposal conditioned on the previously accepted sample. The process goes on up until we have generated a sufficient number of samples. More detailed explanation of the algorithm and the theory behind Markov Chain can be found in \cite{lange_markov_2010}.
+   %ADD PROBABILITY NOTES IF TIME
    
 	Instead of using Metropolis-Hastings (MH), Hamiltonian Monte Carlo (HMC) was used. When compared to a MH using a Gaussian random-walk as proposal distribution, it reduces the correlation between successive sampled states, and thus it needs fewer samples to approximate integrals.
 	
@@ -515,7 +518,7 @@ A linear function (in parameters) can be used to model \eqref{eq:discr}. The fea
 
 The Maximum Likelihood approach to fitting a logistic regression model to the data involves, as the name suggests, maximising the likelihood of response variables given the features and the parameters , with respect to the parameters \eqref{eq:likelihood}.
 
-Instead of looking at the likelihood we can look at its log transform, which has the same relations of order as the likelihood
+Instead of looking at the likelihood we can look at its log transform, which has the same order relations as the likelihood
 \begin{equation}
 	P(a_1|b) > P(a_2|b) \Leftrightarrow 	\log P(a_1|b) >\log P(a_2|b).
 \end{equation} 
@@ -530,7 +533,7 @@ The parameters $\bm{\theta}^*$ that minimise this loss are then used for the pre
 \end{align}
  is bigger than 0 then the point is classified as coming from white water, and if it is smaller then from black. 
  
- Regularisation can also be introduced that would reduce over fitting on the training data. If not employed, the model might become too complicated, modelling noise in our data, and thus nt generalisable to new data. Using regularisation in machine learning amounts to penalising model complexity by adding a term to the loss function. This will cause some of the parameters to shrink towards zero, thus creating a simpler model.
+ Regularisation can also be introduced that would reduce over fitting on the training data. If not employed, the model might become too complicated, modelling the noise in our data, and thus not generalisable. Using regularisation in machine learning amounts to penalising model complexity by adding a term to the loss function. This will cause some of the parameters to shrink towards zero, thus creating a simpler model.
  
  Ridge, or $L_2$ regularisation, involves adding the $L_2$ norm of the parameters to the loss function
  \begin{equation}
@@ -542,9 +545,12 @@ The parameters $\bm{\theta}^*$ that minimise this loss are then used for the pre
  \begin{equation}
 L(\bm{\theta},s)= - \left(\sum_{n=1}^N y_n \phi\left(\mathbf{x}_{i}\right)\cdot\bm{\theta}^{T} -\log\left(1+\exp\left(\phi\left(\mathbf{x}_{i}\right)\bm{\theta}^{T}\right)\right) \right) + s||\bm{\theta}||_1.
 \end{equation}
-	Lasso's use of the $L_1$ norm allows some parameters to become zero during fitting, thus reducing the complexity of the model. This is in contrast to Ridge which generally will not force any parameters to take a zero value, but something close to it.
-	
+	Use of the $L_1$ norm allows some parameters to become zero during training, thus reducing the model's complexity. This is in contrast to Ridge which generally will not force any parameters to take a zero value, but something close to it.
 	This ability of Lasso makes it also useful as a feature selection method, which is especially important in data sets with a large number of features. 
+	However, Lasso tends to select only one feature from a group of highly correlated ones, even if they are all descriptive. For our data set, where linear relationships might arise accidentally and not bear ecological significance, this tendency of the algorithm might mask the contribution of otherwise significant species. 
+	
+	
+	Furthermore, adding an $L_1$ norm to the loss function means it is not longer differentiable. Therefore, minimisation algorithms have to be employed to get the best parameters. 
 	
 	Choosing one of these regularisation techniques is equivalent to maximising the posterior distribution $P(\bm{\theta}|X_{train},\mathbf{y}_{train},s)$, and choosing an appropriate prior for the parameters. To demonstrate, let's assume that the prior is a multivariate normal distribution with mean zero and the identity matrix multiplied by a constant as covariance. Then the log posterior can be written as
 	\begin{align}
@@ -559,14 +565,22 @@ L(\bm{\theta},s)= - \left(\sum_{n=1}^N y_n \phi\left(\mathbf{x}_{i}\right)\cdot\
   		P(\bm{\theta}|s) &= \prod_{i = 1}^{M} \frac{1}{2s} \exp\left(\frac{|\theta_i|}{2s}\right),
   \end{align} 
   and maximising the posterior, is equivalent to minimising the loss with lasso regularisation.
-\subsection{Random Forests}
-Random Forests is an ensemble method that works by training multiple decision trees and averaging their predicted class when it comes to classification. The combination of trees is done to reduce the overfitting of single decision trees on the train set {\bf Elementsofstatisticallearning} . In particular, trees grown very deeply to learn complex patterns in the data have often low bias but very high variance. 
+  
+  An advantage of the Bayesian method is that we get a distribution over the parameters instead of a single value estimate. This gives us a better idea of how important a feature is and how considerable the effect. A disadvantage is that it needs to sample a large number of values from the posterior to approximate it well. This is more so when the parameters' dimension is larger. Therefore, it is usually a significantly slower algorithm.
+  
+  The hyperparameters we cross-validated included the sparsity parameter $s$, the intercept, and a class balance term that gives more weight to the minority class in the loss function. 
+  
+  Linear regression was performed using the package scikit-learn in python \cite{scikit-learn}. The MCMC approach was carried out using PyMC3, a python package for Bayesian statistical modelling \cite{Salvatier2016}.
+  
+  
+\subsection{Random Forest}
+Random Forest is an ensemble method that works by training multiple decision trees and averaging their predicted class when it comes to classification. The combination of trees is done to reduce the overfitting of single decision trees on the train set \cite{hastie_elements_2009}. In particular, trees grown very deeply to learn complex patterns in the data have often low bias but very high variance. 
 
 To combat this the features and observations used by each tree are randomly sub-sampled from the training set (with or without replacement) \footnote{Sampling only the observations with replacement is called bagging (bootstrap aggregating)}. Thus the random forest algorithm averages out deep decision trees trained on different parts of the training set, so as to reduce their variance.  
 
  \subsubsection{Decision Trees}
 
-To illustrate how binary decision trees work, let's consider the classification of humans into male and females using two features: height in centimetres and weight in kilograms. An example of a decision tree applicable for such a problem is given in figure \ref{fig:extree}. The root node splits the features space of height into two regions, one above 180cm and one below. In the first region, the tree classifies all points as male. The second region is further split into two based on weight; above and below 80kg. 
+To illustrate how binary decision trees work, let's consider the classification of humans into male and female using two features: height in centimetres and weight in kilograms. An example of a decision tree applicable for such a problem is given in figure \ref{fig:extree}. The root node splits the features space of height into two regions, one above 180cm and one below. In the first region, the tree classifies all points as male. The second region is further split into two based on weight; above and below 80kg. 
 \begin{figure}
 \centering
 	\includegraphics[width=0.5\textwidth]{Example-Decision-Tree}
@@ -574,7 +588,7 @@ To illustrate how binary decision trees work, let's consider the classification 
 	\label{fig:extree}
 \end{figure}
 
-Decision trees constructed by Random Forest are done so using the Classification and Regression Trees (CART) algorithm. These are binary trees were each node represents a single input feature and a split condition in that feature's space. The leaf nodes of the trees (end points) contain an output variable (class label). The selection of which features is to be used at each node is done using a cost function. The construction of a tree ends when a predefined stopping condition is met.
+Decision trees constructed by Random Forest are done so using the Classification and Regression Trees (CART) algorithm. These are binary trees were each node represents a single input feature and a split condition in that feature's space. The leaf nodes of the trees (end points) contain an output variable (class label). The selection of which features to be used at each node is done using a cost function. The construction of a tree ends when a predefined stopping condition is met.
 
 
 Our data sets is made up of $N$ response variables $y_i \in \{1,0\}$ and features $\mathbf{x}_i \in \mathrm{R}^p$. Let's also define the regions our feature space is split into by each node of the tree by $R(j,s)$, where $j$ is the splitting feature and s is the split point. The pair of regions is given by 
@@ -589,19 +603,19 @@ The proportion of class $k \in \{1,0\}$ observations in region $m$ which has a t
 where $I(y_i=k)$ is the indicator function (equals to one when $y_i =k$, zero otherwise) and the sum is over all the points which lie in region $R_m$. The proportion depends on the splitting feature and point $(j,s)$ of the region $R_m$.
 
 
-To create a tree we need to divide up the feature space; a greedy approach called recursive binary splitting is used. It involves searching over all available features (to that node) and all split points to find the split (or regions) with the lowest cost.  To create this cost function, impurity measures are used; which measure how pure a node is.
-One commonly used is the Gini index which takes the form
+To create a tree we need to divide up the feature space; a greedy approach called recursive binary splitting is used. It involves searching over all available features (to that node) and all split points to find the split (or regions) with the lowest cost.  To create this cost function, impurity measures are used, which quantify how pure a node is.
+One commonly used  measure is the Gini index which takes the form
 \begin{equation}
 	G_m = 2\hat{p}_{m,1}(1-\hat{p}_{m,1}),
 \end{equation}
-in region $m$ for binary classification. When samples at a node  belong  with equal proportions to both classes (thus a bad/impure split), the index takes the value 0.5. When the node has samples in only one class it takes the value 0 (a perfect/pure split).
+in region $m$ for binary classification. When samples at a node (or region)  belong  with equal proportions to both classes (thus a bad/impure split), the index takes the value 0.5. When the node has samples in only one class it takes the value 0 (a perfect/pure split).
 
 To construct the cost function we need to take into consideration the number of observations in the two child nodes $N_{mL},\ N_{mR}$ created by splitting the $m$ node, and weight the corresponding node impurity measure. This gives the cost function of node $m$ 
 \begin{align}
 	\Delta G_m &=G_m - G_{mL} \frac{N_{mL}}{N_m} - G_{mR}\frac{N_{mR}}{N_m}\\ &=2\hat{p}_{mL,1}(j,s)(1-\hat{p}_{mL,1})\frac{N_{mL}}{N_m} + 2\hat{p}_{mR,1}(1-\hat{p}_{mR,1})\frac{N_{mR}}{N_m},
 	\label{eq:decreaseimpurity}
 \end{align}
-which depends on the choice of region $m$, and consequently on the split feature and point $(j,s)$. The subscripts $mL$ and $mR$ denote the two child nodes created after the split, and $\hat{p}_{mR,1}$ the proportion of samples in class 1 in the right node. This cost function is the decrease in impurity at node $m$.
+which depends on the choice of region $m$, and consequently on the split feature and point $(j,s)$. The subscripts $mL$ and $mR$ denote the two child nodes created after the split, and $\hat{p}_{mR,1}$ the proportion of samples in class 1 in the right node. This cost function is called `decrease in Gini impurity' at node $m$.
 
 The feature (from those available to the tree) and split point that maximises the decrease in impurity $\Delta G_m$ are used to construct child nodes, increasing the depth of the tree.
 
@@ -622,11 +636,11 @@ When it comes to prediction, the output class probability predicted by each tree
  \begin{equation}
  	Importance(X_j) = \frac{1}{B} \sum_{b= 1}^{B}\sum_{t \in \phi_b} I(j_t =j)\left[prop(t)\Delta G_t\right],
  \end{equation}
-where the sum is over all trees $b$ and all nodes of the tree $\phi_b$, and $I(j_t =j)$ is the indicator function that takes the value 1 when node $t$ is split using variable $X_j$. The proportion of samples, from the initial number, at node $t$ is given by $prop(t)$. \textbf{Gilles} 
+where the sum is over all trees $b$ and all nodes of the tree $\phi_b$, and $I(j_t =j)$ is the indicator function that takes the value 1 when node $t$ is split using variable $X_j$. The proportion of samples, from the initial number, at node $t$ is given by $prop(t)$ \cite. \textbf{Gilles} 
 %
 % With just bagging, the algorithm produces an ensemble of structurally similar trees. That's why feature sampling is used in random forests; to reduce the correlation between trees.
  
- The random forest algorithm was implemented using scikit-learn in python. The gini impurity measure is used both for tree growing and for feature importance (using also trees' depth as an indicator). 
+ The random forest algorithm was implemented using scikit-learn in python. The gini impurity measure is used both for tree growing and for feature importance (using also trees' depth as an indicator). The number of trees, the stopping criterion and whether to bootstrap the observations were cross validated. 
 %%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% DATA SPLITTING
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,28 +3,29 @@
 
 \chapter{Conclusion}
 The three splitting settings devised earlier highlight different classifiers. 
-In the maximum similarity setting, which ensured that observation from all parts of the rivers were included in the train, validation, and test sets, Logistic regression outperformed Random Forest. It achieved accuracy scores above 98\% with five features sets. 
+In the maximum similarity setting, which ensured that observation from all parts of the rivers were included in the train, validation, and test sets, $L_1$ Logistic regression outperformed Random Forest. It achieved accuracy scores above 98\% with five features sets. 
 
-In the maximum dissimilarity setting, which kept out whole parts of the rivers for testing and validation, Random Forest proved to be the better model. It had an accuracy score of 90.45\% when using the OTU MIN CSS set and 90.24\% with OTU CSS AND OTU CSS LOG. Logistic regression had relatively low scores, with most feature sets being close to naive guessing. 
+In the maximum dissimilarity setting, which kept out whole parts of the rivers for testing and validation, Random Forest proves to be the better model. It has an accuracy score of 90.45\% when using the OTU MIN CSS set and 90.24\% with OTU CSS and OTU CSS LOG. Logistic regression has relatively low scores, with most models being close to naive guessing. Using $L_2$ regularisation however, we get an accuracy score of 93.90\% using the OTU CSS LOG set, outperforming Random Forest.
 
 Randomly splitting the data (but ensuring that the balance of classes was constant between the train, test, and validation sets) did not favour any method. Both performed equally well, with scores ranging between the maximum similarity and dissimilarity settings.
 
-In all cases the classifiers (with best features set) produced better results than naive guessing, even though most of the prediction errors were concentrated in identifying black water samples. 
+In all cases the classifiers (with best features set) produce better results than naive guessing, even though most of the prediction errors are concentrated in identifying black water samples. 
 
-Using Ordination methods as features produced only one relatively (to other sets) high accuracy score, for Logistic regression in the maximum dissimilarity setting. This was achieved by selecting the subset of its axes explaining 90\% of the variance in the data. In all other cases, the methods were not useful in dimensionality reduction. Furthermore, using the 20-dimensional NMDS configuration did not produce significant results, and it is highly unlikely that if it had converged better scores would be produced.
+Using Ordination methods as features produces only one relatively (to other sets) high accuracy score, for Logistic regression in the maximum dissimilarity setting. This is achieved by selecting the subset of its axes explaining 90\% of the variance in the data. In all other cases, the methods are not useful for dimensionality reduction. Furthermore, using the 20-dimensional NMDS configuration does not produce significant results, and it is highly unlikely that if it had converged better scores would be produced. On the other hand, using the OTU CSS LOG set we obtain the highest average accuracy score across all classifiers and split schemes. 
 
-Finally the Bayesian logistic regression framework was not appropriate to use because of the large number of features, its slow sampling rate, and its equivalent performance to the loss minimising version.
+
+Finally the Bayesian logistic regression framework takes a very long time to sample from posteriors where the parameter's dimension is very large (i.e. all OTU and PCoA sets). Using the much smaller NMDS set however, we get promising result; it is comparable with the cross-validated MLE logistic regression model in the maximally similar setting and outperforms it in the dissimilar. 
 
 \section*{Further Work}
-This work serves as a proof of concept for applying supervised machine learning methods in metabarcoding eDNA data. 
+%This work serves as a proof of concept for applying supervised machine learning methods in metabarcoding eDNA data. 
 
-This work opens a lot of doors for further exploring not only this particular data set, but also any other derived from metabarcoding eDNA methods.
-For instance, species importance could be identified using parametric models often used in ecology (like zero-inflated Gaussian mixture) and check if they agree with those obtained through random forest. 
+This work showcases that further machine learning exploration of this particular data set, but also of any other derived from metabarcoding eDNA methods, can be very fruitful but also challenging. As a next step, species importance could be identified using parametric models often used in ecology (like zero-inflated Gaussian mixture) and check if they agree with those obtained through random forest. 
 
- More classifiers and dimensionality reduction techniques that take into account the spatial distribution of samples could also be employed. Furthermore, other sampling approaches can be developed that takes into account correlation structure of river samples, and thus evaluate where each classification method fails.
+ More classifiers and dimensionality reduction techniques that take into account the spatial distribution of samples could also be employed. Furthermore, other sampling approaches can be developed that take into account correlation structures of river samples, and thus evaluate where each classification method fails.
  
  Problems were encountered because of the unbalanced class distribution. Collecting more samples from the rivers further to the east is one way to combat this, which will also aid in the evaluation of the classifiers.
  
+ Bayesian methods (or versions of), even linear ones like Logistic regression, might be promising if more time is spend on sampling and choosing the right models for our data set. 
  
- Finally, the scope does not have to be limited to water colour classification. The effect of anthropogenic and environmental factors on the Amazonian community composition could be investigated. The process can begin by additional sampling efforts along and around the rivers collecting data on other ecological variables, like minerals, pollution levels, river size, water flow, proximity to settlements, and land use, to name a few. Data can also be collected on a temporal basis so that the changes can be better understood. Then, time series analysis together with machine learning could be utilised to better understand the complex interactions between species abundance and their environment, and thus the role humans play in the ecosystem.
+ Finally, the scope does not have to be limited to water colour classification. The effect of anthropogenic and environmental factors on the Amazonian community composition could be investigated. The process can begin by additional sampling efforts along and around the rivers, collecting data on other ecological variables, like minerals, pollution levels, river size, water flow, proximity to settlements, and land use, to name a few. Data can also be collected on a temporal basis so that the changes can be better understood. Then, time series analysis together with machine learning could be utilised to uncover the complex interactions between species abundance and their environment, and thus the role humans play in the ecosystem.
 

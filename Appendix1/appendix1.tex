@@ -8,10 +8,10 @@
 \fi
 Here we present additional results for different features sets than the ones presented in Chapter \ref{chap:results}, so as to complete and complement the discussion without burdening the reader with long, difficult to read tables and figures.
 
-The PCoA sets presented here were computed using the Bray-Curtis distance measure; their only difference with the ones presented in the Results \& Discussion Chapter is that only some of the axes where used for classification. In particular, the first axes to describe 99\% and 90\% of the variance were used. Also, the configuration of a 20-dimensional NMDS ordination was used as a feature set. The procedure was run for 10000 steps and did not converge, so it does not represent the best 20-dimensional NMDS configuration.
+The PCoA sets presented here were computed using the Bray-Curtis distance measure; their only difference with the ones presented in the Results \& Discussion Chapter is that only some of the axes where used for classification. In particular, the first axes to describe 99\% and 90\% of the variance were used. Also, the configuration of a 20-dimensional NMDS ordination was used as a feature set. The procedure was run for 10000 steps and did not converge, so it does not represent the best 20-dimensional NMDS configuration. Finally the PCA projection of the data was used as features.
 
 
-The results for maximum similarity are presented in tables \ref{table:lrsimilarityappendix} for Logistic regression and \ref{table:rfrsimilarityappendix} for Random Forest. As with the other feature sets, Logistic regression is outperforming Random Forest (except for NMDS). Both methods are above the baseline.
+The results for maximum similarity are presented in tables \ref{table:lrsimilarityappendix} for Logistic regression and \ref{table:rfrsimilarityappendix} for Random Forest. As with the other feature sets, Logistic regression is outperforming Random Forest (except for NMDS). Both methods are above the baseline. PCA has the lowest score when used in Logistic regression, and second lowest when used in Random Forest.
 %SIMILARITY
 %SIM LOG 
 \begin{table}[h]
@@ -83,6 +83,8 @@ The results for maximum similarity are presented in tables \ref{table:lrsimilari
 
 %DISSIMILARITY
 The results for maximum dissimilarity are presented in tables \ref{table:lrdissimilarityappendix} for Logistic regression and \ref{table:rfrdissimilarityappendix} for Random Forest. Unlike the other feature sets in the same setting, Logistic regression is outperforming Random Forest (except for NMDS). Both methods are above the baseline. It is interesting to note that the sets PCoA 90\% and PCoA CSS 99\% produce a better accuracy for Logistic regression than its best set in Chapter \ref{chap:results}. 
+
+The logistic regression model using the PCA set classified everything as white, and got a score of 87.20\%. This might look like a good score, but its black water recall is zero, which makes it practically unusable. The case is similar in the Random Forest case.
 %LOG DISSIM
 \begin{table}[h]
 	\centering
