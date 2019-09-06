@@ -5,7 +5,7 @@
 The three splitting settings devised earlier highlight different classifiers. 
 In the maximum similarity setting, which ensured that observation from all parts of the rivers were included in the train, validation, and test sets, $L_1$ Logistic regression outperformed Random Forest. It achieved accuracy scores above 98\% with five features sets. 
 
-In the maximum dissimilarity setting, which kept out whole parts of the rivers for testing and validation, Random Forest proves to be the better model. It has an accuracy score of 90.45\% when using the OTU MIN CSS set and 90.24\% with OTU CSS and OTU CSS LOG. Logistic regression has relatively low scores, with most models being close to naive guessing. Using $L_2$ regularisation however, we get an accuracy score of 93.90\% using the OTU CSS LOG set, outperforming Random Forest.
+In the maximum dissimilarity setting, which kept out whole parts of the rivers for testing and validation, Random Forest proves to be on average the better model. It has an accuracy score of 90.45\% when using the OTU MIN CSS set and 90.24\% with OTU CSS and OTU CSS LOG. Logistic regression has relatively low scores, with most models being close to naive guessing. Using $L_2$ regularisation however, we get an accuracy score of 93.90\% using the OTU CSS LOG set, outperforming Random Forest.
 
 Randomly splitting the data (but ensuring that the balance of classes was constant between the train, test, and validation sets) did not favour any method. Both performed equally well, with scores ranging between the maximum similarity and dissimilarity settings.
 

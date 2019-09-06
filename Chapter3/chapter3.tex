@@ -415,7 +415,7 @@ Overall, when taking into consideration all the splitting settings, the features
 As mentioned previously, a downside of MCMC methods is their need for a large number of samples, especially when the parameter space is high dimensional. This is the case for our model as well, which needed almost one hour to get 5000 samples from the posterior, when using the OTU features set. The parameter space was even then not explored adequately and the prediction accuracy was lower than the benchmark. 
 
 
-That is why we will be presenting the results of training a logistic regression model on the NMDS features set; it has the lowest number of features from all others in consideration. Furthermore, cross-validating the model also takes a prohibitively large amount of time; for each train-test split we fit 240 models to choose the best hyperparamters (6 validation folds times 60 combinations of hyperparameters). Therefore, we choose to present a model with an intercept parameter and $s=1$ as the sparsity. We also show results for two priors over the parameters, Gaussian and Laplacian.
+That is why we will be presenting the results of training a logistic regression model on the NMDS features set; it has the smallest number of features from all others in consideration. Moreover, cross-validating the model takes prohibitively long; for each train-test split we fit 240 models to choose the best hyperparamters (6 validation folds times 60 combinations of hyperparameters). Therefore, we choose to present a model with an intercept parameter and $s=1$ as the sparsity. We also show results for two priors over the parameters, Gaussian and Laplacian.
 
 The results for testing under the maximum similarity setting (without cross-validation) are presented in table \ref{table:bay_sim}. The feature set used is NMDS with $L_1$ and $L_2$ denoting the use of a Laplacian and Gaussian priors. Compared to the $L_1$ MLE implementation (see table \ref{table:lrdissimilarityappendix}), the MCMC method achieves a higher accuracy score even without cross-validation (using Laplacian prior). Using a ridge penalty we get an accuracy score of 95.12\% using the MLE method, which is higher than that obtained through the MCMC.
 
@@ -449,13 +449,13 @@ Even though it is slower, the Bayesian approach is much richer in terms of infor
 	\label{fig:forest_sim_l1}
 \end{figure}
 
-Comparing the MCMC method, table \ref{table:bay_dissim}, in the maximally dissimilar setting with the MLE, we see that the $L_1$ regularisation had similar performance for both. When we use $L_2$ however, the MLE's score is 84.15\%, much lower than that obtained through MCMC. 
+Comparing the MCMC method, table \ref{table:bay_dissim}, in the maximally dissimilar setting with the MLE, we see that the $L_1$ regularisation has similar performance for both. When we use $L_2$ however, the MLE's score is 84.15\%, much lower than that obtained through MCMC. 
 
 It is also noteworthy that Bayesian logistic regression using a Gaussian prior and the NMDS features set outperformed almost all other classifiers in the maximally dissimilar case (MLE logistic regression with OTU CSS LOG has an accuracy score of 93.90\%).
 
 
 
-It is possible that with much more samples and time, the Bayesian approach would be able to achieve an even greater accuracy by utilising the much larger feature sets, like OTU CSS LOG. 
+It is possible that with much more MCMC samples and time, the Bayesian approach would be able to achieve an even greater accuracy by utilising the much larger feature sets, like OTU CSS LOG. 
 
 \begin{table}[!htb]
 	\centering

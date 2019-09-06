@@ -1989,6 +1989,10 @@
     <bcf:citekey order="59">Salvatier2016</bcf:citekey>
     <bcf:citekey order="60">hastie_elements_2009</bcf:citekey>
     <bcf:citekey order="61">.</bcf:citekey>
+    <bcf:citekey order="62">betancourt_conceptual_2017</bcf:citekey>
+    <bcf:citekey order="63">betancourt_conceptual_2017</bcf:citekey>
+    <bcf:citekey order="64">brooks_mcmc_2011</bcf:citekey>
+    <bcf:citekey order="65">betancourt_conceptual_2017</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
